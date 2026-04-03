@@ -123,7 +123,7 @@ const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
             <h1 className="text-lg font-bold text-foreground">
               {navItems.find(n => n.id === activePage)?.label || 'لوحة التحكم'}
             </h1>
-            <div className="w-6" /> {/* spacer */}
+            <NotificationBell />
           </div>
         </header>
 
