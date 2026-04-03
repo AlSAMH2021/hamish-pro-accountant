@@ -158,29 +158,30 @@ const Report = () => {
               <BookOpen className="w-5 h-5 text-primary" />
               أداء المحاور
             </h2>
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={350}>
               <BarChart
-                data={AXES.map(({ key, label }) => ({
-                  name: label.length > 10 ? label.slice(0, 10) + '…' : label,
-                  score: axisScores[key],
-                  passed: axisPassed[key],
-                  key,
-                }))}
-                margin={{ top: 10, right: 10, left: 10, bottom: 60 }}
+                data={[
+                  { name: 'المالية', score: axisScores['financial'], key: 'financial' },
+                  { name: 'التكاليف', score: axisScores['cost'], key: 'cost' },
+                  { name: 'الضرائب', score: axisScores['tax'], key: 'tax' },
+                  { name: 'التشريعات', score: axisScores['regulations'], key: 'regulations' },
+                  { name: 'IFRS', score: axisScores['ifrs'], key: 'ifrs' },
+                ]}
+                margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                 <XAxis
                   dataKey="name"
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
-                  angle={-35}
-                  textAnchor="end"
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                   interval={0}
-                  height={60}
+                  tickLine={false}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <YAxis
                   domain={[0, 9]}
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                   width={30}
+                  tickLine={false}
                 />
                 <Tooltip
                   contentStyle={{
@@ -192,7 +193,7 @@ const Report = () => {
                   }}
                   formatter={(value: number) => [`${value}/9`, 'الدرجة']}
                 />
-                <Bar dataKey="score" radius={[6, 6, 0, 0]} barSize={36}>
+                <Bar dataKey="score" radius={[6, 6, 0, 0]} barSize={40}>
                   {AXES.map(({ key }) => (
                     <Cell
                       key={key}
