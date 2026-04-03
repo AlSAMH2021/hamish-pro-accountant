@@ -16,17 +16,18 @@ interface AuthPageProps {
 const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
   const { setCurrentStep, signIn, signUp } = useApp();
   const [activeTab, setActiveTab] = useState<AuthTab>(initialTab);
-  const [animating, setAnimating] = useState(false);
+  const [animPhase, setAnimPhase] = useState<'idle' | 'exit' | 'enter'>('idle');
   const [slideDir, setSlideDir] = useState<'left' | 'right'>('left');
 
   const switchTab = (tab: AuthTab) => {
-    if (tab === activeTab || animating) return;
+    if (tab === activeTab || animPhase !== 'idle') return;
     setSlideDir(tab === 'register' ? 'left' : 'right');
-    setAnimating(true);
+    setAnimPhase('exit');
     setTimeout(() => {
       setActiveTab(tab);
-      setTimeout(() => setAnimating(false), 50);
-    }, 200);
+      setAnimPhase('enter');
+      setTimeout(() => setAnimPhase('idle'), 350);
+    }, 250);
   };
 
   return (
