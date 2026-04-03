@@ -132,6 +132,7 @@ const Landing = () => {
 
       {/* Footer */}
       <footer className="border-t border-white/[0.06] py-8 px-4 text-center">
+        <img src={logoWhite} alt="هامش" className="h-10 mx-auto mb-3 opacity-40" />
         <p className="text-white/30 text-sm">© {new Date().getFullYear()} هامش — جميع الحقوق محفوظة</p>
       </footer>
     </div>
