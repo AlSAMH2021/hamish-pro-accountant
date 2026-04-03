@@ -110,6 +110,136 @@ const Report = () => {
           ))}
         </div>
 
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Radar Chart */}
+          <div className="bg-card rounded-2xl shadow-card p-6">
+            <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              خريطة الكفاءات
+            </h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <RadarChart
+                data={AXES.map(({ key, label }) => ({
+                  axis: label,
+                  score: axisScores[key],
+                  fullMark: 9,
+                }))}
+                cx="50%"
+                cy="50%"
+                outerRadius="70%"
+              >
+                <PolarGrid stroke="hsl(var(--border))" />
+                <PolarAngleAxis
+                  dataKey="axis"
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                />
+                <PolarRadiusAxis
+                  angle={90}
+                  domain={[0, 9]}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                />
+                <Radar
+                  name="الدرجة"
+                  dataKey="score"
+                  stroke="hsl(var(--primary))"
+                  fill="hsl(var(--primary))"
+                  fillOpacity={0.25}
+                  strokeWidth={2}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Bar Chart */}
+          <div className="bg-card rounded-2xl shadow-card p-6">
+            <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-primary" />
+              أداء المحاور
+            </h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={AXES.map(({ key, label }) => ({
+                  name: label,
+                  score: axisScores[key],
+                  passed: axisPassed[key],
+                }))}
+                layout="vertical"
+                margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis type="number" domain={[0, 9]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
+                <YAxis
+                  dataKey="name"
+                  type="category"
+                  width={120}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: 12,
+                    fontSize: 12,
+                    direction: 'rtl',
+                  }}
+                  formatter={(value: number) => [`${value}/9`, 'الدرجة']}
+                />
+                <Bar dataKey="score" radius={[0, 6, 6, 0]} barSize={24}>
+                  {AXES.map(({ key }) => (
+                    <Cell
+                      key={key}
+                      fill={axisPassed[key] ? 'hsl(var(--success))' : 'hsl(var(--destructive))'}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Donut Chart */}
+          <div className="bg-card rounded-2xl shadow-card p-6 lg:col-span-2">
+            <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+              <Award className="w-5 h-5 text-primary" />
+              نسبة الإجابات
+            </h2>
+            <div className="flex items-center justify-center gap-8">
+              <ResponsiveContainer width={200} height={200}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'صحيحة', value: correctCount },
+                      { name: 'خاطئة', value: wrongCount },
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={55}
+                    outerRadius={85}
+                    paddingAngle={4}
+                    dataKey="value"
+                    strokeWidth={0}
+                  >
+                    <Cell fill="hsl(var(--success))" />
+                    <Cell fill="hsl(var(--destructive))" />
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full bg-success" />
+                  <span className="text-sm text-foreground font-medium">صحيحة: {correctCount}</span>
+                  <span className="text-xs text-muted-foreground">({Math.round((correctCount / questions.length) * 100)}%)</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full bg-destructive" />
+                  <span className="text-sm text-foreground font-medium">خاطئة: {wrongCount}</span>
+                  <span className="text-xs text-muted-foreground">({Math.round((wrongCount / questions.length) * 100)}%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* User Info Card */}
         <div className="bg-card rounded-2xl shadow-card p-6">
           <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
