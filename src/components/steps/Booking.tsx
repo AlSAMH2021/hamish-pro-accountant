@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/components/DashboardLayout';
-import { Calendar, Clock, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, Video } from 'lucide-react';
 
 const SLOTS = [
   { date: '2026-04-07', day: 'الإثنين', times: ['10:00', '11:00', '14:00', '16:00'] },
@@ -50,6 +50,21 @@ const Booking = () => {
                 <p className="text-foreground font-medium">{booking.time}</p>
               </div>
             </div>
+
+            {booking.sessionLink && (
+              <a
+                href={booking.sessionLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 rounded-xl bg-primary/5 border-2 border-primary/20 hover:border-primary/40 transition-all"
+              >
+                <Video className="w-5 h-5 text-primary shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">رابط الجلسة</p>
+                  <p className="text-primary font-medium text-sm truncate">{booking.sessionLink}</p>
+                </div>
+              </a>
+            )}
           </div>
         </div>
       </DashboardLayout>

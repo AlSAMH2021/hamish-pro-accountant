@@ -37,6 +37,7 @@ export interface BookingData {
   date: string;
   time: string;
   bookedAt: string;
+  sessionLink?: string;
 }
 
 export const AXES: { key: Axis; label: string; icon: string }[] = [

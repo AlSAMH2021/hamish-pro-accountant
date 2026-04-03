@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import {
   Users, BarChart3, CalendarDays, CheckCircle, XCircle,
   Search, Trash2, Loader2, ArrowRight, Shield, TrendingUp,
-  BookOpen, Clock,
+  BookOpen, Clock, Link2, Send,
 } from 'lucide-react';
 
 interface ProfileRow {
@@ -38,6 +38,7 @@ interface BookingRow {
   date: string;
   time: string;
   session_completed: boolean;
+  session_link: string | null;
   booked_at: string;
 }
 
@@ -58,6 +59,7 @@ const AdminDashboard = () => {
   const [bookings, setBookings] = useState<BookingRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [linkInputs, setLinkInputs] = useState<Record<string, string>>({});
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -117,6 +119,13 @@ const AdminDashboard = () => {
 
   const handleToggleSession = async (bookingId: string, current: boolean) => {
     await supabase.from('bookings').update({ session_completed: !current }).eq('id', bookingId);
+    loadData();
+  };
+
+  const handleSaveLink = async (bookingId: string) => {
+    const link = linkInputs[bookingId];
+    if (!link?.trim()) return;
+    await supabase.from('bookings').update({ session_link: link.trim() }).eq('id', bookingId);
     loadData();
   };
 
@@ -343,6 +352,7 @@ const AdminDashboard = () => {
                           <th className="text-right p-3 font-medium text-muted-foreground">المستخدم</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">التاريخ</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الوقت</th>
+                          <th className="text-right p-3 font-medium text-muted-foreground">رابط الجلسة</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">إجراء</th>
                         </tr>
@@ -358,6 +368,29 @@ const AdminDashboard = () => {
                               </td>
                               <td className="p-3 text-center text-foreground">{b.date}</td>
                               <td className="p-3 text-center text-foreground">{b.time}</td>
+                              <td className="p-3">
+                                {b.session_link ? (
+                                  <div className="flex items-center gap-2">
+                                    <a href={b.session_link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline truncate max-w-[150px]">
+                                      {b.session_link}
+                                    </a>
+                                    <span className="text-xs text-success">✓</span>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-1">
+                                    <Input
+                                      placeholder="الصق رابط الجلسة..."
+                                      value={linkInputs[b.id] || ''}
+                                      onChange={e => setLinkInputs(prev => ({ ...prev, [b.id]: e.target.value }))}
+                                      className="h-8 text-xs min-w-[160px]"
+                                      dir="auto"
+                                    />
+                                    <Button size="sm" onClick={() => handleSaveLink(b.id)} className="h-8 px-2 rounded-lg" disabled={!linkInputs[b.id]?.trim()}>
+                                      <Send className="w-3.5 h-3.5" />
+                                    </Button>
+                                  </div>
+                                )}
+                              </td>
                               <td className="p-3 text-center">
                                 {b.session_completed ? (
                                   <span className="inline-flex items-center gap-1 text-xs font-medium text-success bg-success/10 px-2 py-1 rounded-lg">
@@ -386,7 +419,7 @@ const AdminDashboard = () => {
                         })}
                         {bookings.length === 0 && (
                           <tr>
-                            <td colSpan={5} className="p-8 text-center text-muted-foreground">لا توجد حجوزات</td>
+                            <td colSpan={6} className="p-8 text-center text-muted-foreground">لا توجد حجوزات</td>
                           </tr>
                         )}
                       </tbody>
