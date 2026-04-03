@@ -55,8 +55,8 @@ const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
         <div className="p-6 border-b border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-                <User className="w-5 h-5 text-accent" />
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+                {user?.name?.charAt(0)}
               </div>
               <div>
                 <h2 className="font-bold text-foreground text-sm">{user?.name}</h2>
