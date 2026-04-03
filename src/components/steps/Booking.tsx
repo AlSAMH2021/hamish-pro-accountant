@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/components/DashboardLayout';
-import { Calendar, Clock, CheckCircle, Video } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, Video, Loader2 } from 'lucide-react';
 
-const SLOTS = [
-  { date: '2026-04-07', day: 'الإثنين', times: ['10:00', '11:00', '14:00', '16:00'] },
-  { date: '2026-04-08', day: 'الثلاثاء', times: ['09:00', '11:00', '13:00', '15:00'] },
-  { date: '2026-04-09', day: 'الأربعاء', times: ['10:00', '12:00', '14:00'] },
-  { date: '2026-04-10', day: 'الخميس', times: ['09:00', '11:00', '13:00'] },
-];
+interface SlotData {
+  date: string;
+  day_name: string;
+  time: string;
+}
 
 const Booking = () => {
   const { setBooking, setCurrentStep, updateUserStatus, booking } = useApp();
