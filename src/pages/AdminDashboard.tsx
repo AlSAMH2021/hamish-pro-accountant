@@ -391,6 +391,7 @@ const AdminDashboard = () => {
                                   </div>
                                 )}
                               </td>
+                              <td className="p-3 text-center">
                                 {b.session_completed ? (
                                   <span className="inline-flex items-center gap-1 text-xs font-medium text-success bg-success/10 px-2 py-1 rounded-lg">
                                     <CheckCircle className="w-3 h-3" />
