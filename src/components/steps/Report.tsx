@@ -118,16 +118,16 @@ const Report = () => {
               <TrendingUp className="w-5 h-5 text-primary" />
               خريطة الكفاءات
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={320}>
               <RadarChart
                 data={AXES.map(({ key, label }) => ({
-                  axis: label,
+                  axis: label.split(' ')[0],
                   score: axisScores[key],
                   fullMark: 9,
                 }))}
                 cx="50%"
                 cy="50%"
-                outerRadius="70%"
+                outerRadius="60%"
               >
                 <PolarGrid stroke="hsl(var(--border))" />
                 <PolarAngleAxis
@@ -138,6 +138,7 @@ const Report = () => {
                   angle={90}
                   domain={[0, 9]}
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                  tickCount={4}
                 />
                 <Radar
                   name="الدرجة"
