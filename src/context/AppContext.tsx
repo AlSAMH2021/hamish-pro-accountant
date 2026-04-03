@@ -73,9 +73,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AppContext.Provider value={{
-      currentStep, user, examResult, booking,
-      setCurrentStep, setUser, updateUserStatus, setPaymentStatus,
-      setExamResult, setBooking, canAccessStep,
+      currentStep, user, examResult, booking, registeredUsers,
+      setCurrentStep, setUser: originalSetUser, updateUserStatus, setPaymentStatus,
+      setExamResult, setBooking, canAccessStep, loginUser,
     }}>
       {children}
     </AppContext.Provider>
