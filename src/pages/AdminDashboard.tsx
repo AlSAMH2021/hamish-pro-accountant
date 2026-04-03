@@ -419,7 +419,7 @@ const AdminDashboard = () => {
                         })}
                         {bookings.length === 0 && (
                           <tr>
-                            <td colSpan={5} className="p-8 text-center text-muted-foreground">لا توجد حجوزات</td>
+                            <td colSpan={6} className="p-8 text-center text-muted-foreground">لا توجد حجوزات</td>
                           </tr>
                         )}
                       </tbody>
