@@ -48,11 +48,10 @@ const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
           {/* Tab Switcher */}
           <div className="relative flex bg-muted rounded-2xl p-1.5 mb-8">
             <div
-              className="absolute top-1.5 bottom-1.5 rounded-xl bg-card shadow-sm transition-all duration-300 ease-out"
+              className="absolute top-1.5 bottom-1.5 rounded-xl bg-card shadow-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
               style={{
                 width: 'calc(50% - 6px)',
-                [activeTab === 'login' ? 'right' : 'left']: '6px',
-                transform: activeTab === 'login' ? 'translateX(0)' : 'translateX(0)',
+                right: activeTab === 'login' ? '6px' : 'calc(50% - 0px)',
               }}
             />
             <button
@@ -76,12 +75,12 @@ const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
           {/* Content with animation */}
           <div className="overflow-hidden">
             <div
-              className={`transition-all ease-[cubic-bezier(0.4,0,0.2,1)] ${
+              className={`transition-opacity ease-out ${
                 animPhase === 'exit'
-                  ? `duration-250 opacity-0 scale-[0.97] blur-[2px] ${slideDir === 'left' ? '-translate-x-6' : 'translate-x-6'}`
+                  ? 'duration-200 opacity-0'
                   : animPhase === 'enter'
-                  ? 'duration-350 opacity-100 scale-100 blur-0 translate-x-0'
-                  : 'duration-0 opacity-100 scale-100 blur-0 translate-x-0'
+                  ? 'duration-300 opacity-100'
+                  : 'duration-0 opacity-100'
               }`}
             >
               {activeTab === 'login' ? (
