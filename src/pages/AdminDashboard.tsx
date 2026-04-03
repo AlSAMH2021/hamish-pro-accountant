@@ -368,7 +368,29 @@ const AdminDashboard = () => {
                               </td>
                               <td className="p-3 text-center text-foreground">{b.date}</td>
                               <td className="p-3 text-center text-foreground">{b.time}</td>
-                              <td className="p-3 text-center">
+                              <td className="p-3">
+                                {b.session_link ? (
+                                  <div className="flex items-center gap-2">
+                                    <a href={b.session_link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline truncate max-w-[150px]">
+                                      {b.session_link}
+                                    </a>
+                                    <span className="text-xs text-success">✓</span>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-1">
+                                    <Input
+                                      placeholder="الصق رابط الجلسة..."
+                                      value={linkInputs[b.id] || ''}
+                                      onChange={e => setLinkInputs(prev => ({ ...prev, [b.id]: e.target.value }))}
+                                      className="h-8 text-xs min-w-[160px]"
+                                      dir="auto"
+                                    />
+                                    <Button size="sm" onClick={() => handleSaveLink(b.id)} className="h-8 px-2 rounded-lg" disabled={!linkInputs[b.id]?.trim()}>
+                                      <Send className="w-3.5 h-3.5" />
+                                    </Button>
+                                  </div>
+                                )}
+                              </td>
                                 {b.session_completed ? (
                                   <span className="inline-flex items-center gap-1 text-xs font-medium text-success bg-success/10 px-2 py-1 rounded-lg">
                                     <CheckCircle className="w-3 h-3" />
