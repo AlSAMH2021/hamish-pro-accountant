@@ -24,6 +24,30 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [examResult, setExamResult] = useState<ExamResult | null>(null);
   const [booking, setBooking] = useState<BookingData | null>(null);
+  const [registeredUsers, setRegisteredUsers] = useState<UserData[]>([]);
+
+  const originalSetUser = (userData: UserData) => {
+    setUser(userData);
+    setRegisteredUsers(prev => {
+      const exists = prev.find(u => u.email === userData.email);
+      if (exists) return prev.map(u => u.email === userData.email ? userData : u);
+      return [...prev, userData];
+    });
+  };
+
+  const loginUser = (email: string, password: string): boolean => {
+    const found = registeredUsers.find(u => u.email === email && u.password === password);
+    if (found) {
+      setUser(found);
+      // Resume based on status
+      if (found.status === 'booked') setCurrentStep(8);
+      else if (found.status === 'exam_completed') setCurrentStep(6);
+      else if (found.status === 'paid') setCurrentStep(5);
+      else setCurrentStep(3);
+      return true;
+    }
+    return false;
+  };
 
   const updateUserStatus = (status: UserData['status']) => {
     if (user) setUser({ ...user, status });
