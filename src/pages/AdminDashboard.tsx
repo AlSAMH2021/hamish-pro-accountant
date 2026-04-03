@@ -60,6 +60,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [linkInputs, setLinkInputs] = useState<Record<string, string>>({});
+  const [adminUserIds, setAdminUserIds] = useState<Set<string>>(new Set());
 
   const loadData = useCallback(async () => {
     setLoading(true);
