@@ -103,6 +103,16 @@ const Booking = () => {
           <p className="text-muted-foreground text-sm">اختر الموعد المناسب لك مع خبير المحاسبة</p>
         </div>
 
+        {loadingSlots ? (
+          <div className="bg-card rounded-2xl shadow-card p-8 flex justify-center">
+            <Loader2 className="w-6 h-6 text-primary animate-spin" />
+          </div>
+        ) : SLOTS.length === 0 ? (
+          <div className="bg-card rounded-2xl shadow-card p-8 text-center">
+            <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+            <p className="text-muted-foreground">لا توجد مواعيد متاحة حالياً</p>
+          </div>
+        ) : (
         <div className="bg-card rounded-2xl shadow-card p-6">
           <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
             <Calendar className="w-5 h-5 text-primary" />
