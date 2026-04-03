@@ -62,6 +62,7 @@ const SECTOR_MAP: Record<string, string> = {
 const AdminDashboard = () => {
   const { isAdmin, loading: roleLoading } = useIsAdmin();
   const navigate = useNavigate();
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>('stats');
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [exams, setExams] = useState<ExamRow[]>([]);
