@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { UserData, ExamResult, BookingData } from '@/data/types';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { UserData, ExamResult, BookingData, Sector } from '@/data/types';
+import { supabase } from '@/integrations/supabase/client';
+import { Session } from '@supabase/supabase-js';
 
 interface AppState {
   currentStep: number;
@@ -7,7 +9,8 @@ interface AppState {
   examResult: ExamResult | null;
   booking: BookingData | null;
   sessionCompleted: boolean;
-  registeredUsers: UserData[];
+  session: Session | null;
+  loading: boolean;
   setCurrentStep: (step: number) => void;
   setUser: (user: UserData) => void;
   updateUserStatus: (status: UserData['status']) => void;
@@ -16,47 +19,185 @@ interface AppState {
   setBooking: (booking: BookingData) => void;
   setSessionCompleted: (completed: boolean) => void;
   canAccessStep: (step: number) => boolean;
-  loginUser: (email: string, password: string) => boolean;
+  signUp: (email: string, password: string, metadata: Record<string, string>) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: string | null }>;
 }
 
 const AppContext = createContext<AppState | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [user, setUser] = useState<UserData | null>(null);
-  const [examResult, setExamResult] = useState<ExamResult | null>(null);
-  const [booking, setBooking] = useState<BookingData | null>(null);
+  const [user, setUserState] = useState<UserData | null>(null);
+  const [examResult, setExamResultState] = useState<ExamResult | null>(null);
+  const [booking, setBookingState] = useState<BookingData | null>(null);
   const [sessionCompleted, setSessionCompleted] = useState(false);
-  const [registeredUsers, setRegisteredUsers] = useState<UserData[]>([]);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const originalSetUser = (userData: UserData) => {
-    setUser(userData);
-    setRegisteredUsers(prev => {
-      const exists = prev.find(u => u.email === userData.email);
-      if (exists) return prev.map(u => u.email === userData.email ? userData : u);
-      return [...prev, userData];
+  // Listen to auth state changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, newSession) => {
+        setSession(newSession);
+        if (newSession?.user) {
+          // Defer data loading to avoid deadlock
+          setTimeout(() => loadUserData(newSession.user.id), 0);
+        } else {
+          setUserState(null);
+          setExamResultState(null);
+          setBookingState(null);
+          setSessionCompleted(false);
+          setCurrentStep(1);
+          setLoading(false);
+        }
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      if (currentSession?.user) {
+        loadUserData(currentSession.user.id);
+      } else {
+        setLoading(false);
+      }
     });
-  };
 
-  const loginUser = (email: string, password: string): boolean => {
-    const found = registeredUsers.find(u => u.email === email && u.password === password);
-    if (found) {
-      setUser(found);
-      if (found.status === 'booked') setCurrentStep(8);
-      else if (found.status === 'exam_completed') setCurrentStep(6);
-      else if (found.status === 'paid') setCurrentStep(5);
-      else setCurrentStep(3);
-      return true;
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const loadUserData = async (userId: string) => {
+    try {
+      // Load profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (profile) {
+        const userData: UserData = {
+          name: profile.name,
+          email: session?.user?.email || '',
+          phone: profile.phone || '',
+          jobTitle: profile.job_title || '',
+          company: profile.company || '',
+          sector: profile.sector as Sector,
+          password: '',
+          status: profile.status as UserData['status'],
+          paymentStatus: profile.payment_status,
+        };
+        setUserState(userData);
+
+        // Load exam result
+        const { data: examData } = await supabase
+          .from('exam_results')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (examData) {
+          setExamResultState({
+            answers: examData.answers as Record<number, number>,
+            axisScores: examData.axis_scores as Record<string, number>,
+            totalScore: examData.total_score,
+            performanceLevel: examData.performance_level as ExamResult['performanceLevel'],
+            passed: examData.passed,
+            axisPassed: examData.axis_passed as Record<string, boolean>,
+            completedAt: examData.completed_at,
+          } as ExamResult);
+        }
+
+        // Load booking
+        const { data: bookingData } = await supabase
+          .from('bookings')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (bookingData) {
+          setBookingState({
+            date: bookingData.date,
+            time: bookingData.time,
+            bookedAt: bookingData.booked_at,
+          });
+          setSessionCompleted(bookingData.session_completed);
+        }
+
+        // Determine step
+        if (bookingData?.session_completed) setCurrentStep(8);
+        else if (bookingData) setCurrentStep(7);
+        else if (examData) setCurrentStep(6);
+        else if (profile.payment_status) setCurrentStep(5);
+        else setCurrentStep(3);
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    } finally {
+      setLoading(false);
     }
-    return false;
   };
 
-  const updateUserStatus = (status: UserData['status']) => {
-    if (user) setUser({ ...user, status });
+  const setUser = (userData: UserData) => {
+    setUserState(userData);
   };
 
-  const setPaymentStatus = (paid: boolean) => {
-    if (user) setUser({ ...user, paymentStatus: paid, status: paid ? 'paid' : user.status });
+  const updateUserStatus = async (status: UserData['status']) => {
+    if (!user || !session?.user) return;
+    setUserState({ ...user, status });
+    await supabase
+      .from('profiles')
+      .update({ status })
+      .eq('user_id', session.user.id);
+  };
+
+  const setPaymentStatus = async (paid: boolean) => {
+    if (!user || !session?.user) return;
+    const newUser = { ...user, paymentStatus: paid, status: paid ? 'paid' as const : user.status };
+    setUserState(newUser);
+    await supabase
+      .from('profiles')
+      .update({ payment_status: paid, status: paid ? 'paid' : user.status })
+      .eq('user_id', session.user.id);
+  };
+
+  const setExamResult = async (result: ExamResult) => {
+    setExamResultState(result);
+    if (!session?.user) return;
+    await supabase.from('exam_results').insert({
+      user_id: session.user.id,
+      total_score: result.totalScore,
+      performance_level: result.performanceLevel,
+      passed: result.passed,
+      axis_scores: result.axisScores as any,
+      axis_passed: result.axisPassed as any,
+      answers: result.answers as any,
+      completed_at: result.completedAt,
+    });
+    await supabase
+      .from('profiles')
+      .update({ status: 'exam_completed' })
+      .eq('user_id', session.user.id);
+  };
+
+  const setBooking = async (bookingData: BookingData) => {
+    setBookingState(bookingData);
+    if (!session?.user) return;
+    await supabase.from('bookings').insert({
+      user_id: session.user.id,
+      date: bookingData.date,
+      time: bookingData.time,
+      booked_at: bookingData.bookedAt,
+    });
+    await supabase
+      .from('profiles')
+      .update({ status: 'booked' })
+      .eq('user_id', session.user.id);
   };
 
   const canAccessStep = (step: number): boolean => {
@@ -68,16 +209,64 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       case 5: return !!user && user.paymentStatus;
       case 6: return !!examResult;
       case 7: return !!examResult;
-      case 8: return !!booking && sessionCompleted;
+      case 8: return !!examResult;
       default: return false;
     }
   };
 
+  const signUp = async (email: string, password: string, metadata: Record<string, string>) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: metadata,
+        emailRedirectTo: window.location.origin,
+      },
+    });
+    if (error) return { error: error.message };
+
+    // Update profile with full data after signup
+    const { data: { session: newSession } } = await supabase.auth.getSession();
+    if (newSession?.user) {
+      await supabase
+        .from('profiles')
+        .update({
+          name: metadata.name,
+          phone: metadata.phone,
+          job_title: metadata.jobTitle,
+          company: metadata.company,
+          sector: metadata.sector,
+        })
+        .eq('user_id', newSession.user.id);
+    }
+
+    return { error: null };
+  };
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error: error.message };
+    return { error: null };
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) return { error: error.message };
+    return { error: null };
+  };
+
   return (
     <AppContext.Provider value={{
-      currentStep, user, examResult, booking, sessionCompleted, registeredUsers,
-      setCurrentStep, setUser: originalSetUser, updateUserStatus, setPaymentStatus,
-      setExamResult, setBooking, setSessionCompleted, canAccessStep, loginUser,
+      currentStep, user, examResult, booking, sessionCompleted, session, loading,
+      setCurrentStep, setUser, updateUserStatus, setPaymentStatus,
+      setExamResult, setBooking, setSessionCompleted, canAccessStep,
+      signUp, signIn, signOut, resetPassword,
     }}>
       {children}
     </AppContext.Provider>

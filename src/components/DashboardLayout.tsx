@@ -21,11 +21,11 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
-  const { user, setCurrentStep, examResult, booking, sessionCompleted } = useApp();
+  const { user, setCurrentStep, examResult, booking, sessionCompleted, signOut } = useApp();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const handleLogout = () => {
-    setCurrentStep(1);
+  const handleLogout = async () => {
+    await signOut();
   };
 
   const navItems: { id: DashboardPage; label: string; icon: React.ReactNode; step: number; disabled?: boolean }[] = [

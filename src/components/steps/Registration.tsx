@@ -4,14 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Sector, SECTOR_LABELS } from '@/data/types';
-import { ArrowRight, UserPlus } from 'lucide-react';
+import { ArrowRight, UserPlus, Loader2 } from 'lucide-react';
 
 const Registration = () => {
-  const { setUser, setCurrentStep } = useApp();
+  const { signUp, setCurrentStep } = useApp();
   const [form, setForm] = useState({
     name: '', email: '', phone: '', jobTitle: '', company: '', sector: '' as Sector | '', password: '', confirmPassword: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -27,15 +29,25 @@ const Registration = () => {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    setUser({
-      name: form.name, email: form.email, phone: form.phone,
-      jobTitle: form.jobTitle, company: form.company, sector: form.sector as Sector,
-      password: form.password, status: 'registered', paymentStatus: false,
+    setSubmitting(true);
+    setServerError('');
+    
+    const { error } = await signUp(form.email, form.password, {
+      name: form.name,
+      phone: form.phone,
+      jobTitle: form.jobTitle,
+      company: form.company,
+      sector: form.sector as string,
     });
-    setCurrentStep(3);
+
+    if (error) {
+      setServerError(error);
+      setSubmitting(false);
+    }
+    // Auth state change listener will handle navigation
   };
 
   const sectors: { value: Sector; label: string }[] = [
@@ -46,7 +58,6 @@ const Registration = () => {
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
-      {/* Top bar */}
       <div className="bg-card border-b border-border">
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
           <button onClick={() => setCurrentStep(1)} className="text-muted-foreground hover:text-foreground transition-colors">
@@ -73,6 +84,10 @@ const Registration = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card p-6 md:p-8 space-y-4">
+            {serverError && (
+              <p className="text-destructive text-sm text-center bg-destructive/10 p-3 rounded-xl">{serverError}</p>
+            )}
+
             {([
               { key: 'name', label: 'الاسم الكامل', type: 'text', placeholder: 'أدخل اسمك' },
               { key: 'email', label: 'البريد الإلكتروني', type: 'email', placeholder: 'example@email.com' },
@@ -126,8 +141,8 @@ const Registration = () => {
               {errors.confirmPassword && <p className="text-destructive text-xs mt-1">{errors.confirmPassword}</p>}
             </div>
 
-            <Button type="submit" className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl mt-2">
-              إنشاء الحساب
+            <Button type="submit" disabled={submitting} className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl mt-2">
+              {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'إنشاء الحساب'}
             </Button>
 
             <div className="text-center pt-1">
