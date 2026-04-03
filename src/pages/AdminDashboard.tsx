@@ -352,6 +352,7 @@ const AdminDashboard = () => {
                           <th className="text-right p-3 font-medium text-muted-foreground">المستخدم</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">التاريخ</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الوقت</th>
+                          <th className="text-right p-3 font-medium text-muted-foreground">رابط الجلسة</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">إجراء</th>
                         </tr>
