@@ -21,7 +21,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
-  const { user, setCurrentStep, examResult, booking } = useApp();
+  const { user, setCurrentStep, examResult, booking, sessionCompleted } = useApp();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {

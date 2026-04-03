@@ -6,6 +6,7 @@ interface AppState {
   user: UserData | null;
   examResult: ExamResult | null;
   booking: BookingData | null;
+  sessionCompleted: boolean;
   registeredUsers: UserData[];
   setCurrentStep: (step: number) => void;
   setUser: (user: UserData) => void;
@@ -13,6 +14,7 @@ interface AppState {
   setPaymentStatus: (paid: boolean) => void;
   setExamResult: (result: ExamResult) => void;
   setBooking: (booking: BookingData) => void;
+  setSessionCompleted: (completed: boolean) => void;
   canAccessStep: (step: number) => boolean;
   loginUser: (email: string, password: string) => boolean;
 }
@@ -24,6 +26,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [examResult, setExamResult] = useState<ExamResult | null>(null);
   const [booking, setBooking] = useState<BookingData | null>(null);
+  const [sessionCompleted, setSessionCompleted] = useState(false);
   const [registeredUsers, setRegisteredUsers] = useState<UserData[]>([]);
 
   const originalSetUser = (userData: UserData) => {
@@ -39,7 +42,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const found = registeredUsers.find(u => u.email === email && u.password === password);
     if (found) {
       setUser(found);
-      // Resume based on status
       if (found.status === 'booked') setCurrentStep(8);
       else if (found.status === 'exam_completed') setCurrentStep(6);
       else if (found.status === 'paid') setCurrentStep(5);
@@ -66,16 +68,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       case 5: return !!user && user.paymentStatus;
       case 6: return !!examResult;
       case 7: return !!examResult;
-      case 8: return !!booking;
+      case 8: return !!booking && sessionCompleted;
       default: return false;
     }
   };
 
   return (
     <AppContext.Provider value={{
-      currentStep, user, examResult, booking, registeredUsers,
+      currentStep, user, examResult, booking, sessionCompleted, registeredUsers,
       setCurrentStep, setUser: originalSetUser, updateUserStatus, setPaymentStatus,
-      setExamResult, setBooking, canAccessStep, loginUser,
+      setExamResult, setBooking, setSessionCompleted, canAccessStep, loginUser,
     }}>
       {children}
     </AppContext.Provider>
