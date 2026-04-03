@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Users, BarChart3, CalendarDays, CheckCircle, XCircle,
-  Search, Trash2, Loader2, ArrowRight, Shield, TrendingUp,
+  Search, Trash2, Loader2, LogOut, Shield, TrendingUp,
   BookOpen, Clock, Link2, Send,
 } from 'lucide-react';
 
@@ -93,9 +93,9 @@ const AdminDashboard = () => {
           <Shield className="w-16 h-16 text-destructive mx-auto" />
           <h1 className="text-2xl font-bold text-foreground">غير مصرح</h1>
           <p className="text-muted-foreground">ليس لديك صلاحية الوصول لهذه الصفحة</p>
-          <Button onClick={() => navigate('/')} variant="outline" className="rounded-xl">
-            <ArrowRight className="w-4 h-4 ml-2" />
-            العودة للرئيسية
+          <Button onClick={async () => { await supabase.auth.signOut(); navigate('/'); }} variant="outline" className="rounded-xl">
+            <LogOut className="w-4 h-4 ml-2" />
+            تسجيل الخروج
           </Button>
         </div>
       </div>
@@ -160,9 +160,9 @@ const AdminDashboard = () => {
               <p className="text-xs text-muted-foreground">هامش — إدارة التقييمات</p>
             </div>
           </div>
-          <Button onClick={() => navigate('/')} variant="outline" size="sm" className="rounded-xl gap-2">
-            <ArrowRight className="w-4 h-4" />
-            العودة
+          <Button onClick={async () => { await supabase.auth.signOut(); navigate('/'); }} variant="outline" size="sm" className="rounded-xl gap-2">
+            <LogOut className="w-4 h-4" />
+            تسجيل الخروج
           </Button>
         </div>
       </header>
