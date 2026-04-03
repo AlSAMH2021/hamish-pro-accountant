@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import {
   Users, BarChart3, CalendarDays, CheckCircle, XCircle,
   Search, Trash2, Loader2, LogOut, Shield, TrendingUp,
-  BookOpen, Clock, Link2, Send,
+  BookOpen, Clock, Link2, Send, UserPlus, Copy, Eye, EyeOff,
 } from 'lucide-react';
 import NotificationBell from '@/components/NotificationBell';
 
@@ -76,6 +76,13 @@ const AdminDashboard = () => {
   const [newSlotDay, setNewSlotDay] = useState('');
   const [newSlotTime, setNewSlotTime] = useState('');
   const [addingSlot, setAddingSlot] = useState(false);
+  const [showAddAdmin, setShowAddAdmin] = useState(false);
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [newAdminPassword, setNewAdminPassword] = useState('');
+  const [newAdminName, setNewAdminName] = useState('');
+  const [creatingAdmin, setCreatingAdmin] = useState(false);
+  const [createdAdminInfo, setCreatedAdminInfo] = useState<{ email: string; password: string } | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -186,6 +193,28 @@ const AdminDashboard = () => {
       await supabase.from('user_roles').insert({ user_id: userId, role: 'admin' as any });
     }
     loadData();
+  };
+
+  const handleCreateAdmin = async () => {
+    if (!newAdminEmail || !newAdminPassword || !newAdminName) return;
+    setCreatingAdmin(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-admin', {
+        body: { email: newAdminEmail, password: newAdminPassword, name: newAdminName },
+      });
+      if (error || data?.error) {
+        alert(data?.error || 'حدث خطأ أثناء إنشاء المشرف');
+      } else {
+        setCreatedAdminInfo({ email: newAdminEmail, password: newAdminPassword });
+        setNewAdminEmail('');
+        setNewAdminPassword('');
+        setNewAdminName('');
+        loadData();
+      }
+    } catch {
+      alert('حدث خطأ أثناء إنشاء المشرف');
+    }
+    setCreatingAdmin(false);
   };
 
   const DAY_NAMES = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
@@ -346,6 +375,118 @@ const AdminDashboard = () => {
             {/* Users Tab */}
             {tab === 'users' && (
               <div className="space-y-4">
+                {/* Add Admin Button & Form */}
+                <div className="flex items-center gap-3">
+                  <Button
+                    onClick={() => { setShowAddAdmin(!showAddAdmin); setCreatedAdminInfo(null); }}
+                    variant={showAddAdmin ? 'secondary' : 'default'}
+                    size="sm"
+                    className="rounded-xl gap-2"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    إضافة مشرف جديد
+                  </Button>
+                </div>
+
+                {showAddAdmin && (
+                  <div className="bg-card rounded-2xl shadow-card p-5 space-y-4">
+                    <h3 className="font-bold text-foreground flex items-center gap-2">
+                      <Shield className="w-5 h-5 text-primary" />
+                      إنشاء حساب مشرف جديد
+                    </h3>
+
+                    {createdAdminInfo ? (
+                      <div className="bg-muted/30 rounded-xl p-4 space-y-3">
+                        <p className="text-sm text-success font-medium">✅ تم إنشاء حساب المشرف بنجاح! شارك هذه البيانات مع المشرف الجديد:</p>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground min-w-[80px]">البريد:</span>
+                            <code className="text-sm bg-background px-3 py-1 rounded-lg flex-1">{createdAdminInfo.email}</code>
+                            <button
+                              onClick={() => navigator.clipboard.writeText(createdAdminInfo.email)}
+                              className="p-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground"
+                              title="نسخ"
+                            >
+                              <Copy className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground min-w-[80px]">كلمة المرور:</span>
+                            <code className="text-sm bg-background px-3 py-1 rounded-lg flex-1">
+                              {showPassword ? createdAdminInfo.password : '••••••••'}
+                            </code>
+                            <button
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="p-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground"
+                              title={showPassword ? 'إخفاء' : 'إظهار'}
+                            >
+                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                            <button
+                              onClick={() => navigator.clipboard.writeText(createdAdminInfo.password)}
+                              className="p-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground"
+                              title="نسخ"
+                            >
+                              <Copy className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                        <Button
+                          onClick={() => { setCreatedAdminInfo(null); setShowAddAdmin(false); }}
+                          variant="outline"
+                          size="sm"
+                          className="rounded-xl mt-2"
+                        >
+                          إغلاق
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <Input
+                          placeholder="اسم المشرف"
+                          value={newAdminName}
+                          onChange={e => setNewAdminName(e.target.value)}
+                          className="rounded-xl"
+                          dir="auto"
+                        />
+                        <Input
+                          placeholder="البريد الإلكتروني"
+                          type="email"
+                          value={newAdminEmail}
+                          onChange={e => setNewAdminEmail(e.target.value)}
+                          className="rounded-xl"
+                          dir="ltr"
+                        />
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="كلمة المرور (6 أحرف على الأقل)"
+                            type={showPassword ? 'text' : 'password'}
+                            value={newAdminPassword}
+                            onChange={e => setNewAdminPassword(e.target.value)}
+                            className="rounded-xl flex-1"
+                            dir="ltr"
+                          />
+                          <button
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="p-2 rounded-xl hover:bg-muted/50 text-muted-foreground"
+                            type="button"
+                          >
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                          <Button
+                            onClick={handleCreateAdmin}
+                            disabled={creatingAdmin || !newAdminEmail || !newAdminPassword || !newAdminName}
+                            className="rounded-xl"
+                            size="sm"
+                          >
+                            {creatingAdmin ? <Loader2 className="w-4 h-4 animate-spin" /> : 'إنشاء'}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="relative">
                   <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <Input
