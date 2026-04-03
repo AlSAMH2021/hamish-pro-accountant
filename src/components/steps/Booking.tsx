@@ -15,6 +15,30 @@ const Booking = () => {
   const { setBooking, setCurrentStep, updateUserStatus, booking } = useApp();
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [slotsData, setSlotsData] = useState<SlotData[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(true);
+
+  useEffect(() => {
+    const fetchSlots = async () => {
+      const { data } = await supabase
+        .from('available_slots')
+        .select('date, day_name, time')
+        .eq('is_active', true)
+        .order('date', { ascending: true });
+      setSlotsData((data as SlotData[]) || []);
+      setLoadingSlots(false);
+    };
+    fetchSlots();
+  }, []);
+
+  // Group slots by date
+  const SLOTS = Object.values(
+    slotsData.reduce((acc, slot) => {
+      if (!acc[slot.date]) acc[slot.date] = { date: slot.date, day: slot.day_name, times: [] };
+      acc[slot.date].times.push(slot.time);
+      return acc;
+    }, {} as Record<string, { date: string; day: string; times: string[] }>)
+  );
 
   const handleBook = () => {
     setBooking({ date: selectedDate, time: selectedTime, bookedAt: new Date().toISOString() });
