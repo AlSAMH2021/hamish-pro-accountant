@@ -1,5 +1,6 @@
 import { AppProvider, useApp } from '@/context/AppContext';
 import Landing from '@/components/steps/Landing';
+import Login from '@/components/steps/Login';
 import Registration from '@/components/steps/Registration';
 import Briefing from '@/components/steps/Briefing';
 import Payment from '@/components/steps/Payment';
@@ -13,6 +14,7 @@ const StepRenderer = () => {
   switch (currentStep) {
     case 1: return <Landing />;
     case 2: return <Registration />;
+    case 9: return <Login />;
     case 3: return <Briefing />;
     case 4: return <Payment />;
     case 5: return <ExamEngine />;

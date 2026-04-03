@@ -108,6 +108,19 @@ const Registration = () => {
           <Button type="submit" className="w-full h-14 text-lg font-bold bg-gradient-primary text-primary-foreground rounded-xl">
             إنشاء الحساب
           </Button>
+
+          <div className="text-center pt-2">
+            <p className="text-muted-foreground text-sm">
+              لديك حساب بالفعل؟{' '}
+              <button
+                type="button"
+                onClick={() => setCurrentStep(9)}
+                className="text-primary font-medium hover:underline"
+              >
+                تسجيل الدخول
+              </button>
+            </p>
+          </div>
         </form>
       </div>
     </div>

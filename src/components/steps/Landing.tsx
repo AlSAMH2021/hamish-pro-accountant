@@ -26,12 +26,21 @@ const Landing = () => {
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 max-w-2xl mx-auto">
             اختبار متخصص حسب قطاعك + تقرير تفصيلي + جلسة استشارية مع خبراء المحاسبة
           </p>
-          <Button
-            onClick={() => setCurrentStep(2)}
-            className="h-14 px-10 text-lg font-bold bg-gradient-gold hover:opacity-90 text-accent-foreground rounded-xl animate-pulse-glow"
-          >
-            ابدأ اختبار المحاسبين ←
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button
+              onClick={() => setCurrentStep(2)}
+              className="h-14 px-10 text-lg font-bold bg-gradient-gold hover:opacity-90 text-accent-foreground rounded-xl animate-pulse-glow"
+            >
+              ابدأ اختبار المحاسبين ←
+            </Button>
+            <Button
+              onClick={() => setCurrentStep(9)}
+              variant="outline"
+              className="h-14 px-10 text-lg font-bold border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 rounded-xl"
+            >
+              تسجيل الدخول
+            </Button>
+          </div>
           <p className="mt-4 text-primary-foreground/50 text-sm">
             عدد المقاعد الاستشارية محدود — سجّل الآن
           </p>
