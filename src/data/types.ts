@@ -9,6 +9,7 @@ export interface Question {
   options: string[];
   axis: Axis;
   sector: string;
+  explanation: string;
 }
 
 export interface UserData {

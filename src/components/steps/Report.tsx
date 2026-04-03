@@ -2,7 +2,7 @@ import { useApp } from '@/context/AppContext';
 import DashboardLayout from '@/components/DashboardLayout';
 import { AXES, AXIS_RECOMMENDATIONS, SECTOR_LABELS, getPerformanceColor } from '@/data/types';
 import { getQuestionsBySetor, correctAnswers } from '@/data/questions';
-import { CheckCircle, XCircle, Share2, FileText, Award, Lock, CalendarDays } from 'lucide-react';
+import { CheckCircle, XCircle, Share2, FileText, Award, CalendarDays, BookOpen, TrendingUp, AlertTriangle, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Report = () => {
@@ -59,33 +59,58 @@ const Report = () => {
   const questions = getQuestionsBySetor(user.sector);
   const correct = correctAnswers[user.sector];
   const failedAxes = AXES.filter(({ key }) => !axisPassed[key]);
+  const correctCount = questions.filter((_, i) => answers[i] === correct[i]).length;
+  const wrongCount = questions.length - correctCount;
   const shareText = `أتممت تقييم هامش للمحاسبين\nمستواي: ${performanceLevel}\nالنتيجة: ${totalScore}/45`;
 
   return (
     <DashboardLayout activePage="report">
-      <div className="max-w-3xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="bg-card rounded-2xl shadow-elevated p-6">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center">
-                <Award className="w-7 h-7 text-accent" />
+      <div className="max-w-4xl mx-auto space-y-8">
+
+        {/* Hero Header */}
+        <div className="relative overflow-hidden bg-card rounded-3xl shadow-elevated p-8">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-l from-primary via-accent to-primary" />
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <Award className="w-8 h-8 text-primary" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">تقرير الأداء</h1>
-                <p className="text-muted-foreground text-sm">هامش — تقييم المحاسبين</p>
+                <h1 className="text-2xl font-bold text-foreground">تقرير الأداء التفصيلي</h1>
+                <p className="text-muted-foreground text-sm mt-1">هامش — تقييم المحاسبين • {SECTOR_LABELS[user.sector]}</p>
               </div>
             </div>
-            <div className={`text-center px-5 py-3 rounded-2xl ${passed ? 'bg-success/10' : 'bg-destructive/10'}`}>
-              <p className="text-2xl font-bold text-foreground">{totalScore}/45</p>
-              <p className={`text-sm font-bold ${getPerformanceColor(performanceLevel)}`}>{performanceLevel}</p>
+            <div className={`text-center px-8 py-4 rounded-2xl border-2 ${passed ? 'border-success/30 bg-success/5' : 'border-destructive/30 bg-destructive/5'}`}>
+              <p className="text-3xl font-bold text-foreground">{totalScore}<span className="text-lg text-muted-foreground">/45</span></p>
+              <p className={`text-sm font-bold mt-1 ${getPerformanceColor(performanceLevel)}`}>{performanceLevel}</p>
             </div>
           </div>
         </div>
 
-        {/* User Info */}
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'الإجابات الصحيحة', value: correctCount, icon: <CheckCircle className="w-5 h-5" />, color: 'text-success', bg: 'bg-success/10' },
+            { label: 'الإجابات الخاطئة', value: wrongCount, icon: <XCircle className="w-5 h-5" />, color: 'text-destructive', bg: 'bg-destructive/10' },
+            { label: 'المحاور الناجحة', value: AXES.filter(a => axisPassed[a.key]).length, icon: <TrendingUp className="w-5 h-5" />, color: 'text-primary', bg: 'bg-primary/10' },
+            { label: 'تحتاج تطوير', value: failedAxes.length, icon: <AlertTriangle className="w-5 h-5" />, color: 'text-warning', bg: 'bg-warning/10' },
+          ].map((stat, i) => (
+            <div key={i} className="bg-card rounded-2xl shadow-card p-5 text-center">
+              <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mx-auto mb-3 ${stat.color}`}>
+                {stat.icon}
+              </div>
+              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* User Info Card */}
         <div className="bg-card rounded-2xl shadow-card p-6">
-          <h2 className="text-lg font-bold text-foreground mb-4">بيانات المتقدم</h2>
+          <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-primary" />
+            بيانات المتقدم
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {[
               ['الاسم', user.name],
@@ -97,7 +122,7 @@ const Report = () => {
             ].map(([label, value]) => (
               <div key={label} className="bg-muted/30 rounded-xl p-3">
                 <p className="text-muted-foreground text-xs">{label}</p>
-                <p className="text-foreground font-medium text-sm">{value}</p>
+                <p className="text-foreground font-medium text-sm mt-0.5">{value}</p>
               </div>
             ))}
           </div>
@@ -105,89 +130,151 @@ const Report = () => {
 
         {/* Axis Breakdown */}
         <div className="bg-card rounded-2xl shadow-card p-6">
-          <h2 className="text-lg font-bold text-foreground mb-5">تفاصيل المحاور</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-right p-3 text-muted-foreground font-medium">المحور</th>
-                  <th className="text-center p-3 text-muted-foreground font-medium">الدرجة</th>
-                  <th className="text-center p-3 text-muted-foreground font-medium">الحالة</th>
-                  <th className="text-right p-3 text-muted-foreground font-medium">التوصية</th>
-                </tr>
-              </thead>
-              <tbody>
-                {AXES.map(({ key, label, icon }) => {
-                  const score = axisScores[key];
-                  const ap = axisPassed[key];
-                  const rec = AXIS_RECOMMENDATIONS[key];
-                  return (
-                    <tr key={key} className="border-b border-border/50">
-                      <td className="p-3 font-medium text-foreground">{icon} {label}</td>
-                      <td className="p-3 text-center font-bold text-foreground">{score}/9</td>
-                      <td className="p-3 text-center">
-                        {ap ? <CheckCircle className="w-5 h-5 text-success mx-auto" /> : <XCircle className="w-5 h-5 text-destructive mx-auto" />}
-                      </td>
-                      <td className="p-3 text-muted-foreground text-xs">
-                        {ap ? '—' : `${rec.course} (${rec.hours} ساعة)`}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Questions Review */}
-        <div className="bg-card rounded-2xl shadow-card p-6">
-          <h2 className="text-lg font-bold text-foreground mb-5">مراجعة الأسئلة</h2>
+          <h2 className="text-base font-bold text-foreground mb-5 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-primary" />
+            تحليل المحاور
+          </h2>
           <div className="space-y-3">
-            {questions.map((q, i) => {
-              const userAnswer = answers[i];
-              const correctAnswer = correct[i];
-              const isCorrect = userAnswer === correctAnswer;
+            {AXES.map(({ key, label, icon }) => {
+              const score = axisScores[key];
+              const ap = axisPassed[key];
+              const pct = Math.round((score / 9) * 100);
               return (
-                <details key={i} className={`rounded-xl border-2 overflow-hidden ${isCorrect ? 'border-success/20' : 'border-destructive/20'}`}>
-                  <summary className={`p-4 cursor-pointer flex items-center gap-3 ${isCorrect ? 'bg-success/5' : 'bg-destructive/5'}`}>
-                    {isCorrect ? <CheckCircle className="w-4 h-4 text-success shrink-0" /> : <XCircle className="w-4 h-4 text-destructive shrink-0" />}
-                    <span className="text-foreground text-sm font-medium flex-1">{i + 1}. {q.text}</span>
-                  </summary>
-                  <div className="p-4 bg-card grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                    {q.options.map((opt, oi) => (
-                      <div
-                        key={oi}
-                        className={`px-3 py-2 rounded-lg ${
-                          oi === correctAnswer ? 'bg-success/15 text-success font-medium'
-                          : oi === userAnswer && !isCorrect ? 'bg-destructive/15 text-destructive line-through'
-                          : 'text-muted-foreground'
-                        }`}
-                      >
-                        {['أ', 'ب', 'ج', 'د'][oi]}. {opt}
-                      </div>
-                    ))}
+                <div key={key} className={`rounded-xl border p-4 ${ap ? 'border-success/20 bg-success/5' : 'border-destructive/20 bg-destructive/5'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">{icon}</span>
+                      <span className="font-medium text-foreground text-sm">{label}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-bold text-foreground">{score}/9</span>
+                      {ap ? <CheckCircle className="w-4 h-4 text-success" /> : <XCircle className="w-4 h-4 text-destructive" />}
+                    </div>
                   </div>
-                </details>
+                  <div className="w-full h-2 rounded-full bg-muted/50">
+                    <div
+                      className={`h-full rounded-full transition-all ${ap ? 'bg-success' : 'bg-destructive'}`}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  {!ap && (
+                    <p className="text-xs text-muted-foreground mt-2">
+                      📚 التوصية: {AXIS_RECOMMENDATIONS[key].course} ({AXIS_RECOMMENDATIONS[key].hours} ساعة)
+                    </p>
+                  )}
+                </div>
               );
             })}
           </div>
         </div>
 
+        {/* Questions Review by Axis */}
+        <div className="space-y-6">
+          <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+            <FileText className="w-5 h-5 text-primary" />
+            مراجعة تفصيلية للأسئلة
+          </h2>
+
+          {AXES.map(({ key, label, icon }) => {
+            const axisQuestions = questions
+              .map((q, i) => ({ q, i }))
+              .filter(({ q }) => q.axis === key);
+
+            return (
+              <div key={key} className="bg-card rounded-2xl shadow-card overflow-hidden">
+                <div className="px-6 py-4 border-b border-border bg-muted/20">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{icon}</span>
+                      <h3 className="font-bold text-foreground text-sm">{label}</h3>
+                    </div>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {axisQuestions.filter(({ i }) => answers[i] === correct[i]).length}/{axisQuestions.length} صحيح
+                    </span>
+                  </div>
+                </div>
+
+                <div className="divide-y divide-border/50">
+                  {axisQuestions.map(({ q, i }) => {
+                    const userAnswer = answers[i];
+                    const correctAnswer = correct[i];
+                    const isCorrect = userAnswer === correctAnswer;
+                    const letters = ['أ', 'ب', 'ج', 'د'];
+
+                    return (
+                      <div key={i} className="p-5">
+                        {/* Question Header */}
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isCorrect ? 'bg-success/15' : 'bg-destructive/15'}`}>
+                            {isCorrect
+                              ? <CheckCircle className="w-4 h-4 text-success" />
+                              : <XCircle className="w-4 h-4 text-destructive" />
+                            }
+                          </div>
+                          <p className="text-sm font-medium text-foreground leading-relaxed">{i + 1}. {q.text}</p>
+                        </div>
+
+                        {/* Options Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mr-10 mb-4">
+                          {q.options.map((opt, oi) => {
+                            const isCorrectOpt = oi === correctAnswer;
+                            const isUserWrong = oi === userAnswer && !isCorrect;
+                            return (
+                              <div
+                                key={oi}
+                                className={`px-3 py-2.5 rounded-lg text-sm flex items-center gap-2 ${
+                                  isCorrectOpt
+                                    ? 'bg-success/10 border border-success/30 text-success font-medium'
+                                    : isUserWrong
+                                    ? 'bg-destructive/10 border border-destructive/30 text-destructive line-through'
+                                    : 'bg-muted/20 text-muted-foreground border border-transparent'
+                                }`}
+                              >
+                                <span className={`w-5 h-5 rounded text-xs flex items-center justify-center shrink-0 ${
+                                  isCorrectOpt ? 'bg-success/20 text-success' : isUserWrong ? 'bg-destructive/20 text-destructive' : 'bg-muted/30 text-muted-foreground'
+                                }`}>
+                                  {letters[oi]}
+                                </span>
+                                {opt}
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Explanation */}
+                        <div className="mr-10 bg-primary/5 border border-primary/15 rounded-xl p-4">
+                          <div className="flex items-start gap-2">
+                            <Lightbulb className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                            <p className="text-xs text-muted-foreground leading-relaxed">{q.explanation}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
         {/* Dev Plan */}
         {failedAxes.length > 0 && (
           <div className="bg-card rounded-2xl shadow-card p-6">
-            <h2 className="text-lg font-bold text-foreground mb-5">خطة التطوير المهني</h2>
+            <h2 className="text-base font-bold text-foreground mb-5 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-primary" />
+              خطة التطوير المهني
+            </h2>
             <div className="space-y-3">
               {failedAxes.map(({ key, label, icon }) => {
                 const rec = AXIS_RECOMMENDATIONS[key];
                 return (
-                  <div key={key} className="flex items-center gap-4 bg-warning/10 rounded-xl p-4">
+                  <div key={key} className="flex items-center gap-4 bg-warning/5 border border-warning/20 rounded-xl p-4">
                     <span className="text-2xl">{icon}</span>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-foreground text-sm">{label}</p>
-                      <p className="text-muted-foreground text-xs">{rec.course}</p>
+                      <p className="text-muted-foreground text-xs mt-0.5">{rec.course}</p>
                     </div>
-                    <div className="text-left shrink-0">
+                    <div className="text-left shrink-0 bg-warning/10 px-3 py-1.5 rounded-lg">
                       <p className="font-bold text-foreground text-sm">{rec.hours} ساعة</p>
                     </div>
                   </div>
@@ -199,12 +286,12 @@ const Report = () => {
 
         {/* Share */}
         <div className="bg-card rounded-2xl shadow-card p-6 text-center">
-          <h2 className="text-lg font-bold text-foreground mb-4">شارك إنجازك</h2>
+          <h2 className="text-base font-bold text-foreground mb-4">شارك إنجازك</h2>
           <div className="flex gap-3 justify-center">
             <Button
               onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin)}&summary=${encodeURIComponent(shareText)}`, '_blank')}
               variant="outline"
-              className="gap-2"
+              className="gap-2 rounded-xl"
             >
               <Share2 className="w-4 h-4" />
               LinkedIn
@@ -212,7 +299,7 @@ const Report = () => {
             <Button
               onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank')}
               variant="outline"
-              className="gap-2"
+              className="gap-2 rounded-xl"
             >
               <Share2 className="w-4 h-4" />
               X
