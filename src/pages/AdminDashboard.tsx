@@ -78,16 +78,18 @@ const AdminDashboard = () => {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [p, e, b, r] = await Promise.all([
+    const [p, e, b, r, s] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('exam_results').select('id, user_id, total_score, performance_level, passed, completed_at').order('completed_at', { ascending: false }),
       supabase.from('bookings').select('*').order('booked_at', { ascending: false }),
       supabase.from('user_roles').select('user_id, role').eq('role', 'admin'),
+      supabase.from('available_slots').select('*').order('date', { ascending: true }),
     ]);
     setProfiles((p.data as ProfileRow[]) || []);
     setExams((e.data as ExamRow[]) || []);
     setBookings((b.data as BookingRow[]) || []);
     setAdminUserIds(new Set((r.data || []).map((row: any) => row.user_id)));
+    setSlots((s.data as SlotRow[]) || []);
     setLoading(false);
   }, []);
 
