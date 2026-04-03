@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import NotificationBell from '@/components/NotificationBell';
 
 type DashboardPage = 'briefing' | 'payment' | 'exam' | 'results' | 'booking' | 'report' | 'profile';
 
@@ -123,7 +124,7 @@ const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
             <h1 className="text-lg font-bold text-foreground">
               {navItems.find(n => n.id === activePage)?.label || 'لوحة التحكم'}
             </h1>
-            <div className="w-6" /> {/* spacer */}
+            <NotificationBell />
           </div>
         </header>
 

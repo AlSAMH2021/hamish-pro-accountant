@@ -9,6 +9,7 @@ import {
   Search, Trash2, Loader2, LogOut, Shield, TrendingUp,
   BookOpen, Clock, Link2, Send,
 } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 interface ProfileRow {
   id: string;
@@ -172,10 +173,13 @@ const AdminDashboard = () => {
               <p className="text-xs text-muted-foreground">هامش — إدارة التقييمات</p>
             </div>
           </div>
-          <Button onClick={async () => { await supabase.auth.signOut(); navigate('/'); }} variant="outline" size="sm" className="rounded-xl gap-2">
-            <LogOut className="w-4 h-4" />
-            تسجيل الخروج
-          </Button>
+          <div className="flex items-center gap-3">
+            <NotificationBell />
+            <Button onClick={async () => { await supabase.auth.signOut(); navigate('/'); }} variant="outline" size="sm" className="rounded-xl gap-2">
+              <LogOut className="w-4 h-4" />
+              تسجيل الخروج
+            </Button>
+          </div>
         </div>
       </header>
 
