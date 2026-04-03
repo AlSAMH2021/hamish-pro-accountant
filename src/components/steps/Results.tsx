@@ -2,13 +2,33 @@ import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/components/DashboardLayout';
 import { AXES, getPerformanceColor } from '@/data/types';
-import { CheckCircle, XCircle, Trophy, ArrowLeft } from 'lucide-react';
+import { CheckCircle, XCircle, Trophy, ArrowLeft, Share2, Download } from 'lucide-react';
+import badgeImage from '@/assets/badge-passed.png';
+import { useRef } from 'react';
 
 const Results = () => {
-  const { examResult, setCurrentStep } = useApp();
+  const { examResult, user, setCurrentStep } = useApp();
+  const badgeRef = useRef<HTMLDivElement>(null);
   if (!examResult) return null;
 
   const { totalScore, performanceLevel, passed, axisScores, axisPassed } = examResult;
+
+  const shareText = `🏅 أتممت تقييم هامش للمحاسبين بنجاح!\nمستواي: ${performanceLevel}\nالنتيجة: ${totalScore}/45\n\n#هامش #محاسبة #تقييم_مهني`;
+  const shareUrl = window.location.origin;
+
+  const shareLinkedIn = () => {
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(shareText)}`,
+      '_blank'
+    );
+  };
+
+  const shareTwitter = () => {
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+      '_blank'
+    );
+  };
 
   return (
     <DashboardLayout activePage="results">
@@ -25,6 +45,40 @@ const Results = () => {
             {passed ? 'ناجح' : 'لم يجتز'}
           </div>
         </div>
+
+        {/* Badge & Share - Only if passed */}
+        {passed && (
+          <div className="bg-card rounded-2xl shadow-elevated p-8 text-center animate-fade-in-up">
+            <div ref={badgeRef} className="inline-block">
+              <div className="relative w-48 h-48 mx-auto mb-4">
+                <img
+                  src={badgeImage}
+                  alt="شارة اجتياز تقييم هامش"
+                  width={192}
+                  height={192}
+                  className="w-full h-full object-contain drop-shadow-lg"
+                />
+              </div>
+              <h2 className="text-xl font-bold text-foreground mb-1">🎉 مبارك الاجتياز!</h2>
+              {user && <p className="text-muted-foreground text-sm mb-1">{user.name}</p>}
+              <p className="text-muted-foreground text-xs mb-4">
+                تاريخ الاجتياز: {new Date(examResult.completedAt).toLocaleDateString('ar-SA')}
+              </p>
+            </div>
+
+            <p className="text-muted-foreground text-sm mb-5">شارك إنجازك مع شبكتك المهنية</p>
+            <div className="flex gap-3 justify-center flex-wrap">
+              <Button onClick={shareLinkedIn} variant="outline" className="gap-2 rounded-xl">
+                <Share2 className="w-4 h-4" />
+                مشاركة في LinkedIn
+              </Button>
+              <Button onClick={shareTwitter} variant="outline" className="gap-2 rounded-xl">
+                <Share2 className="w-4 h-4" />
+                مشاركة في X
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Axis Breakdown */}
         <div className="bg-card rounded-2xl shadow-card p-6">
