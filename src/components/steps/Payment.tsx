@@ -27,9 +27,30 @@ const Payment = () => {
     }, 2000);
   };
 
-  const handleTransferConfirm = () => {
-    setTransferConfirmed(true);
-    // Don't auto-approve — admin must verify the transfer first
+  const handleTransferConfirm = async () => {
+    setProcessing(true);
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return;
+
+      // Update profile status to pending_payment
+      await supabase
+        .from('profiles')
+        .update({ status: 'pending_payment' })
+        .eq('user_id', authUser.id);
+
+      // Notify admins to verify the transfer
+      await supabase.rpc('notify_admins', {
+        p_title: 'طلب تأكيد تحويل بنكي',
+        p_message: `${user?.name || 'مستخدم'} قام بتأكيد تحويل بنكي بمبلغ 299 ر.س — يرجى التحقق وتحديث حالة الدفع.`,
+      });
+
+      setTransferConfirmed(true);
+    } catch (err) {
+      console.error('Error confirming transfer:', err);
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const copyToClipboard = (text: string) => {
