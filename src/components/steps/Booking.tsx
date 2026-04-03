@@ -50,6 +50,21 @@ const Booking = () => {
                 <p className="text-foreground font-medium">{booking.time}</p>
               </div>
             </div>
+
+            {booking.sessionLink && (
+              <a
+                href={booking.sessionLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 rounded-xl bg-primary/5 border-2 border-primary/20 hover:border-primary/40 transition-all"
+              >
+                <Video className="w-5 h-5 text-primary shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">رابط الجلسة</p>
+                  <p className="text-primary font-medium text-sm truncate">{booking.sessionLink}</p>
+                </div>
+              </a>
+            )}
           </div>
         </div>
       </DashboardLayout>
