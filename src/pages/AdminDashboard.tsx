@@ -160,9 +160,9 @@ const AdminDashboard = () => {
               <p className="text-xs text-muted-foreground">هامش — إدارة التقييمات</p>
             </div>
           </div>
-          <Button onClick={() => navigate('/')} variant="outline" size="sm" className="rounded-xl gap-2">
-            <ArrowRight className="w-4 h-4" />
-            العودة
+          <Button onClick={async () => { await supabase.auth.signOut(); navigate('/'); }} variant="outline" size="sm" className="rounded-xl gap-2">
+            <LogOut className="w-4 h-4" />
+            تسجيل الخروج
           </Button>
         </div>
       </header>
