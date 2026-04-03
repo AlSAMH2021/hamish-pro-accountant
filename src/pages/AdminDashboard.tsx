@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Users, BarChart3, CalendarDays, CheckCircle, XCircle,
-  Search, Trash2, Loader2, ArrowRight, Shield, TrendingUp,
+  Search, Trash2, Loader2, LogOut, Shield, TrendingUp,
   BookOpen, Clock, Link2, Send,
 } from 'lucide-react';
 
