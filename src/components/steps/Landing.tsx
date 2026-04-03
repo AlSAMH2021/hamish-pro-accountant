@@ -1,6 +1,7 @@
 import { useApp } from '@/context/AppContext';
 import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logoWhite from '@/assets/logo-white.png';
 
 const Landing = () => {
   const { setCurrentStep } = useApp();
