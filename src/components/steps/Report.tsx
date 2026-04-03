@@ -8,27 +8,44 @@ import { Button } from '@/components/ui/button';
 const Report = () => {
   const { user, examResult, booking, sessionCompleted, setCurrentStep } = useApp();
 
-  // Show locked state if session not completed
-  if (!sessionCompleted || !user || !examResult) {
+  if (!user || !examResult) {
     return (
       <DashboardLayout activePage="report">
         <div className="max-w-lg mx-auto text-center py-16 space-y-6">
           <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mx-auto">
-            <Lock className="w-10 h-10 text-muted-foreground" />
+            <FileText className="w-10 h-10 text-muted-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">التقرير غير متاح بعد</h1>
+          <h1 className="text-2xl font-bold text-foreground">لا يوجد تقرير</h1>
+          <p className="text-muted-foreground">يرجى إكمال الاختبار أولاً.</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!sessionCompleted) {
+    return (
+      <DashboardLayout activePage="report">
+        <div className="max-w-lg mx-auto text-center py-16 space-y-6">
+          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+            <CalendarDays className="w-10 h-10 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground">التقرير قيد الإعداد</h1>
           <p className="text-muted-foreground leading-relaxed">
-            سيتم فتح التقرير التفصيلي بعد إتمام الجلسة الاستشارية مع المختص.
-            {booking ? (
-              <span className="block mt-2 text-sm">
-                موعد جلستك: <strong className="text-foreground">{booking.date} — {booking.time}</strong>
-              </span>
-            ) : (
-              <span className="block mt-2 text-sm">لم يتم حجز جلسة بعد.</span>
-            )}
+            سيتم عرض التقرير التفصيلي بعد إتمام الجلسة الاستشارية مع المختص.
           </p>
-          {!booking && examResult && (
-            <Button onClick={() => setCurrentStep(7)} className="gap-2 rounded-xl bg-gradient-gold text-accent-foreground">
+          {booking && (
+            <div className="bg-card rounded-2xl shadow-card p-5 text-right space-y-3 max-w-sm mx-auto">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
+                <CalendarDays className="w-5 h-5 text-primary shrink-0" />
+                <div>
+                  <p className="text-xs text-muted-foreground">موعد جلستك</p>
+                  <p className="text-foreground font-medium text-sm">{booking.date} — {booking.time}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          {!booking && (
+            <Button onClick={() => setCurrentStep(7)} className="gap-2 rounded-xl bg-gradient-primary text-primary-foreground">
               <CalendarDays className="w-4 h-4" />
               احجز جلستك الاستشارية
             </Button>
