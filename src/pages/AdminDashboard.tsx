@@ -333,6 +333,15 @@ const AdminDashboard = () => {
                               </td>
                               <td className="p-3 text-center">
                                 <button
+                                  onClick={() => handleToggleAdmin(p.user_id)}
+                                  className={`p-1.5 rounded-lg transition-colors ${adminUserIds.has(p.user_id) ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted/50'}`}
+                                  title={adminUserIds.has(p.user_id) ? 'إزالة صلاحية المشرف' : 'منح صلاحية المشرف'}
+                                >
+                                  <Shield className="w-4 h-4" />
+                                </button>
+                              </td>
+                              <td className="p-3 text-center">
+                                <button
                                   onClick={() => handleDeleteUser(p.user_id)}
                                   className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg transition-colors"
                                 >
