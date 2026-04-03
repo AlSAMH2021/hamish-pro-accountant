@@ -117,9 +117,7 @@ const Landing = () => {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
             <RevealText text="قيّم مستواك المحاسبي" delay={200} />
             <br />
-            <span className="text-gradient-gold">
-              <RevealText text="بدقة احترافية" delay={600} />
-            </span>
+            <RevealText text="بدقة احترافية" delay={600} goldGradient />
           </h1>
 
           <FadeUp delay={900}>
