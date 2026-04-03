@@ -185,6 +185,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      notify_admins: {
+        Args: { p_message: string; p_title: string }
+        Returns: undefined
+      }
+      notify_user: {
+        Args: { p_message: string; p_title: string; p_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"
