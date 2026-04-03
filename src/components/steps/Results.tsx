@@ -2,18 +2,29 @@ import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/components/DashboardLayout';
 import { AXES, getPerformanceColor } from '@/data/types';
-import { CheckCircle, XCircle, Trophy, ArrowLeft, Share2, Download } from 'lucide-react';
+import { CheckCircle, XCircle, Trophy, ArrowLeft, Download, Linkedin, Twitter } from 'lucide-react';
 import badgeImage from '@/assets/badge-passed.png';
-import { useRef } from 'react';
+import { useRef, useCallback } from 'react';
 
 const Results = () => {
   const { examResult, user, setCurrentStep } = useApp();
-  const badgeRef = useRef<HTMLDivElement>(null);
+  const badgeCardRef = useRef<HTMLDivElement>(null);
+
+  const downloadBadge = useCallback(() => {
+    const link = document.createElement('a');
+    link.href = badgeImage;
+    link.download = `hamesh-badge-${user?.name || 'certified'}.png`;
+    link.click();
+  }, [user]);
+
   if (!examResult) return null;
 
   const { totalScore, performanceLevel, passed, axisScores, axisPassed } = examResult;
+  const completionDate = new Date(examResult.completedAt).toLocaleDateString('ar-SA', {
+    year: 'numeric', month: 'long', day: 'numeric',
+  });
 
-  const shareText = `🏅 أتممت تقييم هامش للمحاسبين بنجاح!\nمستواي: ${performanceLevel}\nالنتيجة: ${totalScore}/45\n\n#هامش #محاسبة #تقييم_مهني`;
+  const shareText = `🏅 حصلت على شارة اجتياز تقييم هامش للمحاسبين المعتمدين!\nالمستوى: ${performanceLevel}\nالنتيجة: ${totalScore}/45\n\nتحقق من شارتي:\n`;
   const shareUrl = window.location.origin;
 
   const shareLinkedIn = () => {
@@ -30,52 +41,90 @@ const Results = () => {
     );
   };
 
+
   return (
     <DashboardLayout activePage="results">
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-3xl mx-auto space-y-8">
         {/* Score Hero */}
         <div className="bg-card rounded-2xl shadow-elevated p-8 text-center animate-fade-in-up">
-          <Trophy className={`w-16 h-16 mx-auto mb-4 ${passed ? 'text-success' : 'text-destructive'}`} />
-          <h1 className="text-4xl font-bold text-foreground mb-2">{totalScore} / 45</h1>
-          <p className={`text-xl font-bold mb-3 ${getPerformanceColor(performanceLevel)}`}>{performanceLevel}</p>
-          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
+          <Trophy className={`w-14 h-14 mx-auto mb-3 ${passed ? 'text-success' : 'text-destructive'}`} />
+          <h1 className="text-4xl font-bold text-foreground mb-1">{totalScore} / 45</h1>
+          <p className={`text-lg font-bold mb-3 ${getPerformanceColor(performanceLevel)}`}>{performanceLevel}</p>
+          <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold ${
             passed ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'
           }`}>
             {passed ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-            {passed ? 'ناجح' : 'لم يجتز'}
+            {passed ? 'ناجح — تم الاجتياز بنجاح' : 'لم يجتز — حاول مرة أخرى'}
           </div>
         </div>
 
-        {/* Badge & Share - Only if passed */}
+        {/* Credly-style Badge Card */}
         {passed && (
-          <div className="bg-card rounded-2xl shadow-elevated p-8 text-center animate-fade-in-up">
-            <div ref={badgeRef} className="inline-block">
-              <div className="relative w-48 h-48 mx-auto mb-4">
-                <img
-                  src={badgeImage}
-                  alt="شارة اجتياز تقييم هامش"
-                  width={192}
-                  height={192}
-                  className="w-full h-full object-contain drop-shadow-lg"
-                />
-              </div>
-              <h2 className="text-xl font-bold text-foreground mb-1">🎉 مبارك الاجتياز!</h2>
-              {user && <p className="text-muted-foreground text-sm mb-1">{user.name}</p>}
-              <p className="text-muted-foreground text-xs mb-4">
-                تاريخ الاجتياز: {new Date(examResult.completedAt).toLocaleDateString('ar-SA')}
-              </p>
+          <div className="bg-card rounded-2xl shadow-elevated overflow-hidden animate-fade-in-up">
+            {/* Badge header band */}
+            <div className="bg-gradient-to-l from-[hsl(var(--brand-navy))] to-[hsl(var(--brand-navy)/0.85)] px-6 py-4">
+              <h2 className="text-white text-lg font-bold text-center">شارة اجتياز تقييم هامش</h2>
+              <p className="text-white/70 text-xs text-center mt-1">Hamesh Certified Accountant Assessment</p>
             </div>
 
-            <p className="text-muted-foreground text-sm mb-5">شارك إنجازك مع شبكتك المهنية</p>
-            <div className="flex gap-3 justify-center flex-wrap">
-              <Button onClick={shareLinkedIn} variant="outline" className="gap-2 rounded-xl">
-                <Share2 className="w-4 h-4" />
-                مشاركة في LinkedIn
-              </Button>
-              <Button onClick={shareTwitter} variant="outline" className="gap-2 rounded-xl">
-                <Share2 className="w-4 h-4" />
-                مشاركة في X
-              </Button>
+            <div ref={badgeCardRef} className="p-8 flex flex-col items-center">
+              {/* Badge image */}
+              <div className="w-52 h-52 mb-6">
+                <img
+                  src={badgeImage}
+                  alt="شارة اجتياز تقييم هامش المعتمد"
+                  width={512}
+                  height={512}
+                  className="w-full h-full object-contain drop-shadow-xl"
+                />
+              </div>
+
+              {/* Credential details */}
+              <div className="text-center space-y-2 mb-6 w-full max-w-sm">
+                <h3 className="text-xl font-bold text-foreground">تقييم هامش للمحاسبين</h3>
+                <p className="text-muted-foreground text-sm">Hamesh Accountant Assessment</p>
+                
+                <div className="border border-border rounded-xl p-4 mt-4 space-y-3 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">الحاصل على الشارة</span>
+                    <span className="font-semibold text-foreground">{user?.name || '—'}</span>
+                  </div>
+                  <div className="border-t border-border" />
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">تاريخ الاجتياز</span>
+                    <span className="font-semibold text-foreground">{completionDate}</span>
+                  </div>
+                  <div className="border-t border-border" />
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">المستوى</span>
+                    <span className={`font-bold ${getPerformanceColor(performanceLevel)}`}>{performanceLevel}</span>
+                  </div>
+                  <div className="border-t border-border" />
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">الدرجة</span>
+                    <span className="font-bold text-foreground">{totalScore}/45</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Share & Download buttons */}
+              <div className="w-full max-w-sm space-y-3">
+                <p className="text-muted-foreground text-xs text-center">شارك إنجازك مع شبكتك المهنية</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button onClick={shareLinkedIn} variant="outline" className="gap-2 rounded-xl h-11">
+                    <Linkedin className="w-4 h-4 text-[#0A66C2]" />
+                    LinkedIn
+                  </Button>
+                  <Button onClick={shareTwitter} variant="outline" className="gap-2 rounded-xl h-11">
+                    <Twitter className="w-4 h-4" />
+                    X (Twitter)
+                  </Button>
+                </div>
+                <Button onClick={downloadBadge} variant="secondary" className="w-full gap-2 rounded-xl h-11">
+                  <Download className="w-4 h-4" />
+                  تحميل الشارة
+                </Button>
+              </div>
             </div>
           </div>
         )}
