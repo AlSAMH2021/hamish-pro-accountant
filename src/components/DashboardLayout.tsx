@@ -21,7 +21,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
-  const { user, setCurrentStep, examResult, booking } = useApp();
+  const { user, setCurrentStep, examResult, booking, sessionCompleted } = useApp();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
@@ -34,7 +34,7 @@ const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
     { id: 'exam', label: 'الاختبار', icon: <BarChart3 className="w-5 h-5" />, step: 5, disabled: !user?.paymentStatus || !!examResult },
     { id: 'results', label: 'النتائج', icon: <BarChart3 className="w-5 h-5" />, step: 6, disabled: !examResult },
     { id: 'booking', label: 'حجز الجلسة', icon: <CalendarDays className="w-5 h-5" />, step: 7, disabled: !examResult },
-    { id: 'report', label: 'التقرير', icon: <FileText className="w-5 h-5" />, step: 8, disabled: !booking },
+    { id: 'report', label: 'التقرير', icon: <FileText className="w-5 h-5" />, step: 8, disabled: !sessionCompleted },
     { id: 'profile', label: 'الملف الشخصي', icon: <User className="w-5 h-5" />, step: 10 },
   ];
 
