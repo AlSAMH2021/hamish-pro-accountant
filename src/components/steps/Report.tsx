@@ -66,6 +66,43 @@ const Report = () => {
   const failedAxes = AXES.filter(({ key }) => !axisPassed[key]);
   const correctCount = questions.filter((_, i) => answers[i] === correct[i]).length;
   const wrongCount = questions.length - correctCount;
+  const radarChartData = [
+    {
+      shortLabel: 'المالية',
+      fullLabel: 'المحاسبة المالية',
+      icon: '📊',
+      score: axisScores['financial'],
+      fullMark: 9,
+    },
+    {
+      shortLabel: 'التكاليف',
+      fullLabel: 'محاسبة التكاليف',
+      icon: '💰',
+      score: axisScores['cost'],
+      fullMark: 9,
+    },
+    {
+      shortLabel: 'الضرائب',
+      fullLabel: 'الضرائب والزكاة',
+      icon: '🧾',
+      score: axisScores['tax'],
+      fullMark: 9,
+    },
+    {
+      shortLabel: 'التشريعات',
+      fullLabel: 'التشريعات والأنظمة',
+      icon: '⚖️',
+      score: axisScores['regulations'],
+      fullMark: 9,
+    },
+    {
+      shortLabel: 'IFRS',
+      fullLabel: 'المعايير الدولية IFRS',
+      icon: '🌐',
+      score: axisScores['ifrs'],
+      fullMark: 9,
+    },
+  ];
   const shareText = `أتممت تقييم هامش للمحاسبين\nمستواي: ${performanceLevel}\nالنتيجة: ${totalScore}/45`;
 
   return (
@@ -118,40 +155,48 @@ const Report = () => {
               <TrendingUp className="w-5 h-5 text-primary" />
               خريطة الكفاءات
             </h2>
-            <ResponsiveContainer width="100%" height={350}>
-              <RadarChart
-                data={AXES.map(({ key, label }) => ({
-                  axis: label,
-                  score: axisScores[key],
-                  fullMark: 9,
-                }))}
-                cx="50%"
-                cy="50%"
-                outerRadius="45%"
-                margin={{ top: 30, right: 40, bottom: 30, left: 40 }}
-              >
-                <PolarGrid stroke="hsl(var(--border))" />
-                <PolarAngleAxis
-                  dataKey="axis"
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11, dy: 4 }}
-                  tickLine={false}
-                />
-                <PolarRadiusAxis
-                  angle={90}
-                  domain={[0, 9]}
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
-                  tickCount={4}
-                />
-                <Radar
-                  name="الدرجة"
-                  dataKey="score"
-                  stroke="hsl(var(--primary))"
-                  fill="hsl(var(--primary))"
-                  fillOpacity={0.25}
-                  strokeWidth={2}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
+            <div className="space-y-4">
+              <ResponsiveContainer width="100%" height={320}>
+                <RadarChart
+                  data={radarChartData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius="52%"
+                >
+                  <PolarGrid stroke="hsl(var(--border))" />
+                  <PolarAngleAxis
+                    dataKey="shortLabel"
+                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                    tickLine={false}
+                  />
+                  <PolarRadiusAxis
+                    angle={90}
+                    domain={[0, 9]}
+                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                    tickCount={4}
+                  />
+                  <Radar
+                    name="الدرجة"
+                    dataKey="score"
+                    stroke="hsl(var(--primary))"
+                    fill="hsl(var(--primary))"
+                    fillOpacity={0.25}
+                    strokeWidth={2}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {radarChartData.map((axis) => (
+                  <div key={axis.shortLabel} className="flex items-start gap-3 rounded-xl bg-muted/30 px-3 py-2">
+                    <span className="mt-0.5 text-base leading-none">{axis.icon}</span>
+                    <div className="space-y-0.5">
+                      <p className="text-sm font-medium text-foreground">{axis.shortLabel}</p>
+                      <p className="text-xs leading-relaxed text-muted-foreground">{axis.fullLabel}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Bar Chart */}
