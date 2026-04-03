@@ -125,6 +125,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
             date: bookingData.date,
             time: bookingData.time,
             bookedAt: bookingData.booked_at,
+            sessionLink: bookingData.session_link || undefined,
           });
           setSessionCompleted(bookingData.session_completed);
         }
