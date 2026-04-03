@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      available_slots: {
+        Row: {
+          created_at: string
+          date: string
+          day_name: string
+          id: string
+          is_active: boolean
+          time: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          day_name: string
+          id?: string
+          is_active?: boolean
+          time: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          day_name?: string
+          id?: string
+          is_active?: boolean
+          time?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           booked_at: string

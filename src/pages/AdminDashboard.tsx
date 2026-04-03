@@ -43,7 +43,15 @@ interface BookingRow {
   booked_at: string;
 }
 
-type Tab = 'stats' | 'users' | 'bookings';
+type Tab = 'stats' | 'users' | 'bookings' | 'slots';
+
+interface SlotRow {
+  id: string;
+  date: string;
+  day_name: string;
+  time: string;
+  is_active: boolean;
+}
 
 const SECTOR_MAP: Record<string, string> = {
   tourism: 'السياحة والفنادق',
@@ -62,19 +70,26 @@ const AdminDashboard = () => {
   const [search, setSearch] = useState('');
   const [linkInputs, setLinkInputs] = useState<Record<string, string>>({});
   const [adminUserIds, setAdminUserIds] = useState<Set<string>>(new Set());
+  const [slots, setSlots] = useState<SlotRow[]>([]);
+  const [newSlotDate, setNewSlotDate] = useState('');
+  const [newSlotDay, setNewSlotDay] = useState('');
+  const [newSlotTime, setNewSlotTime] = useState('');
+  const [addingSlot, setAddingSlot] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [p, e, b, r] = await Promise.all([
+    const [p, e, b, r, s] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('exam_results').select('id, user_id, total_score, performance_level, passed, completed_at').order('completed_at', { ascending: false }),
       supabase.from('bookings').select('*').order('booked_at', { ascending: false }),
       supabase.from('user_roles').select('user_id, role').eq('role', 'admin'),
+      supabase.from('available_slots').select('*').order('date', { ascending: true }),
     ]);
     setProfiles((p.data as ProfileRow[]) || []);
     setExams((e.data as ExamRow[]) || []);
     setBookings((b.data as BookingRow[]) || []);
     setAdminUserIds(new Set((r.data || []).map((row: any) => row.user_id)));
+    setSlots((s.data as SlotRow[]) || []);
     setLoading(false);
   }, []);
 
@@ -157,10 +172,47 @@ const AdminDashboard = () => {
     loadData();
   };
 
+  const DAY_NAMES = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+  const handleAddSlot = async () => {
+    if (!newSlotDate || !newSlotTime) return;
+    setAddingSlot(true);
+    const dateObj = new Date(newSlotDate + 'T00:00:00');
+    const dayName = newSlotDay || DAY_NAMES[dateObj.getDay()];
+    await supabase.from('available_slots').insert({
+      date: newSlotDate,
+      day_name: dayName,
+      time: newSlotTime,
+    } as any);
+    setNewSlotDate('');
+    setNewSlotTime('');
+    setNewSlotDay('');
+    setAddingSlot(false);
+    loadData();
+  };
+
+  const handleDeleteSlot = async (slotId: string) => {
+    await supabase.from('available_slots').delete().eq('id', slotId);
+    loadData();
+  };
+
+  const handleToggleSlot = async (slotId: string, currentActive: boolean) => {
+    await supabase.from('available_slots').update({ is_active: !currentActive } as any).eq('id', slotId);
+    loadData();
+  };
+
+  // Group slots by date
+  const slotsByDate = slots.reduce((acc, slot) => {
+    if (!acc[slot.date]) acc[slot.date] = { day_name: slot.day_name, slots: [] };
+    acc[slot.date].slots.push(slot);
+    return acc;
+  }, {} as Record<string, { day_name: string; slots: SlotRow[] }>);
+
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'stats', label: 'الإحصائيات', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'users', label: 'المستخدمين', icon: <Users className="w-4 h-4" /> },
     { id: 'bookings', label: 'الجلسات', icon: <CalendarDays className="w-4 h-4" /> },
+    { id: 'slots', label: 'المواعيد المتاحة', icon: <Clock className="w-4 h-4" /> },
   ];
 
   return (
@@ -452,6 +504,111 @@ const AdminDashboard = () => {
                     </table>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Slots Management Tab */}
+            {tab === 'slots' && (
+              <div className="space-y-6">
+                {/* Add new slot */}
+                <div className="bg-card rounded-2xl shadow-card p-6">
+                  <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                    <CalendarDays className="w-5 h-5 text-primary" />
+                    إضافة موعد جديد
+                  </h3>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1">
+                      <label className="text-xs text-muted-foreground mb-1 block">التاريخ</label>
+                      <Input
+                        type="date"
+                        value={newSlotDate}
+                        onChange={e => {
+                          setNewSlotDate(e.target.value);
+                          const d = new Date(e.target.value + 'T00:00:00');
+                          setNewSlotDay(DAY_NAMES[d.getDay()] || '');
+                        }}
+                        className="h-11 rounded-xl"
+                      />
+                      {newSlotDay && (
+                        <p className="text-xs text-primary mt-1">{newSlotDay}</p>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-xs text-muted-foreground mb-1 block">الوقت</label>
+                      <Input
+                        type="time"
+                        value={newSlotTime}
+                        onChange={e => setNewSlotTime(e.target.value)}
+                        className="h-11 rounded-xl"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Button
+                        onClick={handleAddSlot}
+                        disabled={!newSlotDate || !newSlotTime || addingSlot}
+                        className="h-11 px-6 rounded-xl"
+                      >
+                        {addingSlot ? <Loader2 className="w-4 h-4 animate-spin" /> : 'إضافة'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Existing slots grouped by date */}
+                {Object.keys(slotsByDate).length === 0 ? (
+                  <div className="bg-card rounded-2xl shadow-card p-8 text-center">
+                    <CalendarDays className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-muted-foreground">لا توجد مواعيد متاحة حالياً</p>
+                  </div>
+                ) : (
+                  Object.entries(slotsByDate)
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([date, { day_name, slots: dateSlots }]) => (
+                      <div key={date} className="bg-card rounded-2xl shadow-card p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <CalendarDays className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-foreground">{day_name}</h3>
+                            <p className="text-xs text-muted-foreground">{date}</p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                          {dateSlots.map(slot => (
+                            <div
+                              key={slot.id}
+                              className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
+                                slot.is_active ? 'border-primary/20 bg-primary/5' : 'border-border bg-muted/30 opacity-60'
+                              }`}
+                            >
+                              <span className={`font-bold text-sm ${slot.is_active ? 'text-foreground' : 'text-muted-foreground'}`}>
+                                {slot.time}
+                              </span>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => handleToggleSlot(slot.id, slot.is_active)}
+                                  className={`p-1 rounded-lg transition-colors ${
+                                    slot.is_active ? 'text-success hover:bg-success/10' : 'text-muted-foreground hover:bg-muted/50'
+                                  }`}
+                                  title={slot.is_active ? 'تعطيل' : 'تفعيل'}
+                                >
+                                  {slot.is_active ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteSlot(slot.id)}
+                                  className="text-destructive hover:bg-destructive/10 p-1 rounded-lg transition-colors"
+                                  title="حذف"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                )}
               </div>
             )}
           </>

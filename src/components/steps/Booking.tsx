@@ -1,20 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/components/DashboardLayout';
-import { Calendar, Clock, CheckCircle, Video } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, Video, Loader2 } from 'lucide-react';
 
-const SLOTS = [
-  { date: '2026-04-07', day: 'الإثنين', times: ['10:00', '11:00', '14:00', '16:00'] },
-  { date: '2026-04-08', day: 'الثلاثاء', times: ['09:00', '11:00', '13:00', '15:00'] },
-  { date: '2026-04-09', day: 'الأربعاء', times: ['10:00', '12:00', '14:00'] },
-  { date: '2026-04-10', day: 'الخميس', times: ['09:00', '11:00', '13:00'] },
-];
+interface SlotData {
+  date: string;
+  day_name: string;
+  time: string;
+}
 
 const Booking = () => {
   const { setBooking, setCurrentStep, updateUserStatus, booking } = useApp();
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [slotsData, setSlotsData] = useState<SlotData[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(true);
+
+  useEffect(() => {
+    const fetchSlots = async () => {
+      const { data } = await supabase
+        .from('available_slots')
+        .select('date, day_name, time')
+        .eq('is_active', true)
+        .order('date', { ascending: true });
+      setSlotsData((data as SlotData[]) || []);
+      setLoadingSlots(false);
+    };
+    fetchSlots();
+  }, []);
+
+  // Group slots by date
+  const SLOTS = Object.values(
+    slotsData.reduce((acc, slot) => {
+      if (!acc[slot.date]) acc[slot.date] = { date: slot.date, day: slot.day_name, times: [] };
+      acc[slot.date].times.push(slot.time);
+      return acc;
+    }, {} as Record<string, { date: string; day: string; times: string[] }>)
+  );
 
   const handleBook = () => {
     setBooking({ date: selectedDate, time: selectedTime, bookedAt: new Date().toISOString() });
@@ -79,60 +103,73 @@ const Booking = () => {
           <p className="text-muted-foreground text-sm">اختر الموعد المناسب لك مع خبير المحاسبة</p>
         </div>
 
-        <div className="bg-card rounded-2xl shadow-card p-6">
-          <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-primary" />
-            اختر اليوم
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {SLOTS.map((slot) => (
-              <button
-                key={slot.date}
-                onClick={() => { setSelectedDate(slot.date); setSelectedTime(''); }}
-                className={`p-4 rounded-xl border-2 text-center transition-all ${
-                  selectedDate === slot.date
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-primary/30'
-                }`}
-              >
-                <p className="font-bold text-foreground text-sm">{slot.day}</p>
-                <p className="text-xs text-muted-foreground mt-1">{slot.date.split('-').slice(1).join('/')}</p>
-              </button>
-            ))}
+        {loadingSlots ? (
+          <div className="bg-card rounded-2xl shadow-card p-8 flex justify-center">
+            <Loader2 className="w-6 h-6 text-primary animate-spin" />
           </div>
-        </div>
-
-        {selectedSlot && (
-          <div className="bg-card rounded-2xl shadow-card p-6 animate-fade-in-up">
-            <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary" />
-              اختر الوقت
-            </h3>
-            <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-              {selectedSlot.times.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setSelectedTime(time)}
-                  className={`p-3 rounded-xl border-2 text-center font-bold text-sm transition-all ${
-                    selectedTime === time
-                      ? 'border-primary bg-primary/5 text-foreground'
-                      : 'border-border text-muted-foreground hover:border-primary/30'
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
+        ) : SLOTS.length === 0 ? (
+          <div className="bg-card rounded-2xl shadow-card p-8 text-center">
+            <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+            <p className="text-muted-foreground">لا توجد مواعيد متاحة حالياً</p>
+          </div>
+        ) : (
+          <>
+            <div className="bg-card rounded-2xl shadow-card p-6">
+              <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-primary" />
+                اختر اليوم
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {SLOTS.map((slot) => (
+                  <button
+                    key={slot.date}
+                    onClick={() => { setSelectedDate(slot.date); setSelectedTime(''); }}
+                    className={`p-4 rounded-xl border-2 text-center transition-all ${
+                      selectedDate === slot.date
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border hover:border-primary/30'
+                    }`}
+                  >
+                    <p className="font-bold text-foreground text-sm">{slot.day}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{slot.date.split('-').slice(1).join('/')}</p>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
 
-        <Button
-          onClick={handleBook}
-          disabled={!selectedDate || !selectedTime}
-          className="w-full h-14 text-lg font-bold bg-gradient-primary text-primary-foreground rounded-xl disabled:opacity-50"
-        >
-          تأكيد الحجز
-        </Button>
+            {selectedSlot && (
+              <div className="bg-card rounded-2xl shadow-card p-6 animate-fade-in-up">
+                <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-primary" />
+                  اختر الوقت
+                </h3>
+                <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                  {selectedSlot.times.map((time) => (
+                    <button
+                      key={time}
+                      onClick={() => setSelectedTime(time)}
+                      className={`p-3 rounded-xl border-2 text-center font-bold text-sm transition-all ${
+                        selectedTime === time
+                          ? 'border-primary bg-primary/5 text-foreground'
+                          : 'border-border text-muted-foreground hover:border-primary/30'
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <Button
+              onClick={handleBook}
+              disabled={!selectedDate || !selectedTime}
+              className="w-full h-14 text-lg font-bold bg-gradient-primary text-primary-foreground rounded-xl disabled:opacity-50"
+            >
+              تأكيد الحجز
+            </Button>
+          </>
+        )}
       </div>
     </DashboardLayout>
   );
