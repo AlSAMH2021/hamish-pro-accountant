@@ -43,7 +43,15 @@ interface BookingRow {
   booked_at: string;
 }
 
-type Tab = 'stats' | 'users' | 'bookings';
+type Tab = 'stats' | 'users' | 'bookings' | 'slots';
+
+interface SlotRow {
+  id: string;
+  date: string;
+  day_name: string;
+  time: string;
+  is_active: boolean;
+}
 
 const SECTOR_MAP: Record<string, string> = {
   tourism: 'السياحة والفنادق',
