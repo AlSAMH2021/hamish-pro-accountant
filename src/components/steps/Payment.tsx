@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import DashboardLayout from '@/components/DashboardLayout';
-import { CreditCard, Shield, Building2, Copy, CheckCircle, ArrowLeft } from 'lucide-react';
+import { CreditCard, Shield, Building2, Copy, CheckCircle, ArrowLeft, Clock } from 'lucide-react';
 
 type PaymentMethod = 'transfer' | 'card' | null;
 
