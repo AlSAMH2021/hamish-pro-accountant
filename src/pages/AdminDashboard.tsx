@@ -378,6 +378,92 @@ const AdminDashboard = () => {
             {/* Users Tab */}
             {tab === 'users' && (
               <div className="space-y-4">
+                <div className="relative">
+                  <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="بحث بالاسم أو الشركة أو الجوال..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    className="pr-10 h-11 rounded-xl"
+                    dir="auto"
+                  />
+                </div>
+
+                <div className="bg-card rounded-2xl shadow-card overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border bg-muted/30">
+                          <th className="text-right p-3 font-medium text-muted-foreground">الاسم</th>
+                          <th className="text-right p-3 font-medium text-muted-foreground">الشركة</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">القطاع</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الدفع</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الاختبار</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">إجراءات</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredProfiles.map(p => {
+                          const exam = getUserExam(p.user_id);
+                          return (
+                            <tr key={p.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                              <td className="p-3">
+                                <p className="font-medium text-foreground">{p.name}</p>
+                                <p className="text-xs text-muted-foreground">{p.phone}</p>
+                              </td>
+                              <td className="p-3 text-muted-foreground">{p.company || '—'}</td>
+                              <td className="p-3 text-center text-xs">{SECTOR_MAP[p.sector] || p.sector}</td>
+                              <td className="p-3 text-center">
+                                {p.payment_status
+                                  ? <CheckCircle className="w-4 h-4 text-success mx-auto" />
+                                  : <XCircle className="w-4 h-4 text-muted-foreground mx-auto" />}
+                              </td>
+                              <td className="p-3 text-center">
+                                {exam ? (
+                                  <span className={`text-xs font-bold ${exam.passed ? 'text-success' : 'text-destructive'}`}>
+                                    {exam.total_score}/45
+                                  </span>
+                                ) : <span className="text-xs text-muted-foreground">—</span>}
+                              </td>
+                              <td className="p-3 text-center">
+                                <select
+                                  value={p.status}
+                                  onChange={e => handleUpdateStatus(p.user_id, e.target.value)}
+                                  className="text-xs bg-muted/50 border border-border rounded-lg px-2 py-1 text-foreground"
+                                >
+                                  <option value="registered">مسجل</option>
+                                  <option value="paid">دفع</option>
+                                  <option value="exam_completed">أكمل الاختبار</option>
+                                  <option value="booked">حجز جلسة</option>
+                                </select>
+                              </td>
+                              <td className="p-3 text-center">
+                                <button
+                                  onClick={() => handleDeleteUser(p.user_id)}
+                                  className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                        {filteredProfiles.length === 0 && (
+                          <tr>
+                            <td colSpan={7} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Admins Tab */}
+            {tab === 'admins' && (
+              <div className="space-y-4">
                 {/* Add Admin Button & Form */}
                 <div className="flex items-center gap-3">
                   <Button
@@ -490,17 +576,7 @@ const AdminDashboard = () => {
                   </div>
                 )}
 
-                <div className="relative">
-                  <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    placeholder="بحث بالاسم أو الشركة أو الجوال..."
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    className="pr-10 h-11 rounded-xl"
-                    dir="auto"
-                  />
-                </div>
-
+                {/* Admins List */}
                 <div className="bg-card rounded-2xl shadow-card overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -508,72 +584,43 @@ const AdminDashboard = () => {
                         <tr className="border-b border-border bg-muted/30">
                           <th className="text-right p-3 font-medium text-muted-foreground">الاسم</th>
                           <th className="text-right p-3 font-medium text-muted-foreground">الشركة</th>
-                          <th className="text-center p-3 font-medium text-muted-foreground">القطاع</th>
-                          <th className="text-center p-3 font-medium text-muted-foreground">الدفع</th>
-                          <th className="text-center p-3 font-medium text-muted-foreground">الاختبار</th>
-                          <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
-                          <th className="text-center p-3 font-medium text-muted-foreground">مشرف</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">تاريخ الإنشاء</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">إجراءات</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredProfiles.map(p => {
-                          const exam = getUserExam(p.user_id);
-                          return (
-                            <tr key={p.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
-                              <td className="p-3">
-                                <p className="font-medium text-foreground">{p.name}</p>
-                                <p className="text-xs text-muted-foreground">{p.phone}</p>
-                              </td>
-                              <td className="p-3 text-muted-foreground">{p.company || '—'}</td>
-                              <td className="p-3 text-center text-xs">{SECTOR_MAP[p.sector] || p.sector}</td>
-                              <td className="p-3 text-center">
-                                {p.payment_status
-                                  ? <CheckCircle className="w-4 h-4 text-success mx-auto" />
-                                  : <XCircle className="w-4 h-4 text-muted-foreground mx-auto" />}
-                              </td>
-                              <td className="p-3 text-center">
-                                {exam ? (
-                                  <span className={`text-xs font-bold ${exam.passed ? 'text-success' : 'text-destructive'}`}>
-                                    {exam.total_score}/45
-                                  </span>
-                                ) : <span className="text-xs text-muted-foreground">—</span>}
-                              </td>
-                              <td className="p-3 text-center">
-                                <select
-                                  value={p.status}
-                                  onChange={e => handleUpdateStatus(p.user_id, e.target.value)}
-                                  className="text-xs bg-muted/50 border border-border rounded-lg px-2 py-1 text-foreground"
-                                >
-                                  <option value="registered">مسجل</option>
-                                  <option value="paid">دفع</option>
-                                  <option value="exam_completed">أكمل الاختبار</option>
-                                  <option value="booked">حجز جلسة</option>
-                                </select>
-                              </td>
-                              <td className="p-3 text-center">
+                        {adminProfiles.map(p => (
+                          <tr key={p.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                            <td className="p-3">
+                              <p className="font-medium text-foreground">{p.name}</p>
+                              <p className="text-xs text-muted-foreground">{p.phone}</p>
+                            </td>
+                            <td className="p-3 text-muted-foreground">{p.company || '—'}</td>
+                            <td className="p-3 text-center text-xs text-muted-foreground">
+                              {new Date(p.created_at).toLocaleDateString('ar-SA')}
+                            </td>
+                            <td className="p-3 text-center">
+                              <div className="flex items-center justify-center gap-2">
                                 <button
                                   onClick={() => handleToggleAdmin(p.user_id)}
-                                  className={`p-1.5 rounded-lg transition-colors ${adminUserIds.has(p.user_id) ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted/50'}`}
-                                  title={adminUserIds.has(p.user_id) ? 'إزالة صلاحية المشرف' : 'منح صلاحية المشرف'}
+                                  className="text-warning hover:bg-warning/10 p-1.5 rounded-lg transition-colors"
+                                  title="إزالة صلاحية المشرف"
                                 >
                                   <Shield className="w-4 h-4" />
                                 </button>
-                              </td>
-                              <td className="p-3 text-center">
                                 <button
                                   onClick={() => handleDeleteUser(p.user_id)}
                                   className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg transition-colors"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                        {filteredProfiles.length === 0 && (
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {adminProfiles.length === 0 && (
                           <tr>
-                            <td colSpan={8} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
+                            <td colSpan={4} className="p-8 text-center text-muted-foreground">لا يوجد مشرفون آخرون</td>
                           </tr>
                         )}
                       </tbody>
