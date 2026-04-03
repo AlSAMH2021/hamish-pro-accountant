@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import {
   Users, BarChart3, CalendarDays, CheckCircle, XCircle,
   Search, Trash2, Loader2, ArrowRight, Shield, TrendingUp,
-  BookOpen, Clock,
+  BookOpen, Clock, Link2, Send,
 } from 'lucide-react';
 
 interface ProfileRow {
