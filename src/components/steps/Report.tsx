@@ -157,23 +157,29 @@ const Report = () => {
               <BookOpen className="w-5 h-5 text-primary" />
               أداء المحاور
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={320}>
               <BarChart
                 data={AXES.map(({ key, label }) => ({
-                  name: label,
+                  name: label.length > 10 ? label.slice(0, 10) + '…' : label,
                   score: axisScores[key],
                   passed: axisPassed[key],
+                  key,
                 }))}
-                layout="vertical"
-                margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
+                margin={{ top: 10, right: 10, left: 10, bottom: 60 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis type="number" domain={[0, 9]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
-                <YAxis
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis
                   dataKey="name"
-                  type="category"
-                  width={120}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                  angle={-35}
+                  textAnchor="end"
+                  interval={0}
+                  height={60}
+                />
+                <YAxis
+                  domain={[0, 9]}
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                  width={30}
                 />
                 <Tooltip
                   contentStyle={{
@@ -185,7 +191,7 @@ const Report = () => {
                   }}
                   formatter={(value: number) => [`${value}/9`, 'الدرجة']}
                 />
-                <Bar dataKey="score" radius={[0, 6, 6, 0]} barSize={24}>
+                <Bar dataKey="score" radius={[6, 6, 0, 0]} barSize={36}>
                   {AXES.map(({ key }) => (
                     <Cell
                       key={key}
