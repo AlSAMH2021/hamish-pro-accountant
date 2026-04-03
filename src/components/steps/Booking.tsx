@@ -12,28 +12,44 @@ const SLOTS = [
 ];
 
 const Booking = () => {
-  const { setBooking, setCurrentStep, updateUserStatus } = useApp();
+  const { setBooking, setCurrentStep, updateUserStatus, booking } = useApp();
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
-  const [confirmed, setConfirmed] = useState(false);
 
   const handleBook = () => {
     setBooking({ date: selectedDate, time: selectedTime, bookedAt: new Date().toISOString() });
     updateUserStatus('booked');
-    setConfirmed(true);
-    setTimeout(() => setCurrentStep(8), 2000);
   };
 
   const selectedSlot = SLOTS.find((s) => s.date === selectedDate);
 
-  if (confirmed) {
+  if (booking) {
+    const bookingDay = SLOTS.find(s => s.date === booking.date)?.day || '';
     return (
       <DashboardLayout activePage="booking">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center animate-fade-in-up">
-            <CheckCircle className="w-20 h-20 text-success mx-auto mb-6" />
-            <h1 className="text-2xl font-bold text-foreground mb-2">تم الحجز بنجاح!</h1>
-            <p className="text-muted-foreground">جاري تحويلك للتقرير...</p>
+        <div className="max-w-2xl mx-auto space-y-6">
+          <div className="bg-card rounded-2xl shadow-card p-6 text-center">
+            <CheckCircle className="w-16 h-16 text-success mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-foreground mb-1">تم حجز جلستك بنجاح</h2>
+            <p className="text-muted-foreground text-sm">سيتم التواصل معك لتأكيد الموعد</p>
+          </div>
+
+          <div className="bg-card rounded-2xl shadow-card p-6 space-y-4">
+            <h3 className="text-base font-bold text-foreground">تفاصيل الموعد</h3>
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/30">
+              <Calendar className="w-5 h-5 text-primary shrink-0" />
+              <div>
+                <p className="text-xs text-muted-foreground">التاريخ</p>
+                <p className="text-foreground font-medium">{bookingDay} - {booking.date}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/30">
+              <Clock className="w-5 h-5 text-primary shrink-0" />
+              <div>
+                <p className="text-xs text-muted-foreground">الوقت</p>
+                <p className="text-foreground font-medium">{booking.time}</p>
+              </div>
+            </div>
           </div>
         </div>
       </DashboardLayout>
