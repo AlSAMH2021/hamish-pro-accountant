@@ -167,6 +167,8 @@ const Booking = () => {
         >
           تأكيد الحجز
         </Button>
+        </>
+        )}
       </div>
     </DashboardLayout>
   );
