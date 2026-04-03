@@ -29,10 +29,7 @@ const Payment = () => {
 
   const handleTransferConfirm = () => {
     setTransferConfirmed(true);
-    setTimeout(() => {
-      setPaymentStatus(true);
-      setCurrentStep(5);
-    }, 1500);
+    // Don't auto-approve — admin must verify the transfer first
   };
 
   const copyToClipboard = (text: string) => {
