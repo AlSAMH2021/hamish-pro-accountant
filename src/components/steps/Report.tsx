@@ -2,12 +2,41 @@ import { useApp } from '@/context/AppContext';
 import DashboardLayout from '@/components/DashboardLayout';
 import { AXES, AXIS_RECOMMENDATIONS, SECTOR_LABELS, getPerformanceColor } from '@/data/types';
 import { getQuestionsBySetor, correctAnswers } from '@/data/questions';
-import { CheckCircle, XCircle, Share2, FileText, Award } from 'lucide-react';
+import { CheckCircle, XCircle, Share2, FileText, Award, Lock, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Report = () => {
-  const { user, examResult, booking } = useApp();
-  if (!user || !examResult) return null;
+  const { user, examResult, booking, sessionCompleted, setCurrentStep } = useApp();
+
+  // Show locked state if session not completed
+  if (!sessionCompleted || !user || !examResult) {
+    return (
+      <DashboardLayout activePage="report">
+        <div className="max-w-lg mx-auto text-center py-16 space-y-6">
+          <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mx-auto">
+            <Lock className="w-10 h-10 text-muted-foreground" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground">التقرير غير متاح بعد</h1>
+          <p className="text-muted-foreground leading-relaxed">
+            سيتم فتح التقرير التفصيلي بعد إتمام الجلسة الاستشارية مع المختص.
+            {booking ? (
+              <span className="block mt-2 text-sm">
+                موعد جلستك: <strong className="text-foreground">{booking.date} — {booking.time}</strong>
+              </span>
+            ) : (
+              <span className="block mt-2 text-sm">لم يتم حجز جلسة بعد.</span>
+            )}
+          </p>
+          {!booking && examResult && (
+            <Button onClick={() => setCurrentStep(7)} className="gap-2 rounded-xl bg-gradient-gold text-accent-foreground">
+              <CalendarDays className="w-4 h-4" />
+              احجز جلستك الاستشارية
+            </Button>
+          )}
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   const { totalScore, performanceLevel, passed, axisScores, axisPassed, answers } = examResult;
   const questions = getQuestionsBySetor(user.sector);
