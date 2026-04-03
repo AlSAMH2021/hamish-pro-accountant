@@ -16,17 +16,18 @@ interface AuthPageProps {
 const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
   const { setCurrentStep, signIn, signUp } = useApp();
   const [activeTab, setActiveTab] = useState<AuthTab>(initialTab);
-  const [animating, setAnimating] = useState(false);
+  const [animPhase, setAnimPhase] = useState<'idle' | 'exit' | 'enter'>('idle');
   const [slideDir, setSlideDir] = useState<'left' | 'right'>('left');
 
   const switchTab = (tab: AuthTab) => {
-    if (tab === activeTab || animating) return;
+    if (tab === activeTab || animPhase !== 'idle') return;
     setSlideDir(tab === 'register' ? 'left' : 'right');
-    setAnimating(true);
+    setAnimPhase('exit');
     setTimeout(() => {
       setActiveTab(tab);
-      setTimeout(() => setAnimating(false), 50);
-    }, 200);
+      setAnimPhase('enter');
+      setTimeout(() => setAnimPhase('idle'), 350);
+    }, 250);
   };
 
   return (
@@ -75,10 +76,12 @@ const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
           {/* Content with animation */}
           <div className="overflow-hidden">
             <div
-              className={`transition-all duration-300 ease-out ${
-                animating
-                  ? `opacity-0 ${slideDir === 'left' ? '-translate-x-4' : 'translate-x-4'}`
-                  : 'opacity-100 translate-x-0'
+              className={`transition-all ease-[cubic-bezier(0.4,0,0.2,1)] ${
+                animPhase === 'exit'
+                  ? `duration-250 opacity-0 scale-[0.97] blur-[2px] ${slideDir === 'left' ? '-translate-x-6' : 'translate-x-6'}`
+                  : animPhase === 'enter'
+                  ? 'duration-350 opacity-100 scale-100 blur-0 translate-x-0'
+                  : 'duration-0 opacity-100 scale-100 blur-0 translate-x-0'
               }`}
             >
               {activeTab === 'login' ? (
