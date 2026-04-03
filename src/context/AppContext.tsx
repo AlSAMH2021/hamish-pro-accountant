@@ -69,6 +69,23 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const loadUserData = async (userId: string) => {
     try {
+      // Check if user is admin - if so, redirect to admin dashboard
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (roleData) {
+        // Admin user - redirect to admin dashboard
+        setLoading(false);
+        if (window.location.pathname !== '/admin') {
+          window.location.href = '/admin';
+        }
+        return;
+      }
+
       // Load profile
       const { data: profile } = await supabase
         .from('profiles')
