@@ -95,6 +95,10 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
+  }, []);
+
+  useEffect(() => {
     if (isAdmin) loadData();
   }, [isAdmin, loadData]);
 
