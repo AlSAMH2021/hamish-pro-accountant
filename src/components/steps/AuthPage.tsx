@@ -1,0 +1,257 @@
+import { useState, useRef } from 'react';
+import { useApp } from '@/context/AppContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Sector, SECTOR_LABELS } from '@/data/types';
+import { ArrowRight, Loader2 } from 'lucide-react';
+import logoColor from '@/assets/logo-color.png';
+
+type AuthTab = 'login' | 'register';
+
+interface AuthPageProps {
+  initialTab?: AuthTab;
+}
+
+const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
+  const { setCurrentStep, signIn, signUp } = useApp();
+  const [activeTab, setActiveTab] = useState<AuthTab>(initialTab);
+  const [animating, setAnimating] = useState(false);
+  const [slideDir, setSlideDir] = useState<'left' | 'right'>('left');
+
+  const switchTab = (tab: AuthTab) => {
+    if (tab === activeTab || animating) return;
+    setSlideDir(tab === 'register' ? 'left' : 'right');
+    setAnimating(true);
+    setTimeout(() => {
+      setActiveTab(tab);
+      setTimeout(() => setAnimating(false), 50);
+    }, 200);
+  };
+
+  return (
+    <div className="min-h-screen bg-background" dir="rtl">
+      {/* Header */}
+      <div className="bg-card border-b border-border">
+        <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
+          <button onClick={() => setCurrentStep(1)} className="text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowRight className="w-5 h-5" />
+          </button>
+          <img src={logoColor} alt="هامش" className="h-10" />
+          <div className="w-5" />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center py-8 md:py-12 px-4">
+        <div className="w-full max-w-lg">
+          {/* Tab Switcher */}
+          <div className="relative flex bg-muted rounded-2xl p-1.5 mb-8">
+            <div
+              className="absolute top-1.5 bottom-1.5 rounded-xl bg-card shadow-sm transition-all duration-300 ease-out"
+              style={{
+                width: 'calc(50% - 6px)',
+                [activeTab === 'login' ? 'right' : 'left']: '6px',
+                transform: activeTab === 'login' ? 'translateX(0)' : 'translateX(0)',
+              }}
+            />
+            <button
+              onClick={() => switchTab('login')}
+              className={`relative z-10 flex-1 py-3 text-center text-sm font-bold rounded-xl transition-colors duration-300 ${
+                activeTab === 'login' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/70'
+              }`}
+            >
+              تسجيل الدخول
+            </button>
+            <button
+              onClick={() => switchTab('register')}
+              className={`relative z-10 flex-1 py-3 text-center text-sm font-bold rounded-xl transition-colors duration-300 ${
+                activeTab === 'register' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/70'
+              }`}
+            >
+              إنشاء حساب
+            </button>
+          </div>
+
+          {/* Content with animation */}
+          <div className="overflow-hidden">
+            <div
+              className={`transition-all duration-300 ease-out ${
+                animating
+                  ? `opacity-0 ${slideDir === 'left' ? '-translate-x-4' : 'translate-x-4'}`
+                  : 'opacity-100 translate-x-0'
+              }`}
+            >
+              {activeTab === 'login' ? (
+                <LoginForm onSwitchToRegister={() => switchTab('register')} />
+              ) : (
+                <RegisterForm onSwitchToLogin={() => switchTab('login')} />
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Login Form ─── */
+const LoginForm = ({ onSwitchToRegister }: { onSwitchToRegister: () => void }) => {
+  const { signIn, setCurrentStep } = useApp();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (!email || !password) {
+      setError('يرجى إدخال البريد وكلمة المرور');
+      return;
+    }
+    setSubmitting(true);
+    const { error: signInError } = await signIn(email, password);
+    if (signInError) {
+      setError('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card p-6 md:p-8 space-y-4 border border-border/50">
+      <div className="text-center mb-2">
+        <h1 className="text-xl font-bold text-foreground mb-1">مرحباً بعودتك</h1>
+        <p className="text-muted-foreground text-sm">أدخل بياناتك للمتابعة</p>
+      </div>
+
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">البريد الإلكتروني</Label>
+        <Input type="email" placeholder="example@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-11" dir="auto" />
+      </div>
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">كلمة المرور</Label>
+        <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="h-11" />
+      </div>
+
+      {error && <p className="text-destructive text-sm text-center bg-destructive/10 p-3 rounded-xl">{error}</p>}
+
+      <Button type="submit" disabled={submitting} className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl">
+        {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'تسجيل الدخول'}
+      </Button>
+
+      <div className="text-center">
+        <button type="button" onClick={() => setCurrentStep(11)} className="text-primary text-sm font-medium hover:underline">
+          نسيت كلمة المرور؟
+        </button>
+      </div>
+    </form>
+  );
+};
+
+/* ─── Register Form ─── */
+const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
+  const { signUp } = useApp();
+  const [form, setForm] = useState({
+    name: '', email: '', phone: '', jobTitle: '', company: '', sector: '' as Sector | '', password: '', confirmPassword: '',
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState('');
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!form.name.trim()) e.name = 'الاسم مطلوب';
+    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = 'بريد إلكتروني غير صالح';
+    if (!form.phone.match(/^05\d{8}$/)) e.phone = 'رقم جوال سعودي غير صالح (05XXXXXXXX)';
+    if (!form.jobTitle.trim()) e.jobTitle = 'الوظيفة مطلوبة';
+    if (!form.company.trim()) e.company = 'الشركة مطلوبة';
+    if (!form.sector) e.sector = 'القطاع مطلوب';
+    if (form.password.length < 6) e.password = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+    if (form.password !== form.confirmPassword) e.confirmPassword = 'كلمتا المرور غير متطابقتين';
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+    setSubmitting(true);
+    setServerError('');
+    const { error } = await signUp(form.email, form.password, {
+      name: form.name, phone: form.phone, jobTitle: form.jobTitle, company: form.company, sector: form.sector as string,
+    });
+    if (error) {
+      setServerError(error);
+      setSubmitting(false);
+    }
+  };
+
+  const sectors: { value: Sector; label: string }[] = [
+    { value: 'tourism', label: SECTOR_LABELS.tourism },
+    { value: 'restaurants', label: SECTOR_LABELS.restaurants },
+    { value: 'healthcare', label: SECTOR_LABELS.healthcare },
+  ];
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card p-6 md:p-8 space-y-4 border border-border/50">
+      <div className="text-center mb-2">
+        <h1 className="text-xl font-bold text-foreground mb-1">إنشاء حساب جديد</h1>
+        <p className="text-muted-foreground text-sm">سجّل بياناتك للبدء في الاختبار</p>
+      </div>
+
+      {serverError && <p className="text-destructive text-sm text-center bg-destructive/10 p-3 rounded-xl">{serverError}</p>}
+
+      {([
+        { key: 'name', label: 'الاسم الكامل', type: 'text', placeholder: 'أدخل اسمك' },
+        { key: 'email', label: 'البريد الإلكتروني', type: 'email', placeholder: 'example@email.com' },
+        { key: 'phone', label: 'رقم الجوال', type: 'tel', placeholder: '05XXXXXXXX' },
+        { key: 'jobTitle', label: 'المسمى الوظيفي', type: 'text', placeholder: 'محاسب، مدير مالي...' },
+        { key: 'company', label: 'الشركة', type: 'text', placeholder: 'اسم الشركة' },
+      ] as const).map(({ key, label, type, placeholder }) => (
+        <div key={key}>
+          <Label className="text-foreground font-medium mb-1.5 block text-sm">{label}</Label>
+          <Input type={type} placeholder={placeholder} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className="h-11" dir="auto" />
+          {errors[key] && <p className="text-destructive text-xs mt-1">{errors[key]}</p>}
+        </div>
+      ))}
+
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">القطاع</Label>
+        <div className="grid grid-cols-1 gap-2">
+          {sectors.map((s) => (
+            <button
+              key={s.value}
+              type="button"
+              onClick={() => setForm({ ...form, sector: s.value })}
+              className={`p-3.5 rounded-xl border-2 text-right transition-all text-sm ${
+                form.sector === s.value
+                  ? 'border-primary bg-primary/5 text-foreground font-medium'
+                  : 'border-border bg-card text-muted-foreground hover:border-primary/30'
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+        {errors.sector && <p className="text-destructive text-xs mt-1">{errors.sector}</p>}
+      </div>
+
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">كلمة المرور</Label>
+        <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="h-11" />
+        {errors.password && <p className="text-destructive text-xs mt-1">{errors.password}</p>}
+      </div>
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">تأكيد كلمة المرور</Label>
+        <Input type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} className="h-11" />
+        {errors.confirmPassword && <p className="text-destructive text-xs mt-1">{errors.confirmPassword}</p>}
+      </div>
+
+      <Button type="submit" disabled={submitting} className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl mt-2">
+        {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'إنشاء الحساب'}
+      </Button>
+    </form>
+  );
+};
+
+export default AuthPage;
