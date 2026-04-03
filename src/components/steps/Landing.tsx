@@ -53,7 +53,7 @@ function AnimatedCounter({ target, suffix = '', prefix = '' }: { target: number;
 }
 
 /* ── Reveal text word-by-word ── */
-function RevealText({ text, className = '', delay = 0 }: { text: string; className?: string; delay?: number }) {
+function RevealText({ text, className = '', delay = 0, goldGradient = false }: { text: string; className?: string; delay?: number; goldGradient?: boolean }) {
   const { ref, visible } = useReveal(0.2);
   const words = text.split(' ');
 
@@ -62,11 +62,12 @@ function RevealText({ text, className = '', delay = 0 }: { text: string; classNa
       {words.map((word, i) => (
         <span
           key={i}
-          className="inline-block transition-all duration-700"
+          className={`inline-block transition-all duration-700 ${goldGradient ? 'bg-clip-text text-transparent' : ''}`}
           style={{
             transitionDelay: `${delay + i * 100}ms`,
             transform: visible ? 'translateY(0)' : 'translateY(20px)',
             opacity: visible ? 1 : 0,
+            ...(goldGradient ? { backgroundImage: 'linear-gradient(135deg, hsl(40 70% 50%), hsl(35 80% 45%))' } : {}),
           }}
         >
           {word}&nbsp;
