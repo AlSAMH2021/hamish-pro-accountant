@@ -10,7 +10,7 @@ import { CreditCard, Shield, Building2, Copy, CheckCircle, ArrowLeft, Clock } fr
 type PaymentMethod = 'transfer' | 'card' | null;
 
 const Payment = () => {
-  const { setPaymentStatus, setCurrentStep } = useApp();
+  const { setPaymentStatus, setCurrentStep, user } = useApp();
   const [method, setMethod] = useState<PaymentMethod>(null);
   const [processing, setProcessing] = useState(false);
   const [cardNumber, setCardNumber] = useState('');
