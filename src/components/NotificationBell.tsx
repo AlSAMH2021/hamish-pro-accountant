@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Bell } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDistanceToNow } from 'date-fns';
@@ -16,6 +16,8 @@ const NotificationBell = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
@@ -62,10 +64,40 @@ const NotificationBell = () => {
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
   };
 
+  const updateDropdownPosition = useCallback(() => {
+    if (!buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const dropdownWidth = 320;
+    const dropdownMaxHeight = 400;
+    const padding = 12;
+
+    // Horizontal: try to align right edge with button, but keep on screen
+    let left = rect.right - dropdownWidth;
+    if (left < padding) left = padding;
+    if (left + dropdownWidth > window.innerWidth - padding) {
+      left = window.innerWidth - padding - dropdownWidth;
+    }
+
+    // Vertical: prefer below, but flip above if not enough space
+    let top = rect.bottom + 8;
+    if (top + dropdownMaxHeight > window.innerHeight - padding) {
+      top = rect.top - 8 - dropdownMaxHeight;
+      if (top < padding) top = padding;
+    }
+
+    setDropdownStyle({ position: 'fixed', top, left, width: dropdownWidth, zIndex: 9999 });
+  }, []);
+
+  const handleToggle = () => {
+    if (!open) updateDropdownPosition();
+    setOpen(!open);
+  };
+
   return (
-    <div className="relative" ref={ref}>
+    <div ref={ref}>
       <button
-        onClick={() => setOpen(!open)}
+        ref={buttonRef}
+        onClick={handleToggle}
         className="relative p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
       >
         <Bell className="w-5 h-5" />
@@ -77,7 +109,7 @@ const NotificationBell = () => {
       </button>
 
       {open && (
-        <div className="absolute left-0 lg:right-0 lg:left-auto top-full mt-2 w-80 bg-card border border-border rounded-2xl shadow-xl z-50 overflow-hidden">
+        <div style={dropdownStyle} className="bg-card border border-border rounded-2xl shadow-xl overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <h3 className="font-bold text-foreground text-sm">الإشعارات</h3>
             {unreadCount > 0 && (
