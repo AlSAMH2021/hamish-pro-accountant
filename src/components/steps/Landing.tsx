@@ -18,10 +18,7 @@ const Landing = () => {
         </div>
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 mb-8 px-5 py-2.5 rounded-full border border-accent/20 bg-accent/5 backdrop-blur-sm">
-            <Award className="w-4 h-4 text-accent" />
-            <span className="text-accent text-sm font-semibold">منصة هامش للتقييم المهني</span>
-          </div>
+          <img src={logoWhite} alt="هامش" className="h-16 md:h-20 mx-auto mb-8" />
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
             قيّم مستواك المحاسبي
