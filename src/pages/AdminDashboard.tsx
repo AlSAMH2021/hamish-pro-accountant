@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import {
   Users, BarChart3, CalendarDays, CheckCircle, XCircle,
   Search, Trash2, Loader2, LogOut, Shield, TrendingUp,
-  BookOpen, Clock, Link2, Send,
+  BookOpen, Clock, Link2, Send, UserPlus, Copy, Eye, EyeOff,
 } from 'lucide-react';
 import NotificationBell from '@/components/NotificationBell';
 
