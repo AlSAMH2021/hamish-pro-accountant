@@ -195,6 +195,28 @@ const AdminDashboard = () => {
     loadData();
   };
 
+  const handleCreateAdmin = async () => {
+    if (!newAdminEmail || !newAdminPassword || !newAdminName) return;
+    setCreatingAdmin(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-admin', {
+        body: { email: newAdminEmail, password: newAdminPassword, name: newAdminName },
+      });
+      if (error || data?.error) {
+        alert(data?.error || 'حدث خطأ أثناء إنشاء المشرف');
+      } else {
+        setCreatedAdminInfo({ email: newAdminEmail, password: newAdminPassword });
+        setNewAdminEmail('');
+        setNewAdminPassword('');
+        setNewAdminName('');
+        loadData();
+      }
+    } catch {
+      alert('حدث خطأ أثناء إنشاء المشرف');
+    }
+    setCreatingAdmin(false);
+  };
+
   const DAY_NAMES = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
   const handleAddSlot = async () => {
