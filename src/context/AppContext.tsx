@@ -6,6 +6,7 @@ interface AppState {
   user: UserData | null;
   examResult: ExamResult | null;
   booking: BookingData | null;
+  registeredUsers: UserData[];
   setCurrentStep: (step: number) => void;
   setUser: (user: UserData) => void;
   updateUserStatus: (status: UserData['status']) => void;
@@ -13,6 +14,7 @@ interface AppState {
   setExamResult: (result: ExamResult) => void;
   setBooking: (booking: BookingData) => void;
   canAccessStep: (step: number) => boolean;
+  loginUser: (email: string, password: string) => boolean;
 }
 
 const AppContext = createContext<AppState | undefined>(undefined);
