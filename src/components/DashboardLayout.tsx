@@ -13,6 +13,7 @@ import {
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from '@/components/NotificationBell';
+import logoColor from '@/assets/logo-color.png';
 
 type DashboardPage = 'briefing' | 'payment' | 'exam' | 'results' | 'booking' | 'report' | 'profile';
 
@@ -56,9 +57,7 @@ const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
         <div className="p-6 border-b border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
-                {user?.name?.charAt(0)}
-              </div>
+              <img src={logoColor} alt="هامش" className="h-9" />
               <div>
                 <h2 className="font-bold text-foreground text-sm">{user?.name}</h2>
                 <p className="text-xs text-muted-foreground">{user?.email}</p>

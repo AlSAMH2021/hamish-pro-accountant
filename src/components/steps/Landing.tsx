@@ -1,6 +1,7 @@
 import { useApp } from '@/context/AppContext';
 import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logoWhite from '@/assets/logo-white.png';
 
 const Landing = () => {
   const { setCurrentStep } = useApp();
@@ -17,10 +18,7 @@ const Landing = () => {
         </div>
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 mb-8 px-5 py-2.5 rounded-full border border-accent/20 bg-accent/5 backdrop-blur-sm">
-            <Award className="w-4 h-4 text-accent" />
-            <span className="text-accent text-sm font-semibold">منصة هامش للتقييم المهني</span>
-          </div>
+          <img src={logoWhite} alt="هامش" className="h-16 md:h-20 mx-auto mb-8" />
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
             قيّم مستواك المحاسبي
@@ -134,6 +132,7 @@ const Landing = () => {
 
       {/* Footer */}
       <footer className="border-t border-white/[0.06] py-8 px-4 text-center">
+        <img src={logoWhite} alt="هامش" className="h-10 mx-auto mb-3 opacity-40" />
         <p className="text-white/30 text-sm">© {new Date().getFullYear()} هامش — جميع الحقوق محفوظة</p>
       </footer>
     </div>

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { KeyRound, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
+import logoColor from '@/assets/logo-color.png';
 
 const ForgotPassword = () => {
   const { setCurrentStep, resetPassword } = useApp();
@@ -36,12 +37,7 @@ const ForgotPassword = () => {
           <button onClick={() => setCurrentStep(9)} className="text-muted-foreground hover:text-foreground transition-colors">
             <ArrowRight className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-              <span className="text-accent font-bold text-sm">هـ</span>
-            </div>
-            <span className="font-bold text-foreground">هامش</span>
-          </div>
+          <img src={logoColor} alt="هامش" className="h-10" />
           <div className="w-5" />
         </div>
       </div>
