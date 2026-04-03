@@ -60,17 +60,20 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [linkInputs, setLinkInputs] = useState<Record<string, string>>({});
+  const [adminUserIds, setAdminUserIds] = useState<Set<string>>(new Set());
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [p, e, b] = await Promise.all([
+    const [p, e, b, r] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('exam_results').select('id, user_id, total_score, performance_level, passed, completed_at').order('completed_at', { ascending: false }),
       supabase.from('bookings').select('*').order('booked_at', { ascending: false }),
+      supabase.from('user_roles').select('user_id, role').eq('role', 'admin'),
     ]);
     setProfiles((p.data as ProfileRow[]) || []);
     setExams((e.data as ExamRow[]) || []);
     setBookings((b.data as BookingRow[]) || []);
+    setAdminUserIds(new Set((r.data || []).map((row: any) => row.user_id)));
     setLoading(false);
   }, []);
 
@@ -137,6 +140,15 @@ const AdminDashboard = () => {
 
   const handleUpdateStatus = async (userId: string, status: string) => {
     await supabase.from('profiles').update({ status }).eq('user_id', userId);
+    loadData();
+  };
+
+  const handleToggleAdmin = async (userId: string) => {
+    if (adminUserIds.has(userId)) {
+      await supabase.from('user_roles').delete().eq('user_id', userId).eq('role', 'admin');
+    } else {
+      await supabase.from('user_roles').insert({ user_id: userId, role: 'admin' as any });
+    }
     loadData();
   };
 
@@ -280,6 +292,7 @@ const AdminDashboard = () => {
                           <th className="text-center p-3 font-medium text-muted-foreground">الدفع</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الاختبار</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">مشرف</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">إجراءات</th>
                         </tr>
                       </thead>
@@ -320,6 +333,15 @@ const AdminDashboard = () => {
                               </td>
                               <td className="p-3 text-center">
                                 <button
+                                  onClick={() => handleToggleAdmin(p.user_id)}
+                                  className={`p-1.5 rounded-lg transition-colors ${adminUserIds.has(p.user_id) ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted/50'}`}
+                                  title={adminUserIds.has(p.user_id) ? 'إزالة صلاحية المشرف' : 'منح صلاحية المشرف'}
+                                >
+                                  <Shield className="w-4 h-4" />
+                                </button>
+                              </td>
+                              <td className="p-3 text-center">
+                                <button
                                   onClick={() => handleDeleteUser(p.user_id)}
                                   className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg transition-colors"
                                 >
@@ -331,7 +353,7 @@ const AdminDashboard = () => {
                         })}
                         {filteredProfiles.length === 0 && (
                           <tr>
-                            <td colSpan={7} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
+                            <td colSpan={8} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
                           </tr>
                         )}
                       </tbody>
