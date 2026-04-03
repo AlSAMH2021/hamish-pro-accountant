@@ -22,9 +22,12 @@ const NotificationBell = () => {
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const loadNotifications = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return;
     const { data } = await supabase
       .from('notifications')
       .select('*')
+      .eq('user_id', session.user.id)
       .order('created_at', { ascending: false })
       .limit(20);
     if (data) setNotifications(data as Notification[]);
