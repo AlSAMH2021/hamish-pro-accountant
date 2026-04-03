@@ -146,9 +146,11 @@ const AdminDashboard = () => {
   const completedSessions = nonAdminBookings.filter(b => b.session_completed).length;
   const pendingSessions = nonAdminBookings.filter(b => !b.session_completed).length;
 
-  const filteredProfiles = profiles.filter(p =>
-    p.user_id !== currentUserId && (p.name.includes(search) || (p.company || '').includes(search) || (p.phone || '').includes(search))
+  const filteredProfiles = nonAdminProfiles.filter(p =>
+    p.name.includes(search) || (p.company || '').includes(search) || (p.phone || '').includes(search)
   );
+
+  const adminProfiles = profiles.filter(p => adminUserIds.has(p.user_id) && p.user_id !== currentUserId);
 
   const getUserExam = (userId: string) => exams.find(e => e.user_id === userId);
   const getUserBooking = (userId: string) => bookings.find(b => b.user_id === userId);
