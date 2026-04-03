@@ -122,6 +122,13 @@ const AdminDashboard = () => {
     loadData();
   };
 
+  const handleSaveLink = async (bookingId: string) => {
+    const link = linkInputs[bookingId];
+    if (!link?.trim()) return;
+    await supabase.from('bookings').update({ session_link: link.trim() }).eq('id', bookingId);
+    loadData();
+  };
+
   const handleDeleteUser = async (userId: string) => {
     if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟')) return;
     await supabase.from('profiles').delete().eq('user_id', userId);
