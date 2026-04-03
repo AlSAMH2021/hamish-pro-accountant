@@ -149,7 +149,13 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteUser = async (userId: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟')) return;
+    if (!confirm('هل أنت متأكد من حذف هذا المستخدم وجميع سجلاته؟')) return;
+    await Promise.all([
+      supabase.from('bookings').delete().eq('user_id', userId),
+      supabase.from('exam_results').delete().eq('user_id', userId),
+      supabase.from('notifications').delete().eq('user_id', userId),
+      supabase.from('user_roles').delete().eq('user_id', userId),
+    ]);
     await supabase.from('profiles').delete().eq('user_id', userId);
     loadData();
   };
