@@ -21,6 +21,7 @@ export type Database = {
           date: string
           id: string
           session_completed: boolean
+          session_link: string | null
           time: string
           user_id: string
         }
@@ -30,6 +31,7 @@ export type Database = {
           date: string
           id?: string
           session_completed?: boolean
+          session_link?: string | null
           time: string
           user_id: string
         }
@@ -39,6 +41,7 @@ export type Database = {
           date?: string
           id?: string
           session_completed?: boolean
+          session_link?: string | null
           time?: string
           user_id?: string
         }
