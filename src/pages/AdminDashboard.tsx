@@ -70,6 +70,11 @@ const AdminDashboard = () => {
   const [search, setSearch] = useState('');
   const [linkInputs, setLinkInputs] = useState<Record<string, string>>({});
   const [adminUserIds, setAdminUserIds] = useState<Set<string>>(new Set());
+  const [slots, setSlots] = useState<SlotRow[]>([]);
+  const [newSlotDate, setNewSlotDate] = useState('');
+  const [newSlotDay, setNewSlotDay] = useState('');
+  const [newSlotTime, setNewSlotTime] = useState('');
+  const [addingSlot, setAddingSlot] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
