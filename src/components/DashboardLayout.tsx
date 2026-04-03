@@ -56,23 +56,17 @@ const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-                <span className="text-accent font-bold text-lg">هـ</span>
+                <User className="w-5 h-5 text-accent" />
               </div>
               <div>
-                <h2 className="font-bold text-foreground text-lg">هامش</h2>
-                <p className="text-xs text-muted-foreground">تقييم المحاسبين</p>
+                <h2 className="font-bold text-foreground text-sm">{user?.name}</h2>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
             </div>
             <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground">
               <X className="w-5 h-5" />
             </button>
           </div>
-        </div>
-
-        {/* User info */}
-        <div className="p-4 mx-4 mt-4 rounded-xl bg-muted/50">
-          <p className="font-semibold text-foreground text-sm">{user?.name}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">{user?.email}</p>
         </div>
 
         {/* Navigation */}
