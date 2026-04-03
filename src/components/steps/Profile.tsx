@@ -29,18 +29,29 @@ const Profile = () => {
         {/* Progress */}
         <div className="bg-card rounded-2xl shadow-card p-6">
           <h2 className="text-lg font-bold text-foreground mb-5">مراحل التقدم</h2>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between relative">
+            {/* Connector lines */}
+            {statusSteps.slice(0, -1).map((s, i) => {
+              const bothDone = s.done && statusSteps[i + 1].done;
+              return (
+                <div
+                  key={`line-${i}`}
+                  className={`absolute top-5 h-0.5 ${bothDone ? 'bg-success' : s.done ? 'bg-success' : 'bg-muted'}`}
+                  style={{
+                    right: `${(i * 100) / (statusSteps.length - 1) + 100 / (statusSteps.length - 1) / 2}%`,
+                    width: `${100 / (statusSteps.length - 1) - 100 / (statusSteps.length - 1) / 2}%`,
+                  }}
+                />
+              );
+            })}
             {statusSteps.map((s, i) => (
-              <div key={i} className="flex flex-col items-center flex-1">
+              <div key={i} className="flex flex-col items-center z-10">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-2 ${
                   s.done ? 'bg-success text-success-foreground' : 'bg-muted text-muted-foreground'
                 }`}>
                   {s.done ? '✓' : i + 1}
                 </div>
                 <span className={`text-xs font-medium ${s.done ? 'text-success' : 'text-muted-foreground'}`}>{s.label}</span>
-                {i < statusSteps.length - 1 && (
-                  <div className={`hidden md:block absolute h-0.5 w-full ${s.done ? 'bg-success' : 'bg-muted'}`} />
-                )}
               </div>
             ))}
           </div>
