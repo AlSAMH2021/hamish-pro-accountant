@@ -3,30 +3,33 @@ import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { LogIn, ArrowRight } from 'lucide-react';
+import { LogIn, ArrowRight, Loader2 } from 'lucide-react';
 
 const Login = () => {
-  const { setCurrentStep, loginUser } = useApp();
+  const { setCurrentStep, signIn } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (!email || !password) {
       setError('يرجى إدخال البريد وكلمة المرور');
       return;
     }
-    const success = loginUser(email, password);
-    if (!success) {
+    setSubmitting(true);
+    const { error: signInError } = await signIn(email, password);
+    if (signInError) {
       setError('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+      setSubmitting(false);
     }
+    // Auth state change listener handles navigation
   };
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
-      {/* Top bar */}
       <div className="bg-card border-b border-border">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
           <button onClick={() => setCurrentStep(1)} className="text-muted-foreground hover:text-foreground transition-colors">
@@ -78,9 +81,15 @@ const Login = () => {
               <p className="text-destructive text-sm text-center bg-destructive/10 p-3 rounded-xl">{error}</p>
             )}
 
-            <Button type="submit" className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl">
-              تسجيل الدخول
+            <Button type="submit" disabled={submitting} className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl">
+              {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'تسجيل الدخول'}
             </Button>
+
+            <div className="text-center">
+              <button type="button" onClick={() => setCurrentStep(11)} className="text-primary text-sm font-medium hover:underline">
+                نسيت كلمة المرور؟
+              </button>
+            </div>
 
             <div className="text-center pt-1">
               <p className="text-muted-foreground text-sm">
