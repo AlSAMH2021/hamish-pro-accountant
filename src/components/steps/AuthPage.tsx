@@ -48,11 +48,10 @@ const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
           {/* Tab Switcher */}
           <div className="relative flex bg-muted rounded-2xl p-1.5 mb-8">
             <div
-              className="absolute top-1.5 bottom-1.5 rounded-xl bg-card shadow-sm transition-all duration-300 ease-out"
+              className="absolute top-1.5 bottom-1.5 rounded-xl bg-card shadow-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
               style={{
                 width: 'calc(50% - 6px)',
-                [activeTab === 'login' ? 'right' : 'left']: '6px',
-                transform: activeTab === 'login' ? 'translateX(0)' : 'translateX(0)',
+                right: activeTab === 'login' ? '6px' : 'calc(50% - 0px)',
               }}
             />
             <button
