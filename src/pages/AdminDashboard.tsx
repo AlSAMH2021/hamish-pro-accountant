@@ -59,6 +59,7 @@ const AdminDashboard = () => {
   const [bookings, setBookings] = useState<BookingRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [linkInputs, setLinkInputs] = useState<Record<string, string>>({});
 
   const loadData = useCallback(async () => {
     setLoading(true);
