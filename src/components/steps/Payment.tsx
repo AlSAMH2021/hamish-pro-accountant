@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import DashboardLayout from '@/components/DashboardLayout';
-import { CreditCard, Shield, Building2, Copy, CheckCircle, ArrowLeft } from 'lucide-react';
+import { CreditCard, Shield, Building2, Copy, CheckCircle, ArrowLeft, Clock } from 'lucide-react';
 
 type PaymentMethod = 'transfer' | 'card' | null;
 
@@ -29,10 +29,7 @@ const Payment = () => {
 
   const handleTransferConfirm = () => {
     setTransferConfirmed(true);
-    setTimeout(() => {
-      setPaymentStatus(true);
-      setCurrentStep(5);
-    }, 1500);
+    // Don't auto-approve — admin must verify the transfer first
   };
 
   const copyToClipboard = (text: string) => {
@@ -134,12 +131,22 @@ const Payment = () => {
               {transferConfirmed ? (
                 <span className="flex items-center gap-2">
                   <CheckCircle className="w-5 h-5" />
-                  تم التأكيد — جاري التحقق...
+                  تم الإرسال
                 </span>
               ) : (
                 'تأكيد التحويل'
               )}
             </Button>
+
+            {transferConfirmed && (
+              <div className="mt-4 p-5 rounded-xl bg-primary/5 border border-primary/20 text-center space-y-2">
+                <Clock className="w-8 h-8 text-primary mx-auto" />
+                <p className="font-bold text-foreground">طلبك قيد المراجعة</p>
+                <p className="text-sm text-muted-foreground">
+                  سيتم التحقق من عملية التحويل وتفعيل حسابك خلال وقت قصير. ستصلك إشعار عند التأكيد.
+                </p>
+              </div>
+            )}
           </div>
         )}
 
