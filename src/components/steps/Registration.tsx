@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Sector, SECTOR_LABELS } from '@/data/types';
 import { ArrowRight, UserPlus, Loader2 } from 'lucide-react';
+import logoColor from '@/assets/logo-color.png';
 
 const Registration = () => {
   const { signUp, setCurrentStep } = useApp();
