@@ -62,18 +62,14 @@ function RevealText({ text, className = '', delay = 0 }: { text: string; classNa
       {words.map((word, i) => (
         <span
           key={i}
-          className="inline-block overflow-hidden"
+          className="inline-block transition-all duration-700"
+          style={{
+            transitionDelay: `${delay + i * 100}ms`,
+            transform: visible ? 'translateY(0)' : 'translateY(20px)',
+            opacity: visible ? 1 : 0,
+          }}
         >
-          <span
-            className="inline-block transition-all duration-700"
-            style={{
-              transitionDelay: `${delay + i * 100}ms`,
-              transform: visible ? 'translateY(0)' : 'translateY(110%)',
-              opacity: visible ? 1 : 0,
-            }}
-          >
-            {word}&nbsp;
-          </span>
+          {word}&nbsp;
         </span>
       ))}
     </span>
