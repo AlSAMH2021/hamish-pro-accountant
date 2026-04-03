@@ -9,6 +9,7 @@ import {
   Search, Trash2, Loader2, LogOut, Shield, TrendingUp,
   BookOpen, Clock, Link2, Send,
 } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 interface ProfileRow {
   id: string;
