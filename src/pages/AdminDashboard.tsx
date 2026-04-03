@@ -126,13 +126,18 @@ const AdminDashboard = () => {
     );
   }
 
-  const totalUsers = profiles.length;
-  const paidUsers = profiles.filter(p => p.payment_status).length;
-  const totalExams = exams.length;
-  const passedExams = exams.filter(e => e.passed).length;
+  // Exclude admin users from all statistics
+  const nonAdminProfiles = profiles.filter(p => !adminUserIds.has(p.user_id));
+  const nonAdminExams = exams.filter(e => !adminUserIds.has(e.user_id));
+  const nonAdminBookings = bookings.filter(b => !adminUserIds.has(b.user_id));
+
+  const totalUsers = nonAdminProfiles.length;
+  const paidUsers = nonAdminProfiles.filter(p => p.payment_status).length;
+  const totalExams = nonAdminExams.length;
+  const passedExams = nonAdminExams.filter(e => e.passed).length;
   const passRate = totalExams > 0 ? Math.round((passedExams / totalExams) * 100) : 0;
-  const completedSessions = bookings.filter(b => b.session_completed).length;
-  const pendingSessions = bookings.filter(b => !b.session_completed).length;
+  const completedSessions = nonAdminBookings.filter(b => b.session_completed).length;
+  const pendingSessions = nonAdminBookings.filter(b => !b.session_completed).length;
 
   const filteredProfiles = profiles.filter(p =>
     p.user_id !== currentUserId && (p.name.includes(search) || (p.company || '').includes(search) || (p.phone || '').includes(search))
