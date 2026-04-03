@@ -76,6 +76,13 @@ const AdminDashboard = () => {
   const [newSlotDay, setNewSlotDay] = useState('');
   const [newSlotTime, setNewSlotTime] = useState('');
   const [addingSlot, setAddingSlot] = useState(false);
+  const [showAddAdmin, setShowAddAdmin] = useState(false);
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [newAdminPassword, setNewAdminPassword] = useState('');
+  const [newAdminName, setNewAdminName] = useState('');
+  const [creatingAdmin, setCreatingAdmin] = useState(false);
+  const [createdAdminInfo, setCreatedAdminInfo] = useState<{ email: string; password: string } | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
