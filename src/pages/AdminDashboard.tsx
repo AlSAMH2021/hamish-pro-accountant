@@ -353,7 +353,7 @@ const AdminDashboard = () => {
                         })}
                         {filteredProfiles.length === 0 && (
                           <tr>
-                            <td colSpan={7} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
+                            <td colSpan={8} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
                           </tr>
                         )}
                       </tbody>
