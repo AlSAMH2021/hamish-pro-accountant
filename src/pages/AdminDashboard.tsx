@@ -172,10 +172,47 @@ const AdminDashboard = () => {
     loadData();
   };
 
+  const DAY_NAMES = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+  const handleAddSlot = async () => {
+    if (!newSlotDate || !newSlotTime) return;
+    setAddingSlot(true);
+    const dateObj = new Date(newSlotDate + 'T00:00:00');
+    const dayName = newSlotDay || DAY_NAMES[dateObj.getDay()];
+    await supabase.from('available_slots').insert({
+      date: newSlotDate,
+      day_name: dayName,
+      time: newSlotTime,
+    } as any);
+    setNewSlotDate('');
+    setNewSlotTime('');
+    setNewSlotDay('');
+    setAddingSlot(false);
+    loadData();
+  };
+
+  const handleDeleteSlot = async (slotId: string) => {
+    await supabase.from('available_slots').delete().eq('id', slotId);
+    loadData();
+  };
+
+  const handleToggleSlot = async (slotId: string, currentActive: boolean) => {
+    await supabase.from('available_slots').update({ is_active: !currentActive } as any).eq('id', slotId);
+    loadData();
+  };
+
+  // Group slots by date
+  const slotsByDate = slots.reduce((acc, slot) => {
+    if (!acc[slot.date]) acc[slot.date] = { day_name: slot.day_name, slots: [] };
+    acc[slot.date].slots.push(slot);
+    return acc;
+  }, {} as Record<string, { day_name: string; slots: SlotRow[] }>);
+
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'stats', label: 'الإحصائيات', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'users', label: 'المستخدمين', icon: <Users className="w-4 h-4" /> },
     { id: 'bookings', label: 'الجلسات', icon: <CalendarDays className="w-4 h-4" /> },
+    { id: 'slots', label: 'المواعيد المتاحة', icon: <Clock className="w-4 h-4" /> },
   ];
 
   return (
