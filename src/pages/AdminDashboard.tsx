@@ -258,6 +258,7 @@ const AdminDashboard = () => {
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'stats', label: 'الإحصائيات', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'users', label: 'المستخدمين', icon: <Users className="w-4 h-4" /> },
+    { id: 'admins', label: 'المشرفين', icon: <Shield className="w-4 h-4" /> },
     { id: 'bookings', label: 'الجلسات', icon: <CalendarDays className="w-4 h-4" /> },
     { id: 'slots', label: 'المواعيد المتاحة', icon: <Clock className="w-4 h-4" /> },
   ];
