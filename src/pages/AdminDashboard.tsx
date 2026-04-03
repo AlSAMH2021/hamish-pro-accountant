@@ -135,7 +135,7 @@ const AdminDashboard = () => {
   const pendingSessions = bookings.filter(b => !b.session_completed).length;
 
   const filteredProfiles = profiles.filter(p =>
-    p.name.includes(search) || (p.company || '').includes(search) || (p.phone || '').includes(search)
+    p.user_id !== currentUserId && (p.name.includes(search) || (p.company || '').includes(search) || (p.phone || '').includes(search))
   );
 
   const getUserExam = (userId: string) => exams.find(e => e.user_id === userId);
