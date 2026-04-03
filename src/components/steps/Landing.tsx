@@ -1,15 +1,14 @@
 import { useApp } from '@/context/AppContext';
-import { CheckCircle, BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Award, TrendingUp } from 'lucide-react';
+import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Landing = () => {
   const { setCurrentStep } = useApp();
 
   return (
-    <div className="min-h-screen bg-[hsl(220,50%,13%)]">
+    <div className="min-h-screen bg-[hsl(220,50%,13%)]" dir="rtl">
       {/* Hero */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Abstract background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px]" />
           <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-accent/8 blur-[150px]" />
@@ -56,7 +55,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Stats bar */}
+      {/* Stats */}
       <section className="border-y border-white/[0.06] bg-white/[0.02] backdrop-blur-sm">
         <div className="max-w-5xl mx-auto py-10 px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
@@ -96,7 +95,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Steps */}
       <section className="py-24 px-4 bg-[hsl(220,45%,11%)]">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-16">كيف يعمل التقييم؟</h2>
@@ -107,7 +106,7 @@ const Landing = () => {
               { step: '٣', label: 'أجب على 45 سؤال' },
               { step: '٤', label: 'احصل على تقريرك' },
             ].map((item, i) => (
-              <div key={i} className="flex flex-col items-center relative">
+              <div key={i} className="flex flex-col items-center">
                 <div className="w-14 h-14 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center text-accent font-bold text-xl mb-5">
                   {item.step}
                 </div>

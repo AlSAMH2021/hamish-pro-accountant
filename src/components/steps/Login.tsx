@@ -3,7 +3,7 @@ import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { LogIn } from 'lucide-react';
+import { LogIn, ArrowRight } from 'lucide-react';
 
 const Login = () => {
   const { setCurrentStep, loginUser } = useApp();
@@ -25,59 +25,73 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-            <LogIn className="w-8 h-8 text-primary" />
+    <div className="min-h-screen bg-background" dir="rtl">
+      {/* Top bar */}
+      <div className="bg-card border-b border-border">
+        <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+          <button onClick={() => setCurrentStep(1)} className="text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowRight className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+              <span className="text-accent font-bold text-sm">هـ</span>
+            </div>
+            <span className="font-bold text-foreground">هامش</span>
           </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">تسجيل الدخول</h1>
-          <p className="text-muted-foreground">أدخل بياناتك للمتابعة</p>
+          <div className="w-5" />
         </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card p-8 space-y-5">
-          <div>
-            <Label className="text-foreground font-medium mb-1.5 block">البريد الإلكتروني</Label>
-            <Input
-              type="email"
-              placeholder="example@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-12"
-              dir="auto"
-            />
-          </div>
-          <div>
-            <Label className="text-foreground font-medium mb-1.5 block">كلمة المرور</Label>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-12"
-            />
+      <div className="flex items-center justify-center py-16 px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <LogIn className="w-7 h-7 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground mb-1">تسجيل الدخول</h1>
+            <p className="text-muted-foreground text-sm">أدخل بياناتك للمتابعة</p>
           </div>
 
-          {error && (
-            <p className="text-destructive text-sm text-center bg-destructive/10 p-3 rounded-lg">{error}</p>
-          )}
+          <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card p-6 md:p-8 space-y-4">
+            <div>
+              <Label className="text-foreground font-medium mb-1.5 block text-sm">البريد الإلكتروني</Label>
+              <Input
+                type="email"
+                placeholder="example@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-11"
+                dir="auto"
+              />
+            </div>
+            <div>
+              <Label className="text-foreground font-medium mb-1.5 block text-sm">كلمة المرور</Label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-11"
+              />
+            </div>
 
-          <Button type="submit" className="w-full h-14 text-lg font-bold bg-gradient-primary text-primary-foreground rounded-xl">
-            تسجيل الدخول
-          </Button>
+            {error && (
+              <p className="text-destructive text-sm text-center bg-destructive/10 p-3 rounded-xl">{error}</p>
+            )}
 
-          <div className="text-center pt-2">
-            <p className="text-muted-foreground text-sm">
-              ليس لديك حساب؟{' '}
-              <button
-                type="button"
-                onClick={() => setCurrentStep(2)}
-                className="text-primary font-medium hover:underline"
-              >
-                إنشاء حساب جديد
-              </button>
-            </p>
-          </div>
-        </form>
+            <Button type="submit" className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl">
+              تسجيل الدخول
+            </Button>
+
+            <div className="text-center pt-1">
+              <p className="text-muted-foreground text-sm">
+                ليس لديك حساب؟{' '}
+                <button type="button" onClick={() => setCurrentStep(2)} className="text-primary font-medium hover:underline">
+                  إنشاء حساب جديد
+                </button>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

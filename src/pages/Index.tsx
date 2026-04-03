@@ -8,6 +8,7 @@ import ExamEngine from '@/components/steps/ExamEngine';
 import Results from '@/components/steps/Results';
 import Booking from '@/components/steps/Booking';
 import Report from '@/components/steps/Report';
+import Profile from '@/components/steps/Profile';
 
 const StepRenderer = () => {
   const { currentStep } = useApp();
@@ -21,6 +22,7 @@ const StepRenderer = () => {
     case 6: return <Results />;
     case 7: return <Booking />;
     case 8: return <Report />;
+    case 10: return <Profile />;
     default: return <Landing />;
   }
 };

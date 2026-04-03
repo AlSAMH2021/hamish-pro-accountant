@@ -3,14 +3,14 @@ import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { getQuestionsBySetor, correctAnswers } from '@/data/questions';
 import { AXES, Axis, ExamResult, getPerformanceLevel } from '@/data/types';
-import { AlertTriangle, Clock } from 'lucide-react';
+import { AlertTriangle, Clock, ChevronRight, ChevronLeft } from 'lucide-react';
 
 const ExamEngine = () => {
   const { user, setExamResult, setCurrentStep, updateUserStatus } = useApp();
   const questions = getQuestionsBySetor(user?.sector || 'tourism');
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes
+  const [timeLeft, setTimeLeft] = useState(60 * 60);
   const [showWarning, setShowWarning] = useState(false);
   const [tabWarnings, setTabWarnings] = useState(0);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -54,7 +54,6 @@ const ExamEngine = () => {
     setCurrentStep(6);
   }, [answers, questions, user?.sector, setExamResult, updateUserStatus, setCurrentStep]);
 
-  // Timer
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -65,7 +64,6 @@ const ExamEngine = () => {
     return () => clearInterval(timer);
   }, [submitExam]);
 
-  // Tab switch detection
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -83,17 +81,15 @@ const ExamEngine = () => {
   const q = questions[currentQ];
   const answeredCount = Object.keys(answers).length;
   const progress = (answeredCount / 45) * 100;
-
-  // Get current axis info
   const currentAxisIndex = Math.floor(currentQ / 9);
   const currentAxis = AXES[currentAxisIndex];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir="rtl">
       {/* Warning overlay */}
       {showWarning && (
         <div className="fixed inset-0 z-50 bg-foreground/80 flex items-center justify-center">
-          <div className="bg-card p-8 rounded-2xl text-center max-w-md mx-4">
+          <div className="bg-card p-8 rounded-2xl text-center max-w-md mx-4 shadow-elevated">
             <AlertTriangle className="w-16 h-16 text-destructive mx-auto mb-4" />
             <h2 className="text-xl font-bold text-foreground mb-2">تنبيه!</h2>
             <p className="text-muted-foreground">تم رصد مغادرة الصفحة ({tabWarnings} مرات). يرجى البقاء في صفحة الاختبار.</p>
@@ -101,10 +97,10 @@ const ExamEngine = () => {
         </div>
       )}
 
-      {/* Confirm submit dialog */}
+      {/* Confirm submit */}
       {showConfirm && (
         <div className="fixed inset-0 z-50 bg-foreground/50 flex items-center justify-center">
-          <div className="bg-card p-8 rounded-2xl text-center max-w-md mx-4">
+          <div className="bg-card p-8 rounded-2xl text-center max-w-md mx-4 shadow-elevated">
             <h2 className="text-xl font-bold text-foreground mb-2">تأكيد تسليم الاختبار</h2>
             <p className="text-muted-foreground mb-2">أجبت على {answeredCount} من 45 سؤال</p>
             {answeredCount < 45 && <p className="text-warning text-sm mb-4">لم تُجب على {45 - answeredCount} سؤال بعد</p>}
@@ -116,22 +112,30 @@ const ExamEngine = () => {
         </div>
       )}
 
-      {/* Header */}
-      <div className="sticky top-0 z-40 bg-card border-b border-border shadow-card">
-        <div className="max-w-4xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">{currentAxis?.icon} {currentAxis?.label}</span>
+      {/* Header bar */}
+      <div className="sticky top-0 z-40 bg-card border-b border-border">
+        <div className="max-w-4xl mx-auto px-4 md:px-8 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                <span className="text-lg">{currentAxis?.icon}</span>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-foreground">{currentAxis?.label}</p>
+                <p className="text-xs text-muted-foreground">السؤال {(currentQ % 9) + 1} من 9</p>
+              </div>
             </div>
-            <div className={`flex items-center gap-1.5 font-mono font-bold text-lg ${timeLeft < 300 ? 'text-destructive' : 'text-foreground'}`}>
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-xl font-mono font-bold text-lg ${
+              timeLeft < 300 ? 'text-destructive bg-destructive/10' : 'text-foreground bg-muted/50'
+            }`}>
               <Clock className="w-4 h-4" />
               {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
             </div>
           </div>
-          <div className="w-full bg-muted rounded-full h-2">
-            <div className="bg-gradient-primary h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+          <div className="w-full bg-muted rounded-full h-2.5">
+            <div className="bg-gradient-primary h-2.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
-          <div className="flex justify-between text-xs text-muted-foreground mt-1">
+          <div className="flex justify-between text-xs text-muted-foreground mt-1.5">
             <span>السؤال {currentQ + 1} من 45</span>
             <span>{answeredCount} إجابة</span>
           </div>
@@ -139,13 +143,13 @@ const ExamEngine = () => {
       </div>
 
       {/* Question */}
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="bg-card rounded-2xl shadow-card p-8 animate-fade-in-up">
+      <div className="max-w-3xl mx-auto px-4 md:px-8 py-8">
+        <div className="bg-card rounded-2xl shadow-card p-6 md:p-8 animate-fade-in-up">
           <div className="mb-6">
-            <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+            <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold mb-4">
               سؤال {currentQ + 1}
             </span>
-            <h2 className="text-xl font-bold text-foreground leading-relaxed">{q.text}</h2>
+            <h2 className="text-lg md:text-xl font-bold text-foreground leading-relaxed">{q.text}</h2>
           </div>
 
           <div className="space-y-3 mb-8">
@@ -155,7 +159,7 @@ const ExamEngine = () => {
                 onClick={() => setAnswers({ ...answers, [currentQ]: i })}
                 className={`w-full text-right p-4 rounded-xl border-2 transition-all ${
                   answers[currentQ] === i
-                    ? 'border-primary bg-primary/5 text-foreground font-medium'
+                    ? 'border-primary bg-primary/5 text-foreground font-medium shadow-glow'
                     : 'border-border hover:border-primary/30 text-foreground'
                 }`}
               >
@@ -165,29 +169,30 @@ const ExamEngine = () => {
                   }`}>
                     {['أ', 'ب', 'ج', 'د'][i]}
                   </span>
-                  {opt}
+                  <span className="text-sm">{opt}</span>
                 </span>
               </button>
             ))}
           </div>
 
-          {/* Navigation */}
           <div className="flex items-center justify-between">
             <Button
               variant="outline"
               onClick={() => setCurrentQ(Math.max(0, currentQ - 1))}
               disabled={currentQ === 0}
-              className="h-12 px-6"
+              className="h-12 px-6 gap-2"
             >
+              <ChevronRight className="w-4 h-4" />
               السابق
             </Button>
             
             {currentQ < 44 ? (
               <Button
                 onClick={() => setCurrentQ(currentQ + 1)}
-                className="h-12 px-6 bg-gradient-primary text-primary-foreground"
+                className="h-12 px-6 bg-gradient-primary text-primary-foreground gap-2"
               >
                 التالي
+                <ChevronLeft className="w-4 h-4" />
               </Button>
             ) : (
               <Button
@@ -202,7 +207,12 @@ const ExamEngine = () => {
 
         {/* Question map */}
         <div className="mt-6 bg-card rounded-2xl shadow-card p-6">
-          <p className="text-sm font-medium text-foreground mb-3">خريطة الأسئلة</p>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm font-bold text-foreground">خريطة الأسئلة</p>
+            <Button variant="ghost" onClick={() => setShowConfirm(true)} className="text-xs h-8 text-primary">
+              تسليم الاختبار
+            </Button>
+          </div>
           <div className="grid grid-cols-9 gap-2">
             {Array.from({ length: 45 }, (_, i) => (
               <button
@@ -210,10 +220,10 @@ const ExamEngine = () => {
                 onClick={() => setCurrentQ(i)}
                 className={`w-full aspect-square rounded-lg text-xs font-bold transition-all ${
                   currentQ === i
-                    ? 'bg-primary text-primary-foreground ring-2 ring-primary/30'
+                    ? 'bg-primary text-primary-foreground ring-2 ring-primary/30 scale-110'
                     : answers[i] !== undefined
                     ? 'bg-primary/20 text-primary'
-                    : 'bg-muted text-muted-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
               >
                 {i + 1}
