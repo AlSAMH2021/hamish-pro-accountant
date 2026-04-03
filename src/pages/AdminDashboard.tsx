@@ -323,7 +323,7 @@ const AdminDashboard = () => {
                     </h3>
                     <div className="space-y-3">
                       {Object.entries(SECTOR_MAP).map(([key, label]) => {
-                        const count = profiles.filter(p => p.sector === key).length;
+                        const count = nonAdminProfiles.filter(p => p.sector === key).length;
                         const pct = totalUsers > 0 ? Math.round((count / totalUsers) * 100) : 0;
                         return (
                           <div key={key} className="p-3 rounded-xl bg-muted/30">
