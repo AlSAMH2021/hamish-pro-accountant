@@ -53,7 +53,7 @@ function AnimatedCounter({ target, suffix = '', prefix = '' }: { target: number;
 }
 
 /* ── Reveal text word-by-word ── */
-function RevealText({ text, className = '', delay = 0 }: { text: string; className?: string; delay?: number }) {
+function RevealText({ text, className = '', delay = 0, goldGradient = false }: { text: string; className?: string; delay?: number; goldGradient?: boolean }) {
   const { ref, visible } = useReveal(0.2);
   const words = text.split(' ');
 
@@ -62,18 +62,15 @@ function RevealText({ text, className = '', delay = 0 }: { text: string; classNa
       {words.map((word, i) => (
         <span
           key={i}
-          className="inline-block overflow-hidden"
+          className={`inline-block transition-all duration-700 ${goldGradient ? 'bg-clip-text text-transparent' : ''}`}
+          style={{
+            transitionDelay: `${delay + i * 100}ms`,
+            transform: visible ? 'translateY(0)' : 'translateY(20px)',
+            opacity: visible ? 1 : 0,
+            ...(goldGradient ? { backgroundImage: 'linear-gradient(135deg, hsl(40 70% 50%), hsl(35 80% 45%))' } : {}),
+          }}
         >
-          <span
-            className="inline-block transition-all duration-700"
-            style={{
-              transitionDelay: `${delay + i * 100}ms`,
-              transform: visible ? 'translateY(0)' : 'translateY(110%)',
-              opacity: visible ? 1 : 0,
-            }}
-          >
-            {word}&nbsp;
-          </span>
+          {word}&nbsp;
         </span>
       ))}
     </span>
@@ -120,9 +117,7 @@ const Landing = () => {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
             <RevealText text="قيّم مستواك المحاسبي" delay={200} />
             <br />
-            <span className="text-gradient-gold">
-              <RevealText text="بدقة احترافية" delay={600} />
-            </span>
+            <RevealText text="بدقة احترافية" delay={600} goldGradient />
           </h1>
 
           <FadeUp delay={900}>
