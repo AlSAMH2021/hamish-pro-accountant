@@ -9,6 +9,14 @@ import { useRef, useCallback } from 'react';
 const Results = () => {
   const { examResult, user, setCurrentStep } = useApp();
   const badgeCardRef = useRef<HTMLDivElement>(null);
+
+  const downloadBadge = useCallback(() => {
+    const link = document.createElement('a');
+    link.href = badgeImage;
+    link.download = `hamesh-badge-${user?.name || 'certified'}.png`;
+    link.click();
+  }, [user]);
+
   if (!examResult) return null;
 
   const { totalScore, performanceLevel, passed, axisScores, axisPassed } = examResult;
