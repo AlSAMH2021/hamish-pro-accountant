@@ -4,6 +4,11 @@ import { AXES, AXIS_RECOMMENDATIONS, SECTOR_LABELS, getPerformanceColor } from '
 import { getQuestionsBySetor, correctAnswers } from '@/data/questions';
 import { CheckCircle, XCircle, Share2, FileText, Award, CalendarDays, BookOpen, TrendingUp, AlertTriangle, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Cell, PieChart, Pie,
+} from 'recharts';
 
 const Report = () => {
   const { user, examResult, booking, sessionCompleted, setCurrentStep } = useApp();
