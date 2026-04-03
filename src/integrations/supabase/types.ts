@@ -14,7 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          booked_at: string
+          created_at: string
+          date: string
+          id: string
+          session_completed: boolean
+          time: string
+          user_id: string
+        }
+        Insert: {
+          booked_at?: string
+          created_at?: string
+          date: string
+          id?: string
+          session_completed?: boolean
+          time: string
+          user_id: string
+        }
+        Update: {
+          booked_at?: string
+          created_at?: string
+          date?: string
+          id?: string
+          session_completed?: boolean
+          time?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      exam_results: {
+        Row: {
+          answers: Json
+          axis_passed: Json
+          axis_scores: Json
+          completed_at: string
+          created_at: string
+          id: string
+          passed: boolean
+          performance_level: string
+          total_score: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          axis_passed?: Json
+          axis_scores?: Json
+          completed_at?: string
+          created_at?: string
+          id?: string
+          passed: boolean
+          performance_level: string
+          total_score: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          axis_passed?: Json
+          axis_scores?: Json
+          completed_at?: string
+          created_at?: string
+          id?: string
+          passed?: boolean
+          performance_level?: string
+          total_score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          company: string | null
+          created_at: string
+          id: string
+          job_title: string | null
+          name: string
+          payment_status: boolean
+          phone: string | null
+          sector: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          id?: string
+          job_title?: string | null
+          name: string
+          payment_status?: boolean
+          phone?: string | null
+          sector?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          id?: string
+          job_title?: string | null
+          name?: string
+          payment_status?: boolean
+          phone?: string | null
+          sector?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
