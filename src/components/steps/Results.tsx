@@ -41,12 +41,6 @@ const Results = () => {
     );
   };
 
-  const downloadBadge = useCallback(() => {
-    const link = document.createElement('a');
-    link.href = badgeImage;
-    link.download = `hamesh-badge-${user?.name || 'certified'}.png`;
-    link.click();
-  }, [user]);
 
   return (
     <DashboardLayout activePage="results">
