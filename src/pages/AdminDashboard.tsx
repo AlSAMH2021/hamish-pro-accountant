@@ -38,6 +38,7 @@ interface BookingRow {
   date: string;
   time: string;
   session_completed: boolean;
+  session_link: string | null;
   booked_at: string;
 }
 
