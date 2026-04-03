@@ -43,7 +43,7 @@ interface BookingRow {
   booked_at: string;
 }
 
-type Tab = 'stats' | 'users' | 'bookings' | 'slots';
+type Tab = 'stats' | 'users' | 'admins' | 'bookings' | 'slots';
 
 interface SlotRow {
   id: string;
