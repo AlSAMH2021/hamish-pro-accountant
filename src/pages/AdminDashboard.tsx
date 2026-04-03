@@ -62,6 +62,7 @@ const SECTOR_MAP: Record<string, string> = {
 const AdminDashboard = () => {
   const { isAdmin, loading: roleLoading } = useIsAdmin();
   const navigate = useNavigate();
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>('stats');
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [exams, setExams] = useState<ExamRow[]>([]);
@@ -91,6 +92,10 @@ const AdminDashboard = () => {
     setAdminUserIds(new Set((r.data || []).map((row: any) => row.user_id)));
     setSlots((s.data as SlotRow[]) || []);
     setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
   }, []);
 
   useEffect(() => {
@@ -130,7 +135,7 @@ const AdminDashboard = () => {
   const pendingSessions = bookings.filter(b => !b.session_completed).length;
 
   const filteredProfiles = profiles.filter(p =>
-    p.name.includes(search) || (p.company || '').includes(search) || (p.phone || '').includes(search)
+    p.user_id !== currentUserId && (p.name.includes(search) || (p.company || '').includes(search) || (p.phone || '').includes(search))
   );
 
   const getUserExam = (userId: string) => exams.find(e => e.user_id === userId);
