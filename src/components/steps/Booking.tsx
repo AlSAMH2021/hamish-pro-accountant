@@ -113,61 +113,62 @@ const Booking = () => {
             <p className="text-muted-foreground">لا توجد مواعيد متاحة حالياً</p>
           </div>
         ) : (
-        <div className="bg-card rounded-2xl shadow-card p-6">
-          <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-primary" />
-            اختر اليوم
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {SLOTS.map((slot) => (
-              <button
-                key={slot.date}
-                onClick={() => { setSelectedDate(slot.date); setSelectedTime(''); }}
-                className={`p-4 rounded-xl border-2 text-center transition-all ${
-                  selectedDate === slot.date
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-primary/30'
-                }`}
-              >
-                <p className="font-bold text-foreground text-sm">{slot.day}</p>
-                <p className="text-xs text-muted-foreground mt-1">{slot.date.split('-').slice(1).join('/')}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {selectedSlot && (
-          <div className="bg-card rounded-2xl shadow-card p-6 animate-fade-in-up">
-            <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary" />
-              اختر الوقت
-            </h3>
-            <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-              {selectedSlot.times.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setSelectedTime(time)}
-                  className={`p-3 rounded-xl border-2 text-center font-bold text-sm transition-all ${
-                    selectedTime === time
-                      ? 'border-primary bg-primary/5 text-foreground'
-                      : 'border-border text-muted-foreground hover:border-primary/30'
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
+          <>
+            <div className="bg-card rounded-2xl shadow-card p-6">
+              <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-primary" />
+                اختر اليوم
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {SLOTS.map((slot) => (
+                  <button
+                    key={slot.date}
+                    onClick={() => { setSelectedDate(slot.date); setSelectedTime(''); }}
+                    className={`p-4 rounded-xl border-2 text-center transition-all ${
+                      selectedDate === slot.date
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border hover:border-primary/30'
+                    }`}
+                  >
+                    <p className="font-bold text-foreground text-sm">{slot.day}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{slot.date.split('-').slice(1).join('/')}</p>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
 
-        <Button
-          onClick={handleBook}
-          disabled={!selectedDate || !selectedTime}
-          className="w-full h-14 text-lg font-bold bg-gradient-primary text-primary-foreground rounded-xl disabled:opacity-50"
-        >
-          تأكيد الحجز
-        </Button>
-        </>
+            {selectedSlot && (
+              <div className="bg-card rounded-2xl shadow-card p-6 animate-fade-in-up">
+                <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-primary" />
+                  اختر الوقت
+                </h3>
+                <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                  {selectedSlot.times.map((time) => (
+                    <button
+                      key={time}
+                      onClick={() => setSelectedTime(time)}
+                      className={`p-3 rounded-xl border-2 text-center font-bold text-sm transition-all ${
+                        selectedTime === time
+                          ? 'border-primary bg-primary/5 text-foreground'
+                          : 'border-border text-muted-foreground hover:border-primary/30'
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <Button
+              onClick={handleBook}
+              disabled={!selectedDate || !selectedTime}
+              className="w-full h-14 text-lg font-bold bg-gradient-primary text-primary-foreground rounded-xl disabled:opacity-50"
+            >
+              تأكيد الحجز
+            </Button>
+          </>
         )}
       </div>
     </DashboardLayout>
