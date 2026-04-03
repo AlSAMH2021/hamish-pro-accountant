@@ -143,6 +143,15 @@ const AdminDashboard = () => {
     loadData();
   };
 
+  const handleToggleAdmin = async (userId: string) => {
+    if (adminUserIds.has(userId)) {
+      await supabase.from('user_roles').delete().eq('user_id', userId).eq('role', 'admin');
+    } else {
+      await supabase.from('user_roles').insert({ user_id: userId, role: 'admin' as any });
+    }
+    loadData();
+  };
+
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'stats', label: 'الإحصائيات', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'users', label: 'المستخدمين', icon: <Users className="w-4 h-4" /> },
