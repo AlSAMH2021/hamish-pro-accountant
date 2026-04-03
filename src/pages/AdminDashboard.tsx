@@ -506,6 +506,111 @@ const AdminDashboard = () => {
                 </div>
               </div>
             )}
+
+            {/* Slots Management Tab */}
+            {tab === 'slots' && (
+              <div className="space-y-6">
+                {/* Add new slot */}
+                <div className="bg-card rounded-2xl shadow-card p-6">
+                  <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                    <CalendarDays className="w-5 h-5 text-primary" />
+                    إضافة موعد جديد
+                  </h3>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1">
+                      <label className="text-xs text-muted-foreground mb-1 block">التاريخ</label>
+                      <Input
+                        type="date"
+                        value={newSlotDate}
+                        onChange={e => {
+                          setNewSlotDate(e.target.value);
+                          const d = new Date(e.target.value + 'T00:00:00');
+                          setNewSlotDay(DAY_NAMES[d.getDay()] || '');
+                        }}
+                        className="h-11 rounded-xl"
+                      />
+                      {newSlotDay && (
+                        <p className="text-xs text-primary mt-1">{newSlotDay}</p>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-xs text-muted-foreground mb-1 block">الوقت</label>
+                      <Input
+                        type="time"
+                        value={newSlotTime}
+                        onChange={e => setNewSlotTime(e.target.value)}
+                        className="h-11 rounded-xl"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Button
+                        onClick={handleAddSlot}
+                        disabled={!newSlotDate || !newSlotTime || addingSlot}
+                        className="h-11 px-6 rounded-xl"
+                      >
+                        {addingSlot ? <Loader2 className="w-4 h-4 animate-spin" /> : 'إضافة'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Existing slots grouped by date */}
+                {Object.keys(slotsByDate).length === 0 ? (
+                  <div className="bg-card rounded-2xl shadow-card p-8 text-center">
+                    <CalendarDays className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-muted-foreground">لا توجد مواعيد متاحة حالياً</p>
+                  </div>
+                ) : (
+                  Object.entries(slotsByDate)
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([date, { day_name, slots: dateSlots }]) => (
+                      <div key={date} className="bg-card rounded-2xl shadow-card p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <CalendarDays className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-foreground">{day_name}</h3>
+                            <p className="text-xs text-muted-foreground">{date}</p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                          {dateSlots.map(slot => (
+                            <div
+                              key={slot.id}
+                              className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
+                                slot.is_active ? 'border-primary/20 bg-primary/5' : 'border-border bg-muted/30 opacity-60'
+                              }`}
+                            >
+                              <span className={`font-bold text-sm ${slot.is_active ? 'text-foreground' : 'text-muted-foreground'}`}>
+                                {slot.time}
+                              </span>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => handleToggleSlot(slot.id, slot.is_active)}
+                                  className={`p-1 rounded-lg transition-colors ${
+                                    slot.is_active ? 'text-success hover:bg-success/10' : 'text-muted-foreground hover:bg-muted/50'
+                                  }`}
+                                  title={slot.is_active ? 'تعطيل' : 'تفعيل'}
+                                >
+                                  {slot.is_active ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteSlot(slot.id)}
+                                  className="text-destructive hover:bg-destructive/10 p-1 rounded-lg transition-colors"
+                                  title="حذف"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                )}
+              </div>
+            )}
           </>
         )}
       </div>
