@@ -1,1 +1,5 @@
 project_id = "xlhibwpvdomgpljvqvng"
+
+[auth]
+site_url = "https://assesment.hameash.com"
+additional_redirect_urls = ["https://assesment.hameash.com", "https://assesment.hameash.com/**"]
