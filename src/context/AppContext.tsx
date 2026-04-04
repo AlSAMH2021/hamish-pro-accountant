@@ -238,7 +238,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       password,
       options: {
         data: metadata,
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: 'https://assesment.hameash.com',
       },
     });
     if (error) return { error: error.message };
