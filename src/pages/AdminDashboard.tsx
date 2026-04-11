@@ -501,6 +501,17 @@ const AdminDashboard = () => {
                                 </select>
                               </td>
                               <td className="p-3 text-center">
+                                {p.receipt_url ? (
+                                  <button
+                                    onClick={() => handleViewReceipt(p.receipt_url!)}
+                                    className="text-primary hover:bg-primary/10 p-1.5 rounded-lg transition-colors"
+                                    title="عرض الإيصال"
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </button>
+                                ) : <span className="text-xs text-muted-foreground">—</span>}
+                              </td>
+                              <td className="p-3 text-center">
                                 <button
                                   onClick={() => handleDeleteUser(p.user_id)}
                                   className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg transition-colors"
