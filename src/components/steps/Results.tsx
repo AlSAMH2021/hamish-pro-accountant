@@ -1,8 +1,8 @@
 import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/components/DashboardLayout';
-import { AXES, getPerformanceColor } from '@/data/types';
-import { CheckCircle, XCircle, Trophy, ArrowLeft, Download, Linkedin, Twitter } from 'lucide-react';
+import { AXES, AXIS_RECOMMENDATIONS, Axis, getPerformanceColor } from '@/data/types';
+import { CheckCircle, XCircle, Trophy, ArrowLeft, Download, Linkedin, Twitter, BookOpen } from 'lucide-react';
 import badgeImage from '@/assets/badge-passed.png';
 import { useRef, useCallback } from 'react';
 
@@ -159,6 +159,41 @@ const Results = () => {
             })}
           </div>
         </div>
+
+        {/* Course Recommendations */}
+        {(() => {
+          const weakAxes = AXES.filter(({ key }) => {
+            const score = axisScores[key as Axis];
+            return (score / 9) < 0.5;
+          });
+          if (weakAxes.length === 0) return null;
+          return (
+            <div className="bg-card rounded-2xl shadow-card p-6 animate-fade-in-up">
+              <h2 className="text-lg font-bold text-foreground mb-2 flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-primary" />
+                دورات مقترحة لتطوير أدائك
+              </h2>
+              <p className="text-sm text-muted-foreground mb-5">بناءً على نتائجك، نرشح لك الدورات التالية في المحاور التي حصلت فيها على أقل من 50%:</p>
+              <div className="space-y-3">
+                {weakAxes.map(({ key, label, icon }) => {
+                  const rec = AXIS_RECOMMENDATIONS[key as Axis];
+                  const score = axisScores[key as Axis];
+                  const pct = Math.round((score / 9) * 100);
+                  return (
+                    <div key={key} className="flex items-center gap-4 p-4 rounded-xl bg-warning/5 border border-warning/20">
+                      <span className="text-2xl">{icon}</span>
+                      <div className="flex-1">
+                        <p className="font-bold text-foreground text-sm">{rec.course}</p>
+                        <p className="text-xs text-muted-foreground">{label} — نتيجتك: {pct}% ({score}/9)</p>
+                      </div>
+                      <span className="text-xs bg-warning/10 text-warning px-3 py-1 rounded-full font-bold">{rec.hours}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* CTA */}
         <div className="bg-card rounded-2xl shadow-card p-6 text-center">
