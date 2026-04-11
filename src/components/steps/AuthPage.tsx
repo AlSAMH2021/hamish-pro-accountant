@@ -3,8 +3,8 @@ import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Sector, SECTOR_LABELS } from '@/data/types';
 import { ArrowRight, Loader2 } from 'lucide-react';
+import logoColor from '@/assets/logo-color.png';
 import logoColor from '@/assets/logo-color.png';
 
 type AuthTab = 'login' | 'register';
