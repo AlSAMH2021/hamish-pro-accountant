@@ -984,10 +984,11 @@ const AdminDashboard = () => {
                               </div>
                             </td>
                           </tr>
-                        ))}
+                          );
+                        })}
                         {discountCodes.length === 0 && (
                           <tr>
-                            <td colSpan={6} className="p-8 text-center text-muted-foreground">لا توجد أكواد خصم</td>
+                            <td colSpan={7} className="p-8 text-center text-muted-foreground">لا توجد أكواد خصم</td>
                           </tr>
                         )}
                       </tbody>
