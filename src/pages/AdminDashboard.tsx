@@ -461,6 +461,7 @@ const AdminDashboard = () => {
                           <th className="text-center p-3 font-medium text-muted-foreground">الدفع</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الاختبار</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الإيصال</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">إجراءات</th>
                         </tr>
                       </thead>
