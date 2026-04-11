@@ -154,7 +154,7 @@ const LoginForm = ({ onSwitchToRegister }: { onSwitchToRegister: () => void }) =
 const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
   const { signUp } = useApp();
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', jobTitle: '', company: '', sector: '' as Sector | '', password: '', confirmPassword: '',
+    name: '', email: '', phone: '', password: '', confirmPassword: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -165,9 +165,6 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     if (!form.name.trim()) e.name = 'الاسم مطلوب';
     if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = 'بريد إلكتروني غير صالح';
     if (!form.phone.match(/^05\d{8}$/)) e.phone = 'رقم جوال سعودي غير صالح (05XXXXXXXX)';
-    if (!form.jobTitle.trim()) e.jobTitle = 'الوظيفة مطلوبة';
-    if (!form.company.trim()) e.company = 'الشركة مطلوبة';
-    if (!form.sector) e.sector = 'القطاع مطلوب';
     if (form.password.length < 6) e.password = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
     if (form.password !== form.confirmPassword) e.confirmPassword = 'كلمتا المرور غير متطابقتين';
     setErrors(e);
@@ -180,19 +177,13 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     setSubmitting(true);
     setServerError('');
     const { error } = await signUp(form.email, form.password, {
-      name: form.name, phone: form.phone, jobTitle: form.jobTitle, company: form.company, sector: form.sector as string,
+      name: form.name, phone: form.phone,
     });
     if (error) {
       setServerError(error);
       setSubmitting(false);
     }
   };
-
-  const sectors: { value: Sector; label: string }[] = [
-    { value: 'tourism', label: SECTOR_LABELS.tourism },
-    { value: 'restaurants', label: SECTOR_LABELS.restaurants },
-    { value: 'healthcare', label: SECTOR_LABELS.healthcare },
-  ];
 
   return (
     <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card p-6 md:p-8 space-y-4 border border-border/50">
@@ -207,8 +198,6 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
         { key: 'name', label: 'الاسم الكامل', type: 'text', placeholder: 'أدخل اسمك' },
         { key: 'email', label: 'البريد الإلكتروني', type: 'email', placeholder: 'example@email.com' },
         { key: 'phone', label: 'رقم الجوال', type: 'tel', placeholder: '05XXXXXXXX' },
-        { key: 'jobTitle', label: 'المسمى الوظيفي', type: 'text', placeholder: 'محاسب، مدير مالي...' },
-        { key: 'company', label: 'الشركة', type: 'text', placeholder: 'اسم الشركة' },
       ] as const).map(({ key, label, type, placeholder }) => (
         <div key={key}>
           <Label className="text-foreground font-medium mb-1.5 block text-sm">{label}</Label>
@@ -216,27 +205,6 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
           {errors[key] && <p className="text-destructive text-xs mt-1">{errors[key]}</p>}
         </div>
       ))}
-
-      <div>
-        <Label className="text-foreground font-medium mb-1.5 block text-sm">القطاع</Label>
-        <div className="grid grid-cols-1 gap-2">
-          {sectors.map((s) => (
-            <button
-              key={s.value}
-              type="button"
-              onClick={() => setForm({ ...form, sector: s.value })}
-              className={`p-3.5 rounded-xl border-2 text-right transition-all text-sm ${
-                form.sector === s.value
-                  ? 'border-primary bg-primary/5 text-foreground font-medium'
-                  : 'border-border bg-card text-muted-foreground hover:border-primary/30'
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-        {errors.sector && <p className="text-destructive text-xs mt-1">{errors.sector}</p>}
-      </div>
 
       <div>
         <Label className="text-foreground font-medium mb-1.5 block text-sm">كلمة المرور</Label>
