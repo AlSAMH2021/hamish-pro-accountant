@@ -8,6 +8,7 @@ import {
   Users, BarChart3, CalendarDays, CheckCircle, XCircle,
   Search, Trash2, Loader2, LogOut, Shield, TrendingUp,
   BookOpen, Clock, Link2, Send, UserPlus, Copy, Eye, EyeOff,
+  Tag, Plus,
 } from 'lucide-react';
 import NotificationBell from '@/components/NotificationBell';
 
@@ -43,7 +44,7 @@ interface BookingRow {
   booked_at: string;
 }
 
-type Tab = 'stats' | 'users' | 'admins' | 'bookings' | 'slots';
+type Tab = 'stats' | 'users' | 'admins' | 'bookings' | 'slots' | 'discounts';
 
 interface SlotRow {
   id: string;
@@ -51,6 +52,16 @@ interface SlotRow {
   day_name: string;
   time: string;
   is_active: boolean;
+}
+
+interface DiscountCodeRow {
+  id: string;
+  code: string;
+  discount_percent: number;
+  is_active: boolean;
+  max_uses: number | null;
+  created_at: string;
+  usage_count?: number;
 }
 
 const SECTOR_MAP: Record<string, string> = {
@@ -83,21 +94,34 @@ const AdminDashboard = () => {
   const [creatingAdmin, setCreatingAdmin] = useState(false);
   const [createdAdminInfo, setCreatedAdminInfo] = useState<{ email: string; password: string } | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [discountCodes, setDiscountCodes] = useState<DiscountCodeRow[]>([]);
+  const [newCodeText, setNewCodeText] = useState('');
+  const [newCodePercent, setNewCodePercent] = useState('');
+  const [newCodeMaxUses, setNewCodeMaxUses] = useState('');
+  const [addingCode, setAddingCode] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [p, e, b, r, s] = await Promise.all([
+    const [p, e, b, r, s, dc, du] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('exam_results').select('id, user_id, total_score, performance_level, passed, completed_at').order('completed_at', { ascending: false }),
       supabase.from('bookings').select('*').order('booked_at', { ascending: false }),
       supabase.from('user_roles').select('user_id, role').eq('role', 'admin'),
       supabase.from('available_slots').select('*').order('date', { ascending: true }),
+      supabase.from('discount_codes').select('*').order('created_at', { ascending: false }),
+      supabase.from('discount_code_usages').select('code_id'),
     ]);
     setProfiles((p.data as ProfileRow[]) || []);
     setExams((e.data as ExamRow[]) || []);
     setBookings((b.data as BookingRow[]) || []);
     setAdminUserIds(new Set((r.data || []).map((row: any) => row.user_id)));
     setSlots((s.data as SlotRow[]) || []);
+
+    // Count usages per code
+    const usageCounts: Record<string, number> = {};
+    (du.data || []).forEach((u: any) => { usageCounts[u.code_id] = (usageCounts[u.code_id] || 0) + 1; });
+    setDiscountCodes(((dc.data || []) as DiscountCodeRow[]).map(c => ({ ...c, usage_count: usageCounts[c.id] || 0 })));
+
     setLoading(false);
   }, []);
 
@@ -180,11 +204,11 @@ const AdminDashboard = () => {
   };
 
   const handleUpdateStatus = async (userId: string, status: string) => {
-    const updateData: Record<string, any> = { status };
     if (status === 'paid') {
-      updateData.payment_status = true;
+      await supabase.from('profiles').update({ status, payment_status: true }).eq('user_id', userId);
+    } else {
+      await supabase.from('profiles').update({ status }).eq('user_id', userId);
     }
-    await supabase.from('profiles').update(updateData).eq('user_id', userId);
     loadData();
   };
 
@@ -255,12 +279,38 @@ const AdminDashboard = () => {
     return acc;
   }, {} as Record<string, { day_name: string; slots: SlotRow[] }>);
 
+  const handleAddCode = async () => {
+    if (!newCodeText.trim() || !newCodePercent) return;
+    setAddingCode(true);
+    await supabase.from('discount_codes').insert({
+      code: newCodeText.trim().toUpperCase(),
+      discount_percent: parseInt(newCodePercent),
+      max_uses: newCodeMaxUses ? parseInt(newCodeMaxUses) : null,
+    } as any);
+    setNewCodeText('');
+    setNewCodePercent('');
+    setNewCodeMaxUses('');
+    setAddingCode(false);
+    loadData();
+  };
+
+  const handleToggleCode = async (codeId: string, currentActive: boolean) => {
+    await supabase.from('discount_codes').update({ is_active: !currentActive } as any).eq('id', codeId);
+    loadData();
+  };
+
+  const handleDeleteCode = async (codeId: string) => {
+    await supabase.from('discount_codes').delete().eq('id', codeId);
+    loadData();
+  };
+
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'stats', label: 'الإحصائيات', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'users', label: 'المستخدمين', icon: <Users className="w-4 h-4" /> },
     { id: 'admins', label: 'المشرفين', icon: <Shield className="w-4 h-4" /> },
     { id: 'bookings', label: 'الجلسات', icon: <CalendarDays className="w-4 h-4" /> },
     { id: 'slots', label: 'المواعيد المتاحة', icon: <Clock className="w-4 h-4" /> },
+    { id: 'discounts', label: 'أكواد الخصم', icon: <Tag className="w-4 h-4" /> },
   ];
 
   return (
@@ -816,6 +866,106 @@ const AdminDashboard = () => {
                       </div>
                     ))
                 )}
+              </div>
+            )}
+
+            {/* Discount Codes Tab */}
+            {tab === 'discounts' && (
+              <div className="space-y-4">
+                {/* Add new code form */}
+                <div className="bg-card rounded-2xl shadow-card p-5">
+                  <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                    <Tag className="w-5 h-5 text-primary" />
+                    إنشاء كود خصم جديد
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <Input
+                      placeholder="الكود (مثال: HAMESH20)"
+                      value={newCodeText}
+                      onChange={e => setNewCodeText(e.target.value.toUpperCase())}
+                      className="h-11 rounded-xl"
+                    />
+                    <Input
+                      placeholder="نسبة الخصم %"
+                      type="number"
+                      min="1"
+                      max="100"
+                      value={newCodePercent}
+                      onChange={e => setNewCodePercent(e.target.value)}
+                      className="h-11 rounded-xl"
+                    />
+                    <Input
+                      placeholder="الحد الأقصى (اختياري)"
+                      type="number"
+                      min="1"
+                      value={newCodeMaxUses}
+                      onChange={e => setNewCodeMaxUses(e.target.value)}
+                      className="h-11 rounded-xl"
+                    />
+                    <Button
+                      onClick={handleAddCode}
+                      disabled={addingCode || !newCodeText.trim() || !newCodePercent}
+                      className="h-11 rounded-xl gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      إضافة
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Codes list */}
+                <div className="bg-card rounded-2xl shadow-card overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border bg-muted/30">
+                          <th className="text-right p-3 font-medium text-muted-foreground">الكود</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">نسبة الخصم</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الاستخدامات</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الحد الأقصى</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">إجراءات</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {discountCodes.map(c => (
+                          <tr key={c.id} className="border-b border-border/50 hover:bg-muted/20">
+                            <td className="p-3 font-mono font-bold text-foreground">{c.code}</td>
+                            <td className="p-3 text-center text-foreground font-bold">{c.discount_percent}%</td>
+                            <td className="p-3 text-center text-foreground">{c.usage_count || 0}</td>
+                            <td className="p-3 text-center text-muted-foreground">{c.max_uses || '∞'}</td>
+                            <td className="p-3 text-center">
+                              <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-bold ${c.is_active ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}`}>
+                                {c.is_active ? 'مفعّل' : 'معطّل'}
+                              </span>
+                            </td>
+                            <td className="p-3 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                <button
+                                  onClick={() => handleToggleCode(c.id, c.is_active)}
+                                  className={`p-1.5 rounded-lg transition-colors ${c.is_active ? 'text-success hover:bg-success/10' : 'text-muted-foreground hover:bg-muted/50'}`}
+                                >
+                                  {c.is_active ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteCode(c.id)}
+                                  className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {discountCodes.length === 0 && (
+                          <tr>
+                            <td colSpan={6} className="p-8 text-center text-muted-foreground">لا توجد أكواد خصم</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             )}
           </>

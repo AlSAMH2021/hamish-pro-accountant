@@ -74,6 +74,62 @@ export type Database = {
         }
         Relationships: []
       }
+      discount_code_usages: {
+        Row: {
+          code_id: string
+          id: string
+          used_at: string
+          user_id: string
+        }
+        Insert: {
+          code_id: string
+          id?: string
+          used_at?: string
+          user_id: string
+        }
+        Update: {
+          code_id?: string
+          id?: string
+          used_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discount_code_usages_code_id_fkey"
+            columns: ["code_id"]
+            isOneToOne: false
+            referencedRelation: "discount_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      discount_codes: {
+        Row: {
+          code: string
+          created_at: string
+          discount_percent: number
+          id: string
+          is_active: boolean
+          max_uses: number | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_percent?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_percent?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+        }
+        Relationships: []
+      }
       exam_results: {
         Row: {
           answers: Json
@@ -147,8 +203,10 @@ export type Database = {
           id: string
           job_title: string | null
           name: string
+          nda_accepted: boolean
           payment_status: boolean
           phone: string | null
+          receipt_url: string | null
           sector: string
           status: string
           updated_at: string
@@ -160,8 +218,10 @@ export type Database = {
           id?: string
           job_title?: string | null
           name: string
+          nda_accepted?: boolean
           payment_status?: boolean
           phone?: string | null
+          receipt_url?: string | null
           sector?: string
           status?: string
           updated_at?: string
@@ -173,8 +233,10 @@ export type Database = {
           id?: string
           job_title?: string | null
           name?: string
+          nda_accepted?: boolean
           payment_status?: boolean
           phone?: string | null
+          receipt_url?: string | null
           sector?: string
           status?: string
           updated_at?: string

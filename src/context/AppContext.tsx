@@ -151,7 +151,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         if (bookingData?.session_completed) setCurrentStep(8);
         else if (bookingData) setCurrentStep(7);
         else if (examData) setCurrentStep(6);
-        else if (profile.payment_status) setCurrentStep(5);
+        else if (profile.payment_status && profile.nda_accepted) setCurrentStep(5);
+        else if (profile.payment_status) setCurrentStep(12);
         else setCurrentStep(3);
       }
     } catch (error) {
