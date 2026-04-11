@@ -8,6 +8,7 @@ import {
   Users, BarChart3, CalendarDays, CheckCircle, XCircle,
   Search, Trash2, Loader2, LogOut, Shield, TrendingUp,
   BookOpen, Clock, Link2, Send, UserPlus, Copy, Eye, EyeOff,
+  Tag, Plus,
 } from 'lucide-react';
 import NotificationBell from '@/components/NotificationBell';
 
@@ -43,7 +44,7 @@ interface BookingRow {
   booked_at: string;
 }
 
-type Tab = 'stats' | 'users' | 'admins' | 'bookings' | 'slots';
+type Tab = 'stats' | 'users' | 'admins' | 'bookings' | 'slots' | 'discounts';
 
 interface SlotRow {
   id: string;
