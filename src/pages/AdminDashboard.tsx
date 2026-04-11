@@ -180,11 +180,11 @@ const AdminDashboard = () => {
   };
 
   const handleUpdateStatus = async (userId: string, status: string) => {
-    const updateData: Record<string, any> = { status };
     if (status === 'paid') {
-      updateData.payment_status = true;
+      await supabase.from('profiles').update({ status, payment_status: true }).eq('user_id', userId);
+    } else {
+      await supabase.from('profiles').update({ status }).eq('user_id', userId);
     }
-    await supabase.from('profiles').update(updateData).eq('user_id', userId);
     loadData();
   };
 
