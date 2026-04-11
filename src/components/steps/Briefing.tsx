@@ -47,15 +47,8 @@ const Briefing = () => {
             <div className="flex items-start gap-3 bg-success/10 rounded-xl p-4">
               <CheckCircle className="w-5 h-5 text-success mt-0.5 shrink-0" />
               <div>
-                <p className="font-medium text-foreground text-sm">المجموع الكلي: 25 من 45 (54%)</p>
-                <p className="text-xs text-muted-foreground">يجب تحقيق 25 درجة على الأقل</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 bg-warning/10 rounded-xl p-4">
-              <AlertTriangle className="w-5 h-5 text-warning mt-0.5 shrink-0" />
-              <div>
-                <p className="font-medium text-foreground text-sm">الحد الأدنى لكل محور: 6 من 9 (67%)</p>
-                <p className="text-xs text-muted-foreground">يجب اجتياز كل محور على حدة</p>
+                <p className="font-medium text-foreground text-sm">المجموع الكلي: أكثر من 50%</p>
+                <p className="text-xs text-muted-foreground">يجب الإجابة على أكثر من نصف الأسئلة بشكل صحيح</p>
               </div>
             </div>
           </div>
