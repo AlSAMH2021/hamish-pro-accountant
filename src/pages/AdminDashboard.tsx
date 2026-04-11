@@ -279,12 +279,38 @@ const AdminDashboard = () => {
     return acc;
   }, {} as Record<string, { day_name: string; slots: SlotRow[] }>);
 
+  const handleAddCode = async () => {
+    if (!newCodeText.trim() || !newCodePercent) return;
+    setAddingCode(true);
+    await supabase.from('discount_codes').insert({
+      code: newCodeText.trim().toUpperCase(),
+      discount_percent: parseInt(newCodePercent),
+      max_uses: newCodeMaxUses ? parseInt(newCodeMaxUses) : null,
+    } as any);
+    setNewCodeText('');
+    setNewCodePercent('');
+    setNewCodeMaxUses('');
+    setAddingCode(false);
+    loadData();
+  };
+
+  const handleToggleCode = async (codeId: string, currentActive: boolean) => {
+    await supabase.from('discount_codes').update({ is_active: !currentActive } as any).eq('id', codeId);
+    loadData();
+  };
+
+  const handleDeleteCode = async (codeId: string) => {
+    await supabase.from('discount_codes').delete().eq('id', codeId);
+    loadData();
+  };
+
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'stats', label: 'الإحصائيات', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'users', label: 'المستخدمين', icon: <Users className="w-4 h-4" /> },
     { id: 'admins', label: 'المشرفين', icon: <Shield className="w-4 h-4" /> },
     { id: 'bookings', label: 'الجلسات', icon: <CalendarDays className="w-4 h-4" /> },
     { id: 'slots', label: 'المواعيد المتاحة', icon: <Clock className="w-4 h-4" /> },
+    { id: 'discounts', label: 'أكواد الخصم', icon: <Tag className="w-4 h-4" /> },
   ];
 
   return (
