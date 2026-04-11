@@ -868,6 +868,106 @@ const AdminDashboard = () => {
                 )}
               </div>
             )}
+
+            {/* Discount Codes Tab */}
+            {tab === 'discounts' && (
+              <div className="space-y-4">
+                {/* Add new code form */}
+                <div className="bg-card rounded-2xl shadow-card p-5">
+                  <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                    <Tag className="w-5 h-5 text-primary" />
+                    إنشاء كود خصم جديد
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <Input
+                      placeholder="الكود (مثال: HAMESH20)"
+                      value={newCodeText}
+                      onChange={e => setNewCodeText(e.target.value.toUpperCase())}
+                      className="h-11 rounded-xl"
+                    />
+                    <Input
+                      placeholder="نسبة الخصم %"
+                      type="number"
+                      min="1"
+                      max="100"
+                      value={newCodePercent}
+                      onChange={e => setNewCodePercent(e.target.value)}
+                      className="h-11 rounded-xl"
+                    />
+                    <Input
+                      placeholder="الحد الأقصى (اختياري)"
+                      type="number"
+                      min="1"
+                      value={newCodeMaxUses}
+                      onChange={e => setNewCodeMaxUses(e.target.value)}
+                      className="h-11 rounded-xl"
+                    />
+                    <Button
+                      onClick={handleAddCode}
+                      disabled={addingCode || !newCodeText.trim() || !newCodePercent}
+                      className="h-11 rounded-xl gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      إضافة
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Codes list */}
+                <div className="bg-card rounded-2xl shadow-card overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border bg-muted/30">
+                          <th className="text-right p-3 font-medium text-muted-foreground">الكود</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">نسبة الخصم</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الاستخدامات</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الحد الأقصى</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">إجراءات</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {discountCodes.map(c => (
+                          <tr key={c.id} className="border-b border-border/50 hover:bg-muted/20">
+                            <td className="p-3 font-mono font-bold text-foreground">{c.code}</td>
+                            <td className="p-3 text-center text-foreground font-bold">{c.discount_percent}%</td>
+                            <td className="p-3 text-center text-foreground">{c.usage_count || 0}</td>
+                            <td className="p-3 text-center text-muted-foreground">{c.max_uses || '∞'}</td>
+                            <td className="p-3 text-center">
+                              <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-bold ${c.is_active ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}`}>
+                                {c.is_active ? 'مفعّل' : 'معطّل'}
+                              </span>
+                            </td>
+                            <td className="p-3 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                <button
+                                  onClick={() => handleToggleCode(c.id, c.is_active)}
+                                  className={`p-1.5 rounded-lg transition-colors ${c.is_active ? 'text-success hover:bg-success/10' : 'text-muted-foreground hover:bg-muted/50'}`}
+                                >
+                                  {c.is_active ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteCode(c.id)}
+                                  className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {discountCodes.length === 0 && (
+                          <tr>
+                            <td colSpan={6} className="p-8 text-center text-muted-foreground">لا توجد أكواد خصم</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
