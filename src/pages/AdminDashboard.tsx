@@ -945,17 +945,22 @@ const AdminDashboard = () => {
                           <th className="text-right p-3 font-medium text-muted-foreground">الكود</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">نسبة الخصم</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الاستخدامات</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">المبيعات</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الحد الأقصى</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">إجراءات</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {discountCodes.map(c => (
+                        {discountCodes.map(c => {
+                          const uses = c.usage_count || 0;
+                          const revenue = uses * Math.round(299 * (1 - c.discount_percent / 100));
+                          return (
                           <tr key={c.id} className="border-b border-border/50 hover:bg-muted/20">
                             <td className="p-3 font-mono font-bold text-foreground">{c.code}</td>
                             <td className="p-3 text-center text-foreground font-bold">{c.discount_percent}%</td>
-                            <td className="p-3 text-center text-foreground">{c.usage_count || 0}</td>
+                            <td className="p-3 text-center text-foreground">{uses}</td>
+                            <td className="p-3 text-center text-success font-bold">{revenue} ر.س</td>
                             <td className="p-3 text-center text-muted-foreground">{c.max_uses || '∞'}</td>
                             <td className="p-3 text-center">
                               <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-bold ${c.is_active ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}`}>
