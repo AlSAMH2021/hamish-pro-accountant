@@ -54,6 +54,16 @@ interface SlotRow {
   is_active: boolean;
 }
 
+interface DiscountCodeRow {
+  id: string;
+  code: string;
+  discount_percent: number;
+  is_active: boolean;
+  max_uses: number | null;
+  created_at: string;
+  usage_count?: number;
+}
+
 const SECTOR_MAP: Record<string, string> = {
   tourism: 'السياحة والفنادق',
   restaurants: 'المطاعم والمقاهي',
