@@ -524,7 +524,7 @@ const AdminDashboard = () => {
                         })}
                         {filteredProfiles.length === 0 && (
                           <tr>
-                            <td colSpan={7} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
+                            <td colSpan={8} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
                           </tr>
                         )}
                       </tbody>
@@ -994,6 +994,28 @@ const AdminDashboard = () => {
           </>
         )}
       </div>
+
+      {/* Receipt View Modal */}
+      {receiptViewUrl && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setReceiptViewUrl(null)}>
+          <div className="bg-card rounded-2xl shadow-card max-w-3xl max-h-[90vh] overflow-auto p-4" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-foreground">الإيصال</h3>
+              <button onClick={() => setReceiptViewUrl(null)} className="text-muted-foreground hover:text-foreground text-xl font-bold px-2">✕</button>
+            </div>
+            {receiptViewUrl.match(/\.pdf/i) ? (
+              <iframe src={receiptViewUrl} className="w-full h-[70vh] rounded-xl border border-border" />
+            ) : (
+              <img src={receiptViewUrl} alt="إيصال التحويل" className="w-full rounded-xl" />
+            )}
+          </div>
+        </div>
+      )}
+      {receiptLoading && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        </div>
+      )}
     </div>
   );
 };
