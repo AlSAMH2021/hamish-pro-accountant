@@ -100,7 +100,8 @@ const AdminDashboard = () => {
   const [newCodePercent, setNewCodePercent] = useState('');
   const [newCodeMaxUses, setNewCodeMaxUses] = useState('');
   const [addingCode, setAddingCode] = useState(false);
-
+  const [receiptViewUrl, setReceiptViewUrl] = useState<string | null>(null);
+  const [receiptLoading, setReceiptLoading] = useState(false);
   const loadData = useCallback(async () => {
     setLoading(true);
     const [p, e, b, r, s, dc, du] = await Promise.all([
