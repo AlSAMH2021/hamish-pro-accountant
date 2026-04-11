@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import NotificationBell from '@/components/NotificationBell';
 import logoColor from '@/assets/logo-color.png';
 
-type DashboardPage = 'briefing' | 'payment' | 'exam' | 'results' | 'booking' | 'report' | 'profile';
+type DashboardPage = 'briefing' | 'payment' | 'nda' | 'exam' | 'results' | 'booking' | 'report' | 'profile';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

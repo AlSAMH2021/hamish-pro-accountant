@@ -5,6 +5,7 @@ import Registration from '@/components/steps/Registration';
 import ForgotPassword from '@/components/steps/ForgotPassword';
 import Briefing from '@/components/steps/Briefing';
 import Payment from '@/components/steps/Payment';
+import NdaAgreement from '@/components/steps/NdaAgreement';
 import ExamEngine from '@/components/steps/ExamEngine';
 import Results from '@/components/steps/Results';
 import Booking from '@/components/steps/Booking';
@@ -30,6 +31,7 @@ const StepRenderer = () => {
     case 11: return <ForgotPassword />;
     case 3: return <Briefing />;
     case 4: return <Payment />;
+    case 12: return <NdaAgreement />;
     case 5: return <ExamEngine />;
     case 6: return <Results />;
     case 7: return <Booking />;
