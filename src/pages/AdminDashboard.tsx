@@ -23,6 +23,7 @@ interface ProfileRow {
   payment_status: boolean;
   status: string;
   created_at: string;
+  receipt_url: string | null;
 }
 
 interface ExamRow {
@@ -99,7 +100,8 @@ const AdminDashboard = () => {
   const [newCodePercent, setNewCodePercent] = useState('');
   const [newCodeMaxUses, setNewCodeMaxUses] = useState('');
   const [addingCode, setAddingCode] = useState(false);
-
+  const [receiptViewUrl, setReceiptViewUrl] = useState<string | null>(null);
+  const [receiptLoading, setReceiptLoading] = useState(false);
   const loadData = useCallback(async () => {
     setLoading(true);
     const [p, e, b, r, s, dc, du] = await Promise.all([
@@ -304,6 +306,15 @@ const AdminDashboard = () => {
     loadData();
   };
 
+  const handleViewReceipt = async (receiptPath: string) => {
+    setReceiptLoading(true);
+    const { data } = await supabase.storage.from('receipts').createSignedUrl(receiptPath, 300);
+    if (data?.signedUrl) {
+      setReceiptViewUrl(data.signedUrl);
+    }
+    setReceiptLoading(false);
+  };
+
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'stats', label: 'الإحصائيات', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'users', label: 'المستخدمين', icon: <Users className="w-4 h-4" /> },
@@ -450,6 +461,7 @@ const AdminDashboard = () => {
                           <th className="text-center p-3 font-medium text-muted-foreground">الدفع</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الاختبار</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الإيصال</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">إجراءات</th>
                         </tr>
                       </thead>
@@ -489,6 +501,17 @@ const AdminDashboard = () => {
                                 </select>
                               </td>
                               <td className="p-3 text-center">
+                                {p.receipt_url ? (
+                                  <button
+                                    onClick={() => handleViewReceipt(p.receipt_url!)}
+                                    className="text-primary hover:bg-primary/10 p-1.5 rounded-lg transition-colors"
+                                    title="عرض الإيصال"
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </button>
+                                ) : <span className="text-xs text-muted-foreground">—</span>}
+                              </td>
+                              <td className="p-3 text-center">
                                 <button
                                   onClick={() => handleDeleteUser(p.user_id)}
                                   className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg transition-colors"
@@ -501,7 +524,7 @@ const AdminDashboard = () => {
                         })}
                         {filteredProfiles.length === 0 && (
                           <tr>
-                            <td colSpan={7} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
+                            <td colSpan={8} className="p-8 text-center text-muted-foreground">لا توجد نتائج</td>
                           </tr>
                         )}
                       </tbody>
@@ -971,6 +994,28 @@ const AdminDashboard = () => {
           </>
         )}
       </div>
+
+      {/* Receipt View Modal */}
+      {receiptViewUrl && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setReceiptViewUrl(null)}>
+          <div className="bg-card rounded-2xl shadow-card max-w-3xl max-h-[90vh] overflow-auto p-4" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-foreground">الإيصال</h3>
+              <button onClick={() => setReceiptViewUrl(null)} className="text-muted-foreground hover:text-foreground text-xl font-bold px-2">✕</button>
+            </div>
+            {receiptViewUrl.match(/\.pdf/i) ? (
+              <iframe src={receiptViewUrl} className="w-full h-[70vh] rounded-xl border border-border" />
+            ) : (
+              <img src={receiptViewUrl} alt="إيصال التحويل" className="w-full rounded-xl" />
+            )}
+          </div>
+        </div>
+      )}
+      {receiptLoading && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        </div>
+      )}
     </div>
   );
 };
