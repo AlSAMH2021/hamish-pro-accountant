@@ -23,6 +23,7 @@ interface ProfileRow {
   payment_status: boolean;
   status: string;
   created_at: string;
+  receipt_url: string | null;
 }
 
 interface ExamRow {
