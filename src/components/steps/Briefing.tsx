@@ -1,16 +1,23 @@
 import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
-import DashboardLayout from '@/components/DashboardLayout';
-import { Clock, Target, BookOpen, CheckCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { Clock, Target, BookOpen, CheckCircle, ArrowLeft } from 'lucide-react';
+import logoColor from '@/assets/logo-color.png';
 
 const Briefing = () => {
   const { setCurrentStep, user } = useApp();
 
   return (
-    <DashboardLayout activePage="briefing">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background" dir="rtl">
+      {/* Header */}
+      <div className="bg-card border-b border-border">
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-center">
+          <img src={logoColor} alt="هامش" className="h-10" />
+        </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         {/* Welcome */}
-        <div className="bg-card rounded-2xl shadow-card p-6">
+        <div className="bg-card rounded-2xl shadow-card p-6 text-center">
           <h2 className="text-2xl font-bold text-foreground mb-2">مرحبًا {user?.name} 👋</h2>
           <p className="text-muted-foreground">إليك تفاصيل الاختبار قبل البدء</p>
         </div>
@@ -43,13 +50,11 @@ const Briefing = () => {
             <Target className="w-5 h-5 text-primary" />
             شروط النجاح
           </h3>
-          <div className="space-y-3">
-            <div className="flex items-start gap-3 bg-success/10 rounded-xl p-4">
-              <CheckCircle className="w-5 h-5 text-success mt-0.5 shrink-0" />
-              <div>
-                <p className="font-medium text-foreground text-sm">المجموع الكلي: أكثر من 50%</p>
-                <p className="text-xs text-muted-foreground">يجب الإجابة على أكثر من نصف الأسئلة بشكل صحيح</p>
-              </div>
+          <div className="flex items-start gap-3 bg-success/10 rounded-xl p-4">
+            <CheckCircle className="w-5 h-5 text-success mt-0.5 shrink-0" />
+            <div>
+              <p className="font-medium text-foreground text-sm">المجموع الكلي: أكثر من 50%</p>
+              <p className="text-xs text-muted-foreground">يجب الإجابة على أكثر من نصف الأسئلة بشكل صحيح</p>
             </div>
           </div>
         </div>
@@ -77,7 +82,7 @@ const Briefing = () => {
           </span>
         </Button>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 
