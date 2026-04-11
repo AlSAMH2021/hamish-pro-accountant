@@ -94,21 +94,34 @@ const AdminDashboard = () => {
   const [creatingAdmin, setCreatingAdmin] = useState(false);
   const [createdAdminInfo, setCreatedAdminInfo] = useState<{ email: string; password: string } | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [discountCodes, setDiscountCodes] = useState<DiscountCodeRow[]>([]);
+  const [newCodeText, setNewCodeText] = useState('');
+  const [newCodePercent, setNewCodePercent] = useState('');
+  const [newCodeMaxUses, setNewCodeMaxUses] = useState('');
+  const [addingCode, setAddingCode] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [p, e, b, r, s] = await Promise.all([
+    const [p, e, b, r, s, dc, du] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('exam_results').select('id, user_id, total_score, performance_level, passed, completed_at').order('completed_at', { ascending: false }),
       supabase.from('bookings').select('*').order('booked_at', { ascending: false }),
       supabase.from('user_roles').select('user_id, role').eq('role', 'admin'),
       supabase.from('available_slots').select('*').order('date', { ascending: true }),
+      supabase.from('discount_codes').select('*').order('created_at', { ascending: false }),
+      supabase.from('discount_code_usages').select('code_id'),
     ]);
     setProfiles((p.data as ProfileRow[]) || []);
     setExams((e.data as ExamRow[]) || []);
     setBookings((b.data as BookingRow[]) || []);
     setAdminUserIds(new Set((r.data || []).map((row: any) => row.user_id)));
     setSlots((s.data as SlotRow[]) || []);
+
+    // Count usages per code
+    const usageCounts: Record<string, number> = {};
+    (du.data || []).forEach((u: any) => { usageCounts[u.code_id] = (usageCounts[u.code_id] || 0) + 1; });
+    setDiscountCodes(((dc.data || []) as DiscountCodeRow[]).map(c => ({ ...c, usage_count: usageCounts[c.id] || 0 })));
+
     setLoading(false);
   }, []);
 
