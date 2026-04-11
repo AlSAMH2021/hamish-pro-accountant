@@ -82,7 +82,7 @@ const Payment = () => {
     setTimeout(() => {
       setPaymentStatus(true);
       setProcessing(false);
-      setCurrentStep(5);
+      setCurrentStep(12);
     }, 2000);
   };
 
