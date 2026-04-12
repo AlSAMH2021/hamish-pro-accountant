@@ -181,14 +181,14 @@ const Landing = () => {
         <div className="relative">
           <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent z-10" />
           <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent z-10" />
-          <div className="flex animate-marquee gap-16 items-center w-max">
-            {[...clientLogos, ...clientLogos].map((logo, i) => (
+          <div className="flex animate-marquee items-center w-max">
+            {[...clientLogos, ...clientLogos, ...clientLogos].map((logo, i) => (
               <img
                 key={i}
                 src={logo.src}
                 alt={logo.alt}
                 loading="lazy"
-                className="h-12 md:h-14 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                className="h-12 md:h-14 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 mx-8"
               />
             ))}
           </div>
