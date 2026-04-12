@@ -223,14 +223,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const canAccessStep = (step: number): boolean => {
     switch (step) {
-      case 1: return true;
-      case 2: return true;
-      case 3: return !!user;
-      case 4: return !!user;
-      case 5: return !!user && user.paymentStatus;
-      case 6: return !!examResult;
-      case 7: return !!examResult;
-      case 8: return !!examResult;
+      case 1: return true; // landing
+      case 2: return true; // register
+      case 3: return !!user && !user.paymentStatus; // briefing - only before payment
+      case 4: return !!user && !user.paymentStatus; // payment - only if not paid
+      case 12: return !!user && user.paymentStatus; // NDA
+      case 5: return !!user && user.paymentStatus && !examResult; // exam - only if not done
+      case 6: return !!examResult; // results - freely accessible
+      case 7: return !!examResult; // booking - freely accessible
+      case 8: return !!examResult && sessionCompleted; // report - after session
       default: return false;
     }
   };
