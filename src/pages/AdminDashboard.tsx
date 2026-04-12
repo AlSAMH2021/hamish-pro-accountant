@@ -43,6 +43,7 @@ interface BookingRow {
   session_completed: boolean;
   session_link: string | null;
   booked_at: string;
+  expert_name: string | null;
 }
 
 type Tab = 'stats' | 'users' | 'admins' | 'bookings' | 'slots' | 'discounts';
