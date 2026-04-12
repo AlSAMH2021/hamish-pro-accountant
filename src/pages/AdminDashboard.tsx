@@ -329,42 +329,45 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background" dir="rtl">
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
               <Shield className="w-5 h-5 text-primary" />
             </div>
-            <div>
-              <h1 className="font-bold text-foreground text-lg">لوحة تحكم المشرف</h1>
-              <p className="text-xs text-muted-foreground">هامش — إدارة التقييمات</p>
+            <div className="min-w-0">
+              <h1 className="font-bold text-foreground text-sm sm:text-lg truncate">لوحة تحكم المشرف</h1>
+              <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">هامش — إدارة التقييمات</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <NotificationBell />
-            <Button onClick={async () => { await supabase.auth.signOut(); navigate('/'); }} variant="outline" size="sm" className="rounded-xl gap-2">
+            <Button onClick={async () => { await supabase.auth.signOut(); navigate('/'); }} variant="outline" size="sm" className="rounded-xl gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
               <LogOut className="w-4 h-4" />
-              تسجيل الخروج
+              <span className="hidden sm:inline">تسجيل الخروج</span>
             </Button>
+          </div>
+        </div>
+
+        {/* Tabs - scrollable on mobile */}
+        <div className="overflow-x-auto scrollbar-hide border-t border-border/50">
+          <div className="flex gap-1 px-4 py-2 min-w-max">
+            {tabs.map(t => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                  tab === t.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                }`}
+              >
+                {t.icon}
+                {t.label}
+              </button>
+            ))}
           </div>
         </div>
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-        {/* Tabs */}
-        <div className="flex gap-2 bg-card rounded-2xl p-1.5 shadow-card w-fit">
-          {tabs.map(t => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                tab === t.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {t.icon}
-              {t.label}
-            </button>
-          ))}
-        </div>
 
         {loading ? (
           <div className="flex justify-center py-16">
