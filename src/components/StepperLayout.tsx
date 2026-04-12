@@ -38,13 +38,13 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
 
   const isStepClickable = (step: typeof STEPS[number]) => {
     switch (step.id) {
-      case 'briefing': return true;
-      case 'payment': return !user?.paymentStatus ? true : false;
-      case 'nda': return user?.paymentStatus === true;
-      case 'exam': return user?.paymentStatus && !examResult;
-      case 'results': return !!examResult;
-      case 'booking': return !!examResult;
-      case 'report': return !!examResult;
+      case 'briefing': return !user?.paymentStatus; // can't go back after paying
+      case 'payment': return !user?.paymentStatus; // hide once paid
+      case 'nda': return false; // one-time, no going back
+      case 'exam': return false; // can't re-enter exam
+      case 'results': return !!examResult; // freely viewable after exam
+      case 'booking': return !!examResult; // freely viewable after exam
+      case 'report': return !!sessionCompleted; // only after session done
       default: return false;
     }
   };
@@ -92,7 +92,7 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
                 <div key={step.id} className="flex items-center flex-1 last:flex-initial">
                   <button
                     onClick={() => {
-                      if (clickable || state === 'completed') {
+                      if (clickable) {
                         setCurrentStep(step.step);
                       }
                     }}
