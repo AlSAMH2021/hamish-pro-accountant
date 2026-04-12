@@ -66,7 +66,7 @@ const Booking = () => {
           <div className="rounded-2xl border border-border p-6 text-center">
             <CheckCircle className="w-14 h-14 text-success mx-auto mb-3" />
             <h2 className="text-xl font-bold text-foreground mb-1">تم حجز جلستك بنجاح</h2>
-            <p className="text-muted-foreground text-sm">سيتم التواصل معك لتأكيد الموعد</p>
+            <p className="text-muted-foreground text-sm">سيتم تزويدك برابط الجلسة في الأسفل</p>
           </div>
 
           <div className="rounded-2xl border border-border p-5 space-y-3">
@@ -93,19 +93,27 @@ const Booking = () => {
                 <p className="text-foreground font-medium text-sm">{booking.time}</p>
               </div>
             </div>
-            {booking.sessionLink && (
+            {booking.sessionLink ? (
               <a
                 href={booking.sessionLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border hover:bg-muted/50 transition-all"
+                className="flex items-center gap-3 p-3 rounded-xl bg-success/5 border border-success/20 hover:bg-success/10 transition-all"
               >
-                <Video className="w-5 h-5 text-foreground shrink-0" />
+                <Video className="w-5 h-5 text-success shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground">رابط الجلسة</p>
-                  <p className="text-foreground font-medium text-sm truncate">{booking.sessionLink}</p>
+                  <p className="text-success font-medium text-sm truncate">{booking.sessionLink}</p>
                 </div>
               </a>
+            ) : (
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-dashed border-border">
+                <Video className="w-5 h-5 text-muted-foreground shrink-0" />
+                <div>
+                  <p className="text-xs text-muted-foreground">رابط الجلسة</p>
+                  <p className="text-muted-foreground text-sm">سيظهر الرابط هنا قريباً</p>
+                </div>
+              </div>
             )}
           </div>
         </div>
