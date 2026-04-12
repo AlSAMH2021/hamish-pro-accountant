@@ -6,6 +6,30 @@ import logoWhite from '@/assets/logo-white.png';
 import platformPreview from '@/assets/platform-preview.png';
 import { useEffect, useRef, useState } from 'react';
 
+import clientDco from '@/assets/clients/dco.png';
+import clientSafran from '@/assets/clients/safran.png';
+import clientSaptco from '@/assets/clients/saptco.png';
+import clientThespace from '@/assets/clients/thespace.png';
+import clientNad from '@/assets/clients/nad.png';
+import clientAlowfi from '@/assets/clients/alowfi.png';
+import clientAyb from '@/assets/clients/ayb.png';
+import clientBrsk from '@/assets/clients/brsk.png';
+import clientKdc from '@/assets/clients/kdc.webp';
+import clientDrtooth from '@/assets/clients/drtooth.png';
+
+const clientLogos = [
+  { src: clientDco, alt: 'DCO' },
+  { src: clientSafran, alt: 'Safran' },
+  { src: clientSaptco, alt: 'سابتكو' },
+  { src: clientThespace, alt: 'The Space' },
+  { src: clientNad, alt: 'Nad Designs' },
+  { src: clientAlowfi, alt: 'العوفي وشركاه' },
+  { src: clientAyb, alt: 'آيب' },
+  { src: clientBrsk, alt: 'بريسك' },
+  { src: clientKdc, alt: 'تمور المملكة' },
+  { src: clientDrtooth, alt: 'Dr. Tooth' },
+];
+
 /* ── Intersection Observer hook ── */
 function useReveal(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -146,6 +170,28 @@ const Landing = () => {
               <p className="text-muted-foreground text-sm">{stat.label}</p>
             </FadeUp>
           ))}
+        </div>
+      </section>
+
+      {/* Client Logos Marquee */}
+      <section className="py-12 overflow-hidden">
+        <FadeUp>
+          <p className="text-center text-muted-foreground text-sm mb-8">عملاؤنا يثقون بنا</p>
+        </FadeUp>
+        <div className="relative">
+          <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent z-10" />
+          <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent z-10" />
+          <div className="flex animate-marquee gap-16 items-center w-max">
+            {[...clientLogos, ...clientLogos].map((logo, i) => (
+              <img
+                key={i}
+                src={logo.src}
+                alt={logo.alt}
+                loading="lazy"
+                className="h-12 md:h-14 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+              />
+            ))}
+          </div>
         </div>
       </section>
 
