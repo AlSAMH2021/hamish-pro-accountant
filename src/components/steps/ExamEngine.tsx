@@ -91,7 +91,7 @@ const ExamEngine = () => {
           <div className="bg-card p-8 rounded-2xl text-center max-w-md mx-4 shadow-elevated">
             <AlertTriangle className="w-16 h-16 text-destructive mx-auto mb-4" />
             <h2 className="text-xl font-bold text-foreground mb-2">تنبيه!</h2>
-            <p className="text-muted-foreground">تم رصد مغادرة الصفحة ({tabWarnings} مرات). يرجى البقاء في صفحة الاختبار.</p>
+            <p className="text-muted-foreground">تم رصد مغادرة الصفحة ({tabWarnings} مرات). يرجى البقاء في صفحة التقييم.</p>
           </div>
         </div>
       )}
@@ -100,7 +100,7 @@ const ExamEngine = () => {
       {showConfirm && (
         <div className="fixed inset-0 z-50 bg-foreground/50 flex items-center justify-center">
           <div className="bg-card p-8 rounded-2xl text-center max-w-md mx-4 shadow-elevated">
-            <h2 className="text-xl font-bold text-foreground mb-2">تأكيد تسليم الاختبار</h2>
+            <h2 className="text-xl font-bold text-foreground mb-2">تأكيد تسليم التقييم</h2>
             <p className="text-muted-foreground mb-2">أجبت على {answeredCount} من 45 سؤال</p>
             {answeredCount < 45 && <p className="text-warning text-sm mb-4">لم تُجب على {45 - answeredCount} سؤال بعد</p>}
             <div className="flex gap-3">
@@ -198,7 +198,7 @@ const ExamEngine = () => {
                 onClick={() => setShowConfirm(true)}
                 className="h-12 px-6 bg-gradient-gold text-accent-foreground font-bold"
               >
-                تسليم الاختبار
+                تسليم التقييم
               </Button>
             )}
           </div>
@@ -209,7 +209,7 @@ const ExamEngine = () => {
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm font-bold text-foreground">خريطة الأسئلة</p>
             <Button variant="ghost" onClick={() => setShowConfirm(true)} className="text-xs h-8 text-primary">
-              تسليم الاختبار
+              تسليم التقييم
             </Button>
           </div>
           <div className="grid grid-cols-9 gap-2">

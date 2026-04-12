@@ -188,7 +188,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card p-6 md:p-8 space-y-4 border border-border/50">
       <div className="text-center mb-2">
         <h1 className="text-xl font-bold text-foreground mb-1">إنشاء حساب جديد</h1>
-        <p className="text-muted-foreground text-sm">سجّل بياناتك للبدء في الاختبار</p>
+        <p className="text-muted-foreground text-sm">سجّل بياناتك للبدء في التقييم</p>
       </div>
 
       {serverError && <p className="text-destructive text-sm text-center bg-destructive/10 p-3 rounded-xl">{serverError}</p>}

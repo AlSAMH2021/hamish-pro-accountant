@@ -156,7 +156,7 @@ const Payment = () => {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Price summary */}
         <div className="bg-card rounded-2xl shadow-card p-6 text-center">
-          <p className="text-muted-foreground text-sm mb-2">رسوم الاختبار</p>
+          <p className="text-muted-foreground text-sm mb-2">رسوم التقييم</p>
           {discountApplied ? (
             <div>
               <p className="text-2xl text-muted-foreground line-through">{basePrice} ر.س</p>

@@ -122,7 +122,7 @@ const Landing = () => {
 
           <FadeUp delay={900}>
             <p className="text-lg md:text-xl text-white/60 mb-12 max-w-2xl mx-auto leading-relaxed">
-              اختبار متخصص حسب قطاعك + تقرير تفصيلي + جلسة استشارية مع خبراء المحاسبة
+              تقييم متخصص حسب قطاعك + تقرير تفصيلي + جلسة استشارية مع خبراء المحاسبة
             </p>
           </FadeUp>
 
@@ -132,7 +132,7 @@ const Landing = () => {
                 onClick={() => setCurrentStep(2)}
                 className="h-14 px-10 text-lg font-bold bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl gap-3 shadow-[0_0_30px_hsl(40,70%,50%,0.25)] transition-transform duration-200 hover:scale-105"
               >
-                <span>ابدأ اختبار المحاسبين</span>
+                <span>ابدأ تقييم المحاسبين</span>
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <Button
@@ -176,7 +176,7 @@ const Landing = () => {
       <section className="py-24 px-4 bg-[hsl(220,50%,13%)]">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4">لماذا اختبار هامش؟</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4">لماذا تقييم هامش؟</h2>
           </FadeUp>
           <FadeUp delay={100}>
             <p className="text-white/40 text-center mb-16 max-w-xl mx-auto">نقدم لك أدوات تقييم احترافية تساعدك على معرفة مستواك الحقيقي</p>
@@ -210,7 +210,7 @@ const Landing = () => {
           <div className="grid md:grid-cols-4 gap-8">
             {[
               { step: '١', label: 'سجّل بياناتك' },
-              { step: '٢', label: 'ادفع رسوم الاختبار' },
+              { step: '٢', label: 'ادفع رسوم التقييم' },
               { step: '٣', label: 'أجب على 45 سؤال' },
               { step: '٤', label: 'احصل على تقريرك' },
             ].map((item, i) => (
@@ -236,7 +236,7 @@ const Landing = () => {
               onClick={() => setCurrentStep(2)}
               className="h-14 px-12 text-lg font-bold bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl shadow-[0_0_30px_hsl(40,70%,50%,0.25)] transition-transform duration-200 hover:scale-105"
             >
-              ابدأ الاختبار الآن
+              ابدأ التقييم الآن
             </Button>
           </div>
         </FadeUp>

@@ -19,7 +19,7 @@ const Profile = () => {
   const statusSteps = [
     { label: 'التسجيل', done: true },
     { label: 'الدفع', done: user.paymentStatus },
-    { label: 'الاختبار', done: !!examResult },
+    { label: 'التقييم', done: !!examResult },
     { label: 'الجلسة', done: !!booking },
   ];
 
