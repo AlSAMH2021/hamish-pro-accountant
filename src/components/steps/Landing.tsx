@@ -3,7 +3,7 @@ import { useApp } from '@/context/AppContext';
 import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, UserCheck, Briefcase, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoWhite from '@/assets/logo-white.png';
-import platformPreview from '@/assets/platform-preview.png';
+import platformPreview from '@/assets/hero-dashboard.png';
 import { useEffect, useRef, useState } from 'react';
 
 import clientDco from '@/assets/clients/dco.png';
