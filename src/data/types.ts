@@ -68,11 +68,11 @@ export const SECTOR_LABELS: Record<Sector, string> = {
 };
 
 export const AXIS_RECOMMENDATIONS: Record<Axis, { course: string; hours: string }> = {
-  financial: { course: 'دورة خاصة ٤ ساعات محاسبية', hours: '4 ساعات' },
-  cost: { course: 'دورة خاصة ٣ ساعات لمحاسبة التكاليف', hours: '3 ساعات' },
-  tax: { course: 'دورة خاصة ٣ ساعات لضريبة القيمة المضافة', hours: '3 ساعات' },
-  regulations: { course: 'دورة خاصة ساعتين عن الزكاة', hours: 'ساعتين' },
-  ifrs: { course: 'دورة خاصة ٤ ساعات محاسبية', hours: '4 ساعات' },
+  financial: { course: 'دورة: المحاسبة المالية والتقارير', hours: '16 ساعة' },
+  cost: { course: 'دورة: محاسبة التكاليف وتحليل الربحية', hours: '12 ساعة' },
+  tax: { course: 'دورة: الضريبة والزكاة وفق الأنظمة السعودية', hours: '16 ساعة' },
+  regulations: { course: 'دورة: الأنظمة والتشريعات السعودية', hours: '8 ساعة' },
+  ifrs: { course: 'دورة: IFRS التطبيقي', hours: '20 ساعة' },
 };
 
 export const getPerformanceLevel = (total: number): PerformanceLevel => {
