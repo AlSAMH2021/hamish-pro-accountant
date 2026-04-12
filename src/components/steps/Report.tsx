@@ -310,7 +310,7 @@ const Report = () => {
                           )}
                           <p className="text-sm text-foreground leading-relaxed">{q.text}</p>
                         </div>
-                        <div className="mr-8 space-y-1.5">
+                        <div className="mr-4 sm:mr-8 space-y-1.5">
                           {q.options.map((opt, oi) => {
                             let optClass = 'bg-muted/30 text-muted-foreground';
                             if (oi === correctAnswer) optClass = 'bg-success/10 text-success font-medium';
