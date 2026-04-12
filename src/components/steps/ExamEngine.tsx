@@ -36,7 +36,7 @@ const ExamEngine = () => {
       ifrs: axisScores.ifrs >= 6,
     };
 
-    const passTotal = totalScore >= 25; // الحد الأدنى 25 من 45
+    const passTotal = totalScore >= 25;
 
     const result: ExamResult = {
       answers,
@@ -88,7 +88,7 @@ const ExamEngine = () => {
       {/* Warning overlay */}
       {showWarning && (
         <div className="fixed inset-0 z-50 bg-foreground/80 flex items-center justify-center">
-          <div className="bg-card p-8 rounded-2xl text-center max-w-md mx-4 shadow-elevated">
+          <div className="bg-background p-8 rounded-2xl text-center max-w-md mx-4 border border-border">
             <AlertTriangle className="w-16 h-16 text-destructive mx-auto mb-4" />
             <h2 className="text-xl font-bold text-foreground mb-2">تنبيه!</h2>
             <p className="text-muted-foreground">تم رصد مغادرة الصفحة ({tabWarnings} مرات). يرجى البقاء في صفحة التقييم.</p>
@@ -99,24 +99,24 @@ const ExamEngine = () => {
       {/* Confirm submit */}
       {showConfirm && (
         <div className="fixed inset-0 z-50 bg-foreground/50 flex items-center justify-center">
-          <div className="bg-card p-8 rounded-2xl text-center max-w-md mx-4 shadow-elevated">
+          <div className="bg-background p-8 rounded-2xl text-center max-w-md mx-4 border border-border">
             <h2 className="text-xl font-bold text-foreground mb-2">تأكيد تسليم التقييم</h2>
             <p className="text-muted-foreground mb-2">أجبت على {answeredCount} من 45 سؤال</p>
             {answeredCount < 45 && <p className="text-warning text-sm mb-4">لم تُجب على {45 - answeredCount} سؤال بعد</p>}
             <div className="flex gap-3">
-              <Button onClick={() => setShowConfirm(false)} variant="outline" className="flex-1 h-12">العودة</Button>
-              <Button onClick={submitExam} className="flex-1 h-12 bg-gradient-primary text-primary-foreground">تسليم</Button>
+              <Button onClick={() => setShowConfirm(false)} variant="outline" className="flex-1 h-12 rounded-lg">العودة</Button>
+              <Button onClick={submitExam} className="flex-1 h-12 bg-foreground text-background hover:bg-foreground/90 rounded-lg">تسليم</Button>
             </div>
           </div>
         </div>
       )}
 
       {/* Header bar */}
-      <div className="sticky top-0 z-40 bg-card border-b border-border">
+      <div className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center">
                 <span className="text-lg">{currentAxis?.icon}</span>
               </div>
               <div>
@@ -124,15 +124,15 @@ const ExamEngine = () => {
                 <p className="text-xs text-muted-foreground">السؤال {(currentQ % 9) + 1} من 9</p>
               </div>
             </div>
-            <div className={`flex items-center gap-2 px-4 py-2 rounded-xl font-mono font-bold text-lg ${
-              timeLeft < 300 ? 'text-destructive bg-destructive/10' : 'text-foreground bg-muted/50'
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-lg font-mono font-bold text-lg ${
+              timeLeft < 300 ? 'text-destructive bg-destructive/5' : 'text-foreground bg-muted'
             }`}>
               <Clock className="w-4 h-4" />
               {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
             </div>
           </div>
-          <div className="w-full bg-muted rounded-full h-2.5">
-            <div className="bg-gradient-primary h-2.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+          <div className="w-full bg-muted rounded-full h-2">
+            <div className="bg-foreground h-2 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
           <div className="flex justify-between text-xs text-muted-foreground mt-1.5">
             <span>السؤال {currentQ + 1} من 45</span>
@@ -143,9 +143,9 @@ const ExamEngine = () => {
 
       {/* Question */}
       <div className="max-w-3xl mx-auto px-4 md:px-8 py-8">
-        <div className="bg-card rounded-2xl shadow-card p-6 md:p-8 animate-fade-in-up">
+        <div className="rounded-2xl border border-border p-6 md:p-8 animate-fade-in-up">
           <div className="mb-6">
-            <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold mb-4">
+            <span className="inline-block px-3 py-1 rounded-full bg-muted text-foreground text-xs font-bold mb-4">
               سؤال {currentQ + 1}
             </span>
             <h2 className="text-lg md:text-xl font-bold text-foreground leading-relaxed">{q.text}</h2>
@@ -158,13 +158,13 @@ const ExamEngine = () => {
                 onClick={() => setAnswers({ ...answers, [currentQ]: i })}
                 className={`w-full text-right p-4 rounded-xl border-2 transition-all ${
                   answers[currentQ] === i
-                    ? 'border-primary bg-primary/5 text-foreground font-medium shadow-glow'
-                    : 'border-border hover:border-primary/30 text-foreground'
+                    ? 'border-foreground bg-foreground/5 text-foreground font-medium'
+                    : 'border-border hover:border-foreground/20 text-foreground'
                 }`}
               >
                 <span className="inline-flex items-center gap-3">
                   <span className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold shrink-0 ${
-                    answers[currentQ] === i ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground'
+                    answers[currentQ] === i ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground'
                   }`}>
                     {['أ', 'ب', 'ج', 'د'][i]}
                   </span>
@@ -179,7 +179,7 @@ const ExamEngine = () => {
               variant="outline"
               onClick={() => setCurrentQ(Math.max(0, currentQ - 1))}
               disabled={currentQ === 0}
-              className="h-12 px-6 gap-2"
+              className="h-12 px-6 gap-2 rounded-lg"
             >
               <ChevronRight className="w-4 h-4" />
               السابق
@@ -188,7 +188,7 @@ const ExamEngine = () => {
             {currentQ < 44 ? (
               <Button
                 onClick={() => setCurrentQ(currentQ + 1)}
-                className="h-12 px-6 bg-gradient-primary text-primary-foreground gap-2"
+                className="h-12 px-6 bg-foreground text-background hover:bg-foreground/90 gap-2 rounded-lg"
               >
                 التالي
                 <ChevronLeft className="w-4 h-4" />
@@ -196,7 +196,7 @@ const ExamEngine = () => {
             ) : (
               <Button
                 onClick={() => setShowConfirm(true)}
-                className="h-12 px-6 bg-gradient-gold text-accent-foreground font-bold"
+                className="h-12 px-6 bg-foreground text-background hover:bg-foreground/90 font-bold rounded-lg"
               >
                 تسليم التقييم
               </Button>
@@ -205,10 +205,10 @@ const ExamEngine = () => {
         </div>
 
         {/* Question map */}
-        <div className="mt-6 bg-card rounded-2xl shadow-card p-6">
+        <div className="mt-6 rounded-2xl border border-border p-6">
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm font-bold text-foreground">خريطة الأسئلة</p>
-            <Button variant="ghost" onClick={() => setShowConfirm(true)} className="text-xs h-8 text-primary">
+            <Button variant="ghost" onClick={() => setShowConfirm(true)} className="text-xs h-8 text-muted-foreground hover:text-foreground">
               تسليم التقييم
             </Button>
           </div>
@@ -219,9 +219,9 @@ const ExamEngine = () => {
                 onClick={() => setCurrentQ(i)}
                 className={`w-full aspect-square rounded-lg text-xs font-bold transition-all ${
                   currentQ === i
-                    ? 'bg-primary text-primary-foreground ring-2 ring-primary/30 scale-110'
+                    ? 'bg-foreground text-background ring-2 ring-foreground/20 scale-110'
                     : answers[i] !== undefined
-                    ? 'bg-primary/20 text-primary'
+                    ? 'bg-foreground/15 text-foreground'
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
               >

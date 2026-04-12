@@ -17,7 +17,7 @@ const Report = () => {
     return (
       <StepperLayout activePage="report">
         <div className="max-w-lg mx-auto text-center py-16 space-y-6">
-          <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mx-auto">
+          <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto">
             <FileText className="w-10 h-10 text-muted-foreground" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">لا يوجد تقرير</h1>
@@ -31,17 +31,17 @@ const Report = () => {
     return (
       <StepperLayout activePage="report">
         <div className="max-w-lg mx-auto text-center py-16 space-y-6">
-          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-            <CalendarDays className="w-10 h-10 text-primary" />
+          <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto">
+            <CalendarDays className="w-10 h-10 text-foreground" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">التقرير قيد الإعداد</h1>
           <p className="text-muted-foreground leading-relaxed">
             سيتم عرض التقرير التفصيلي بعد إتمام الجلسة الاستشارية.
           </p>
           {booking && (
-            <div className="bg-card rounded-2xl shadow-card p-5 text-right space-y-3 max-w-sm mx-auto">
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
-                <CalendarDays className="w-5 h-5 text-primary shrink-0" />
+            <div className="rounded-2xl border border-border p-5 text-right space-y-3 max-w-sm mx-auto">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
+                <CalendarDays className="w-5 h-5 text-foreground shrink-0" />
                 <div>
                   <p className="text-xs text-muted-foreground">موعد جلستك</p>
                   <p className="text-foreground font-medium text-sm">{booking.date} — {booking.time}</p>
@@ -50,7 +50,7 @@ const Report = () => {
             </div>
           )}
           {!booking && (
-            <Button onClick={() => setCurrentStep(7)} className="gap-2 rounded-xl bg-gradient-primary text-primary-foreground">
+            <Button onClick={() => setCurrentStep(7)} className="gap-2 rounded-lg bg-foreground text-background hover:bg-foreground/90">
               <CalendarDays className="w-4 h-4" />
               احجز جلستك الاستشارية
             </Button>
@@ -73,25 +73,24 @@ const Report = () => {
     { shortLabel: 'التشريعات', fullLabel: 'التشريعات والأنظمة', icon: '⚖️', score: axisScores['regulations'], fullMark: 9 },
     { shortLabel: 'IFRS', fullLabel: 'المعايير الدولية IFRS', icon: '🌐', score: axisScores['ifrs'], fullMark: 9 },
   ];
-  const shareText = `أتممت تقييم هامش للمحاسبين\nمستواي: ${performanceLevel}\nالنتيجة: ${totalScore}/45`;
 
   return (
     <StepperLayout activePage="report">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Hero Header */}
-        <div className="relative overflow-hidden bg-card rounded-3xl shadow-elevated p-8">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-l from-primary via-accent to-primary" />
+        <div className="relative overflow-hidden rounded-2xl border border-border p-8">
+          <div className="absolute top-0 left-0 w-full h-1 bg-foreground" />
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-5">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <Award className="w-8 h-8 text-primary" />
+              <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
+                <Award className="w-8 h-8 text-foreground" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground">تقرير الأداء التفصيلي</h1>
                 <p className="text-muted-foreground text-sm mt-1">هامش — تقييم المحاسبين • {SECTOR_LABELS[user.sector]}</p>
               </div>
             </div>
-            <div className={`text-center px-8 py-4 rounded-2xl border-2 ${passed ? 'border-success/30 bg-success/5' : 'border-destructive/30 bg-destructive/5'}`}>
+            <div className={`text-center px-8 py-4 rounded-2xl border ${passed ? 'border-success/30 bg-success/5' : 'border-destructive/30 bg-destructive/5'}`}>
               <p className="text-3xl font-bold text-foreground">{totalScore}<span className="text-lg text-muted-foreground">/45</span></p>
               <p className={`text-sm font-bold mt-1 ${getPerformanceColor(performanceLevel)}`}>{performanceLevel}</p>
             </div>
@@ -103,11 +102,11 @@ const Report = () => {
           {[
             { label: 'الإجابات الصحيحة', value: correctCount, icon: <CheckCircle className="w-5 h-5" />, color: 'text-success', bg: 'bg-success/10' },
             { label: 'الإجابات الخاطئة', value: wrongCount, icon: <XCircle className="w-5 h-5" />, color: 'text-destructive', bg: 'bg-destructive/10' },
-            { label: 'المحاور الناجحة', value: AXES.filter(a => axisPassed[a.key]).length, icon: <TrendingUp className="w-5 h-5" />, color: 'text-primary', bg: 'bg-primary/10' },
+            { label: 'المحاور الناجحة', value: AXES.filter(a => axisPassed[a.key]).length, icon: <TrendingUp className="w-5 h-5" />, color: 'text-foreground', bg: 'bg-muted' },
             { label: 'تحتاج تطوير', value: failedAxes.length, icon: <AlertTriangle className="w-5 h-5" />, color: 'text-warning', bg: 'bg-warning/10' },
           ].map((stat, i) => (
-            <div key={i} className="bg-card rounded-2xl shadow-card p-5 text-center">
-              <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mx-auto mb-3 ${stat.color}`}>
+            <div key={i} className="rounded-2xl border border-border p-5 text-center">
+              <div className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center mx-auto mb-3 ${stat.color}`}>
                 {stat.icon}
               </div>
               <p className="text-2xl font-bold text-foreground">{stat.value}</p>
@@ -118,9 +117,9 @@ const Report = () => {
 
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-card rounded-2xl shadow-card p-6">
+          <div className="rounded-2xl border border-border p-6">
             <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
+              <TrendingUp className="w-5 h-5 text-muted-foreground" />
               خريطة الكفاءات
             </h2>
             <div className="space-y-4">
@@ -129,12 +128,12 @@ const Report = () => {
                   <PolarGrid stroke="hsl(var(--border))" />
                   <PolarAngleAxis dataKey="shortLabel" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickLine={false} />
                   <PolarRadiusAxis angle={90} domain={[0, 9]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} tickCount={4} />
-                  <Radar name="الدرجة" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.25} strokeWidth={2} />
+                  <Radar name="الدرجة" dataKey="score" stroke="hsl(var(--foreground))" fill="hsl(var(--foreground))" fillOpacity={0.15} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {radarChartData.map((axis) => (
-                  <div key={axis.shortLabel} className="flex items-start gap-3 rounded-xl bg-muted/30 px-3 py-2">
+                  <div key={axis.shortLabel} className="flex items-start gap-3 rounded-xl bg-muted/50 px-3 py-2">
                     <span className="mt-0.5 text-base leading-none">{axis.icon}</span>
                     <div className="space-y-0.5">
                       <p className="text-sm font-medium text-foreground">{axis.shortLabel}</p>
@@ -146,9 +145,9 @@ const Report = () => {
             </div>
           </div>
 
-          <div className="bg-card rounded-2xl shadow-card p-6">
+          <div className="rounded-2xl border border-border p-6">
             <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-primary" />
+              <BookOpen className="w-5 h-5 text-muted-foreground" />
               أداء المحاور
             </h2>
             <ResponsiveContainer width="100%" height={350}>
@@ -166,7 +165,7 @@ const Report = () => {
                 <XAxis dataKey="name" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} interval={0} tickLine={false} axisLine={{ stroke: 'hsl(var(--border))' }} />
                 <YAxis domain={[0, 9]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} width={30} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 12, fontSize: 12, direction: 'rtl' }}
+                  contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: 12, fontSize: 12, direction: 'rtl' }}
                   formatter={(value: number) => [`${value}/9`, 'الدرجة']}
                 />
                 <Bar dataKey="score" radius={[6, 6, 0, 0]} barSize={40}>
@@ -178,9 +177,9 @@ const Report = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="bg-card rounded-2xl shadow-card p-6 lg:col-span-2">
+          <div className="rounded-2xl border border-border p-6 lg:col-span-2">
             <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-              <Award className="w-5 h-5 text-primary" />
+              <Award className="w-5 h-5 text-muted-foreground" />
               نسبة الإجابات
             </h2>
             <div className="flex items-center justify-center gap-8">
@@ -212,9 +211,9 @@ const Report = () => {
         </div>
 
         {/* User Info */}
-        <div className="bg-card rounded-2xl shadow-card p-6">
+        <div className="rounded-2xl border border-border p-6">
           <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-primary" />
+            <BookOpen className="w-5 h-5 text-muted-foreground" />
             بيانات المتقدم
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -226,7 +225,7 @@ const Report = () => {
               ['تاريخ التقييم', new Date(examResult.completedAt).toLocaleDateString('ar-SA')],
               ['الحالة', passed ? 'ناجح ✅' : 'لم يجتز ❌'],
             ].map(([label, value]) => (
-              <div key={label} className="bg-muted/30 rounded-xl p-3">
+              <div key={label} className="bg-muted/50 rounded-xl p-3">
                 <p className="text-muted-foreground text-xs">{label}</p>
                 <p className="text-foreground font-medium text-sm mt-0.5">{value}</p>
               </div>
@@ -235,9 +234,9 @@ const Report = () => {
         </div>
 
         {/* Axis Breakdown */}
-        <div className="bg-card rounded-2xl shadow-card p-6">
+        <div className="rounded-2xl border border-border p-6">
           <h2 className="text-base font-bold text-foreground mb-5 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-primary" />
+            <TrendingUp className="w-5 h-5 text-muted-foreground" />
             تحليل المحاور
           </h2>
           <div className="space-y-3">
@@ -274,7 +273,7 @@ const Report = () => {
         {/* Questions Review */}
         <div className="space-y-6">
           <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-            <FileText className="w-5 h-5 text-primary" />
+            <FileText className="w-5 h-5 text-muted-foreground" />
             مراجعة تفصيلية للأسئلة
           </h2>
 
@@ -284,8 +283,8 @@ const Report = () => {
               .filter(({ q }) => q.axis === key);
 
             return (
-              <div key={key} className="bg-card rounded-2xl shadow-card overflow-hidden">
-                <div className="px-6 py-4 border-b border-border bg-muted/20">
+              <div key={key} className="rounded-2xl border border-border overflow-hidden">
+                <div className="px-6 py-4 border-b border-border bg-muted/30">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-lg">{icon}</span>
@@ -313,7 +312,7 @@ const Report = () => {
                         </div>
                         <div className="mr-8 space-y-1.5">
                           {q.options.map((opt, oi) => {
-                            let optClass = 'bg-muted/20 text-muted-foreground';
+                            let optClass = 'bg-muted/30 text-muted-foreground';
                             if (oi === correctAnswer) optClass = 'bg-success/10 text-success font-medium';
                             else if (oi === userAnswer && !isCorrect) optClass = 'bg-destructive/10 text-destructive line-through';
                             return (

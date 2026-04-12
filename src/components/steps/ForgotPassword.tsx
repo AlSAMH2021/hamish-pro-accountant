@@ -81,7 +81,7 @@ const ForgotPassword = () => {
                 <p className="text-destructive text-sm text-center bg-destructive/10 p-3 rounded-xl">{error}</p>
               )}
 
-              <Button type="submit" disabled={submitting} className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl">
+              <Button type="submit" disabled={submitting} className="w-full h-12 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-lg">
                 {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'إرسال رابط الاستعادة'}
               </Button>
 

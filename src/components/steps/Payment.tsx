@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import StepperLayout from '@/components/StepperLayout';
-import { CreditCard, Shield, Building2, Copy, CheckCircle, Clock, Upload, Tag, Loader2, ArrowLeft } from 'lucide-react';
+import { CreditCard, Shield, Building2, Copy, CheckCircle, Clock, Upload, Tag, Loader2 } from 'lucide-react';
 
 type PaymentMethod = 'transfer' | 'card' | null;
 
@@ -153,7 +153,7 @@ const Payment = () => {
     <StepperLayout activePage="payment">
       <div className="max-w-2xl mx-auto space-y-5">
         {/* Price Hero */}
-        <div className="bg-card rounded-2xl shadow-card p-6 text-center">
+        <div className="rounded-2xl border border-border p-6 text-center">
           <p className="text-muted-foreground text-sm mb-1">رسوم التقييم</p>
           {discountApplied ? (
             <div>
@@ -165,18 +165,18 @@ const Payment = () => {
             <p className="text-4xl font-bold text-foreground">{basePrice} <span className="text-base text-muted-foreground">ر.س</span></p>
           )}
           <div className="mt-3 flex flex-wrap justify-center gap-2 text-xs text-muted-foreground">
-            <span className="bg-muted/50 px-3 py-1.5 rounded-lg">✓ 45 سؤال</span>
-            <span className="bg-muted/50 px-3 py-1.5 rounded-lg">✓ تقرير تفصيلي</span>
-            <span className="bg-muted/50 px-3 py-1.5 rounded-lg">✓ جلسة استشارية</span>
+            <span className="bg-muted px-3 py-1.5 rounded-lg">✓ 45 سؤال</span>
+            <span className="bg-muted px-3 py-1.5 rounded-lg">✓ تقرير تفصيلي</span>
+            <span className="bg-muted px-3 py-1.5 rounded-lg">✓ جلسة استشارية</span>
           </div>
         </div>
 
-        {/* Discount Code - Compact */}
-        <div className="bg-card rounded-2xl shadow-card p-4">
+        {/* Discount Code */}
+        <div className="rounded-2xl border border-border p-4">
           <div className="flex gap-2 items-end">
             <div className="flex-1">
               <Label className="text-foreground font-medium mb-1.5 block text-xs flex items-center gap-1">
-                <Tag className="w-3 h-3 text-primary" />
+                <Tag className="w-3 h-3 text-muted-foreground" />
                 كود الخصم
               </Label>
               <Input
@@ -205,20 +205,20 @@ const Payment = () => {
           <button
             onClick={() => setMethod('transfer')}
             className={`p-5 rounded-2xl border-2 transition-all text-center ${
-              method === 'transfer' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30 bg-card'
+              method === 'transfer' ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/20'
             }`}
           >
-            <Building2 className={`w-8 h-8 mx-auto mb-2 ${method === 'transfer' ? 'text-primary' : 'text-muted-foreground'}`} />
+            <Building2 className={`w-8 h-8 mx-auto mb-2 ${method === 'transfer' ? 'text-foreground' : 'text-muted-foreground'}`} />
             <p className="font-bold text-foreground text-sm">تحويل بنكي</p>
             <p className="text-xs text-muted-foreground mt-1">حوّل وأرفق الإيصال</p>
           </button>
           <button
             onClick={() => setMethod('card')}
             className={`p-5 rounded-2xl border-2 transition-all text-center ${
-              method === 'card' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30 bg-card'
+              method === 'card' ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/20'
             }`}
           >
-            <CreditCard className={`w-8 h-8 mx-auto mb-2 ${method === 'card' ? 'text-primary' : 'text-muted-foreground'}`} />
+            <CreditCard className={`w-8 h-8 mx-auto mb-2 ${method === 'card' ? 'text-foreground' : 'text-muted-foreground'}`} />
             <p className="font-bold text-foreground text-sm">بطاقة بنكية</p>
             <p className="text-xs text-muted-foreground mt-1">مدى / فيزا / ماستركارد</p>
           </button>
@@ -226,9 +226,9 @@ const Payment = () => {
 
         {/* Transfer Details */}
         {method === 'transfer' && (
-          <div className="bg-card rounded-2xl shadow-card p-5 animate-fade-in-up space-y-4">
+          <div className="rounded-2xl border border-border p-5 animate-fade-in-up space-y-4">
             <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-primary" />
+              <Building2 className="w-5 h-5 text-muted-foreground" />
               بيانات الحوالة
             </h3>
             <div className="space-y-2">
@@ -238,13 +238,13 @@ const Payment = () => {
                 { label: 'IBAN', value: bankDetails.iban, copyable: true },
                 { label: 'المبلغ', value: bankDetails.amount },
               ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-muted/50">
                   <div>
                     <p className="text-xs text-muted-foreground">{item.label}</p>
                     <p className="text-foreground font-medium text-sm" dir="ltr">{item.value}</p>
                   </div>
                   {item.copyable && (
-                    <button onClick={() => copyToClipboard(item.value)} className="text-primary hover:text-primary/80 transition-colors">
+                    <button onClick={() => copyToClipboard(item.value)} className="text-foreground hover:text-foreground/70 transition-colors">
                       {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     </button>
                   )}
@@ -255,10 +255,10 @@ const Payment = () => {
             {/* Receipt Upload */}
             <div>
               <Label className="text-foreground font-medium mb-1.5 block text-xs flex items-center gap-1">
-                <Upload className="w-3 h-3 text-primary" />
+                <Upload className="w-3 h-3 text-muted-foreground" />
                 إرفاق الإيصال <span className="text-destructive">*</span>
               </Label>
-              <div className="border-2 border-dashed border-border rounded-xl p-3 text-center hover:border-primary/30 transition-colors">
+              <div className="border-2 border-dashed border-border rounded-xl p-3 text-center hover:border-foreground/20 transition-colors">
                 <input type="file" accept="image/*,.pdf" onChange={e => setReceiptFile(e.target.files?.[0] || null)} className="hidden" id="receipt-upload" />
                 <label htmlFor="receipt-upload" className="cursor-pointer">
                   {receiptFile ? (
@@ -276,14 +276,14 @@ const Payment = () => {
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-warning/10 border border-warning/20">
+            <div className="p-3 rounded-xl bg-warning/5 border border-warning/20">
               <p className="text-xs text-warning font-medium">⚠️ يرجى كتابة اسمك في ملاحظات التحويل</p>
             </div>
 
             <Button
               onClick={handleTransferConfirm}
               disabled={transferConfirmed || !receiptFile || processing}
-              className="w-full h-12 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl"
+              className="w-full h-12 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-lg"
             >
               {uploadingReceipt ? (
                 <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" />جاري الرفع...</span>
@@ -295,8 +295,8 @@ const Payment = () => {
             </Button>
 
             {transferConfirmed && (
-              <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 text-center space-y-1">
-                <Clock className="w-6 h-6 text-primary mx-auto" />
+              <div className="p-4 rounded-xl bg-muted/50 border border-border text-center space-y-1">
+                <Clock className="w-6 h-6 text-foreground mx-auto" />
                 <p className="font-bold text-foreground text-sm">طلبك قيد المراجعة</p>
                 <p className="text-xs text-muted-foreground">سيتم التحقق وتفعيل حسابك خلال وقت قصير</p>
               </div>
@@ -306,9 +306,9 @@ const Payment = () => {
 
         {/* Card Form */}
         {method === 'card' && (
-          <div className="bg-card rounded-2xl shadow-card p-5 animate-fade-in-up space-y-4">
+          <div className="rounded-2xl border border-border p-5 animate-fade-in-up space-y-4">
             <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-primary" />
+              <CreditCard className="w-5 h-5 text-muted-foreground" />
               بيانات البطاقة
             </h3>
             <div className="space-y-3">
@@ -336,11 +336,11 @@ const Payment = () => {
             <Button
               onClick={handleCardPayment}
               disabled={processing}
-              className="w-full h-12 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl"
+              className="w-full h-12 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-lg"
             >
               {processing ? (
                 <span className="flex items-center gap-2">
-                  <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   جاري المعالجة...
                 </span>
               ) : (

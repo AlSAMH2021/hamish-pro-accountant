@@ -27,7 +27,7 @@ const Profile = () => {
     <StepperLayout activePage="profile">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Progress */}
-        <div className="bg-card rounded-2xl shadow-card p-6">
+        <div className="rounded-2xl border border-border p-6">
           <h2 className="text-lg font-bold text-foreground mb-5">مراحل التقدم</h2>
           <div className="flex items-center">
             {statusSteps.map((s, i) => (
@@ -41,7 +41,7 @@ const Profile = () => {
                   <span className={`text-xs font-medium ${s.done ? 'text-success' : 'text-muted-foreground'}`}>{s.label}</span>
                 </div>
                 {i < statusSteps.length - 1 && (
-                  <div className={`flex-1 h-0.5 mx-2 mb-6 ${s.done ? 'bg-success' : 'bg-muted'}`} />
+                  <div className={`flex-1 h-px mx-2 mb-6 ${s.done ? 'bg-success' : 'bg-border'}`} />
                 )}
               </div>
             ))}
@@ -49,12 +49,12 @@ const Profile = () => {
         </div>
 
         {/* Personal Info */}
-        <div className="bg-card rounded-2xl shadow-card p-6">
+        <div className="rounded-2xl border border-border p-6">
           <h2 className="text-lg font-bold text-foreground mb-5">المعلومات الشخصية</h2>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {infoItems.map((item, i) => (
-              <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-muted/30">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-muted/50">
+                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-foreground shrink-0">
                   {item.icon}
                 </div>
                 <div className="flex-1 min-w-0">

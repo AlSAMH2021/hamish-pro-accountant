@@ -21,10 +21,10 @@ const NdaAgreement = () => {
   return (
     <StepperLayout activePage="nda">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-card rounded-2xl shadow-card p-6">
+        <div className="rounded-2xl border border-border p-6">
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+              <ShieldCheck className="w-5 h-5 text-foreground" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-foreground">اتفاقية عدم إفشاء السرية</h2>
@@ -32,7 +32,7 @@ const NdaAgreement = () => {
             </div>
           </div>
 
-          <div className="bg-muted/30 rounded-xl p-5 space-y-4 text-sm text-foreground leading-relaxed max-h-[350px] overflow-y-auto">
+          <div className="bg-muted/30 rounded-xl p-5 space-y-4 text-sm text-foreground leading-relaxed max-h-[350px] overflow-y-auto border border-border/50">
             <p className="font-bold">اتفاقية عدم إفشاء وسرية المعلومات</p>
             <p>بموجب هذه الاتفاقية، أتعهد أنا المتقدم/ة للتقييم بالآتي:</p>
             <ol className="list-decimal space-y-3 pr-5">
@@ -51,7 +51,7 @@ const NdaAgreement = () => {
                 type="checkbox"
                 checked={agreed}
                 onChange={e => setAgreed(e.target.checked)}
-                className="mt-1 w-5 h-5 rounded border-border text-primary focus:ring-primary"
+                className="mt-1 w-5 h-5 rounded border-border text-foreground focus:ring-foreground"
               />
               <span className="text-sm text-foreground font-medium">أقر بأنني قرأت اتفاقية عدم إفشاء السرية وأوافق على جميع بنودها</span>
             </label>
@@ -60,7 +60,7 @@ const NdaAgreement = () => {
           <Button
             onClick={handleAccept}
             disabled={!agreed || submitting}
-            className="w-full h-12 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl mt-5 gap-2"
+            className="w-full h-12 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-lg mt-5 gap-2"
           >
             الموافقة والبدء بالتقييم
             <ArrowLeft className="w-5 h-5" />
