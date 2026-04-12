@@ -1,5 +1,5 @@
 import { useApp } from '@/context/AppContext';
-import { LogOut, User, Menu, X } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import NotificationBell from '@/components/NotificationBell';
 import logoColor from '@/assets/logo-color.png';
@@ -23,7 +23,6 @@ interface StepperLayoutProps {
 
 const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
   const { user, setCurrentStep, examResult, booking, sessionCompleted, signOut } = useApp();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await signOut();
@@ -32,7 +31,6 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
   const activeIndex = STEPS.findIndex(s => s.id === activePage);
 
   const getStepState = (step: typeof STEPS[number], index: number) => {
-    // Determine if step is completed, current, or upcoming
     if (index < activeIndex) return 'completed';
     if (index === activeIndex) return 'current';
     return 'upcoming';
@@ -53,11 +51,11 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
-      {/* Top Header */}
-      <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-lg border-b border-border">
+      {/* Top Header - matching landing navbar */}
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-4 md:px-6">
           {/* Top row: logo + actions */}
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <img src={logoColor} alt="هامش" className="h-8" />
               <div className="hidden sm:block">
@@ -65,18 +63,18 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
                 <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <NotificationBell />
               <button
                 onClick={() => setCurrentStep(10)}
-                className="w-9 h-9 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
                 title="الملف الشخصي"
               >
                 <User className="w-4 h-4" />
               </button>
               <button
                 onClick={handleLogout}
-                className="w-9 h-9 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                 title="تسجيل الخروج"
               >
                 <LogOut className="w-4 h-4" />
@@ -85,7 +83,7 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
           </div>
 
           {/* Stepper - Desktop */}
-          <div className="hidden md:flex items-center pb-4 gap-1">
+          <div className="hidden md:flex items-center pb-3 gap-1">
             {STEPS.map((step, index) => {
               const state = getStepState(step, index);
               const clickable = isStepClickable(step);
@@ -99,17 +97,17 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
                       }
                     }}
                     disabled={state === 'upcoming' && !clickable}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all text-sm font-medium whitespace-nowrap ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-sm font-medium whitespace-nowrap ${
                       state === 'current'
-                        ? 'bg-primary/10 text-primary'
+                        ? 'bg-foreground/5 text-foreground'
                         : state === 'completed'
-                        ? 'text-success hover:bg-success/10 cursor-pointer'
+                        ? 'text-success hover:bg-success/5 cursor-pointer'
                         : 'text-muted-foreground/50 cursor-not-allowed'
                     }`}
                   >
-                    <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
                       state === 'current'
-                        ? 'bg-primary text-primary-foreground'
+                        ? 'bg-foreground text-background'
                         : state === 'completed'
                         ? 'bg-success text-success-foreground'
                         : 'bg-muted text-muted-foreground/50'
@@ -119,7 +117,7 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
                     <span>{step.label}</span>
                   </button>
                   {index < STEPS.length - 1 && (
-                    <div className={`flex-1 h-0.5 mx-1 rounded-full min-w-[16px] ${
+                    <div className={`flex-1 h-px mx-1 min-w-[16px] ${
                       state === 'completed' ? 'bg-success/40' : 'bg-border'
                     }`} />
                   )}
@@ -130,16 +128,15 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
 
           {/* Stepper - Mobile */}
           <div className="md:hidden pb-3">
-            {/* Progress bar */}
             <div className="flex items-center gap-1 mb-2">
               {STEPS.map((step, index) => {
                 const state = getStepState(step, index);
                 return (
                   <div
                     key={step.id}
-                    className={`flex-1 h-1.5 rounded-full transition-all ${
+                    className={`flex-1 h-1 rounded-full transition-all ${
                       state === 'current'
-                        ? 'bg-primary'
+                        ? 'bg-foreground'
                         : state === 'completed'
                         ? 'bg-success'
                         : 'bg-muted'

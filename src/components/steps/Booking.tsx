@@ -20,12 +20,10 @@ const Booking = () => {
   const [slotsData, setSlotsData] = useState<SlotData[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(true);
 
-  // Filter experts based on user's sector
   const availableExperts = EXPERTS.filter(
     (e) => user && e.sectors.includes(user.sector)
   );
 
-  // Auto-select if only one expert available
   useEffect(() => {
     if (availableExperts.length === 1 && !selectedExpert) {
       setSelectedExpert(availableExperts[0].name);
@@ -65,31 +63,31 @@ const Booking = () => {
     return (
       <StepperLayout activePage="booking">
         <div className="max-w-lg mx-auto space-y-5">
-          <div className="bg-card rounded-2xl shadow-card p-6 text-center">
+          <div className="rounded-2xl border border-border p-6 text-center">
             <CheckCircle className="w-14 h-14 text-success mx-auto mb-3" />
             <h2 className="text-xl font-bold text-foreground mb-1">تم حجز جلستك بنجاح</h2>
             <p className="text-muted-foreground text-sm">سيتم التواصل معك لتأكيد الموعد</p>
           </div>
 
-          <div className="bg-card rounded-2xl shadow-card p-5 space-y-3">
+          <div className="rounded-2xl border border-border p-5 space-y-3">
             {booking.expertName && (
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
-                <User className="w-5 h-5 text-primary shrink-0" />
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
+                <User className="w-5 h-5 text-foreground shrink-0" />
                 <div>
                   <p className="text-xs text-muted-foreground">الخبير</p>
                   <p className="text-foreground font-medium text-sm">{booking.expertName}</p>
                 </div>
               </div>
             )}
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
-              <Calendar className="w-5 h-5 text-primary shrink-0" />
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
+              <Calendar className="w-5 h-5 text-foreground shrink-0" />
               <div>
                 <p className="text-xs text-muted-foreground">التاريخ</p>
                 <p className="text-foreground font-medium text-sm">{bookingDay} - {booking.date}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
-              <Clock className="w-5 h-5 text-primary shrink-0" />
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
+              <Clock className="w-5 h-5 text-foreground shrink-0" />
               <div>
                 <p className="text-xs text-muted-foreground">الوقت</p>
                 <p className="text-foreground font-medium text-sm">{booking.time}</p>
@@ -100,12 +98,12 @@ const Booking = () => {
                 href={booking.sessionLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border-2 border-primary/20 hover:border-primary/40 transition-all"
+                className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border hover:bg-muted/50 transition-all"
               >
-                <Video className="w-5 h-5 text-primary shrink-0" />
+                <Video className="w-5 h-5 text-foreground shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground">رابط الجلسة</p>
-                  <p className="text-primary font-medium text-sm truncate">{booking.sessionLink}</p>
+                  <p className="text-foreground font-medium text-sm truncate">{booking.sessionLink}</p>
                 </div>
               </a>
             )}
@@ -118,23 +116,23 @@ const Booking = () => {
   return (
     <StepperLayout activePage="booking">
       <div className="max-w-lg mx-auto space-y-5">
-        <div className="bg-card rounded-2xl shadow-card p-5 text-center">
-          <Calendar className="w-10 h-10 text-primary mx-auto mb-2" />
+        <div className="rounded-2xl border border-border p-5 text-center">
+          <Calendar className="w-10 h-10 text-foreground mx-auto mb-2" />
           <h2 className="text-lg font-bold text-foreground">احجز جلستك الاستشارية</h2>
           <p className="text-muted-foreground text-sm">اختر الخبير والموعد المناسب لك</p>
         </div>
 
         {loadingSlots ? (
-          <div className="bg-card rounded-2xl shadow-card p-8 flex justify-center">
-            <Loader2 className="w-6 h-6 text-primary animate-spin" />
+          <div className="rounded-2xl border border-border p-8 flex justify-center">
+            <Loader2 className="w-6 h-6 text-foreground animate-spin" />
           </div>
         ) : (
           <>
             {/* Expert Selection */}
             {availableExperts.length > 1 && (
-              <div className="bg-card rounded-2xl shadow-card p-5">
+              <div className="rounded-2xl border border-border p-5">
                 <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-                  <User className="w-4 h-4 text-primary" />
+                  <User className="w-4 h-4 text-muted-foreground" />
                   اختر الخبير
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -144,12 +142,12 @@ const Booking = () => {
                       onClick={() => setSelectedExpert(expert.name)}
                       className={`p-4 rounded-xl border-2 text-center transition-all ${
                         selectedExpert === expert.name
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-primary/30'
+                          ? 'border-foreground bg-foreground/5'
+                          : 'border-border hover:border-foreground/20'
                       }`}
                     >
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
-                        <User className="w-5 h-5 text-primary" />
+                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mx-auto mb-2">
+                        <User className="w-5 h-5 text-foreground" />
                       </div>
                       <p className="font-bold text-foreground text-sm">{expert.name}</p>
                     </button>
@@ -160,9 +158,9 @@ const Booking = () => {
 
             {/* Show single expert info */}
             {availableExperts.length === 1 && (
-              <div className="bg-card rounded-2xl shadow-card p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <User className="w-5 h-5 text-primary" />
+              <div className="rounded-2xl border border-border p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                  <User className="w-5 h-5 text-foreground" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">الخبير المختص</p>
@@ -172,16 +170,16 @@ const Booking = () => {
             )}
 
             {SLOTS.length === 0 ? (
-              <div className="bg-card rounded-2xl shadow-card p-8 text-center">
+              <div className="rounded-2xl border border-border p-8 text-center">
                 <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
                 <p className="text-muted-foreground text-sm">لا توجد مواعيد متاحة حالياً</p>
               </div>
             ) : (
               <>
                 {/* Date Selection */}
-                <div className="bg-card rounded-2xl shadow-card p-5">
+                <div className="rounded-2xl border border-border p-5">
                   <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-primary" />
+                    <Calendar className="w-4 h-4 text-muted-foreground" />
                     اختر اليوم
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -190,7 +188,7 @@ const Booking = () => {
                         key={slot.date}
                         onClick={() => { setSelectedDate(slot.date); setSelectedTime(''); }}
                         className={`p-3 rounded-xl border-2 text-center transition-all ${
-                          selectedDate === slot.date ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
+                          selectedDate === slot.date ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/20'
                         }`}
                       >
                         <p className="font-bold text-foreground text-sm">{slot.day}</p>
@@ -202,9 +200,9 @@ const Booking = () => {
 
                 {/* Time Selection */}
                 {selectedSlot && (
-                  <div className="bg-card rounded-2xl shadow-card p-5 animate-fade-in-up">
+                  <div className="rounded-2xl border border-border p-5 animate-fade-in-up">
                     <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-primary" />
+                      <Clock className="w-4 h-4 text-muted-foreground" />
                       اختر الوقت
                     </h3>
                     <div className="grid grid-cols-3 gap-2">
@@ -213,7 +211,7 @@ const Booking = () => {
                           key={time}
                           onClick={() => setSelectedTime(time)}
                           className={`p-2.5 rounded-xl border-2 text-center font-bold text-sm transition-all ${
-                            selectedTime === time ? 'border-primary bg-primary/5 text-foreground' : 'border-border text-muted-foreground hover:border-primary/30'
+                            selectedTime === time ? 'border-foreground bg-foreground/5 text-foreground' : 'border-border text-muted-foreground hover:border-foreground/20'
                           }`}
                         >
                           {time}
@@ -226,7 +224,7 @@ const Booking = () => {
                 <Button
                   onClick={handleBook}
                   disabled={!selectedDate || !selectedTime || !selectedExpert}
-                  className="w-full h-12 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl disabled:opacity-50"
+                  className="w-full h-12 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-lg disabled:opacity-50"
                 >
                   تأكيد الحجز
                 </Button>

@@ -38,8 +38,8 @@ const Results = () => {
   return (
     <StepperLayout activePage="results">
       <div className="max-w-3xl mx-auto space-y-6">
-        {/* Score Hero - Big circular score */}
-        <div className="bg-card rounded-2xl shadow-elevated p-8 animate-fade-in-up">
+        {/* Score Hero */}
+        <div className="rounded-2xl border border-border p-8 animate-fade-in-up">
           <div className="flex flex-col md:flex-row items-center gap-8">
             {/* Circular score */}
             <div className="relative w-40 h-40 shrink-0">
@@ -77,8 +77,8 @@ const Results = () => {
           </div>
         </div>
 
-        {/* Axis Breakdown - Visual bars */}
-        <div className="bg-card rounded-2xl shadow-card p-6 animate-fade-in-up">
+        {/* Axis Breakdown */}
+        <div className="rounded-2xl border border-border p-6 animate-fade-in-up">
           <h2 className="text-lg font-bold text-foreground mb-5">أداء المحاور</h2>
           <div className="space-y-4">
             {AXES.map(({ key, label, icon }) => {
@@ -97,9 +97,9 @@ const Results = () => {
                       {ap ? <CheckCircle className="w-4 h-4 text-success" /> : <XCircle className="w-4 h-4 text-destructive" />}
                     </div>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-3">
+                  <div className="w-full bg-muted rounded-full h-2">
                     <div
-                      className={`h-3 rounded-full transition-all duration-700 ${ap ? 'bg-success' : 'bg-destructive'}`}
+                      className={`h-2 rounded-full transition-all duration-700 ${ap ? 'bg-success' : 'bg-destructive'}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -114,9 +114,9 @@ const Results = () => {
           const weakAxes = AXES.filter(({ key }) => (axisScores[key as Axis] / 9) < 0.5);
           if (weakAxes.length === 0) return null;
           return (
-            <div className="bg-card rounded-2xl shadow-card p-6 animate-fade-in-up">
+            <div className="rounded-2xl border border-border p-6 animate-fade-in-up">
               <h2 className="text-lg font-bold text-foreground mb-2 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-primary" />
+                <BookOpen className="w-5 h-5 text-muted-foreground" />
                 دورات مقترحة لتطوير أدائك
               </h2>
               <p className="text-sm text-muted-foreground mb-4">بناءً على نتائجك، نرشح لك هذه الدورات:</p>
@@ -126,13 +126,13 @@ const Results = () => {
                   const score = axisScores[key as Axis];
                   const pct = Math.round((score / 9) * 100);
                   return (
-                    <div key={key} className="flex items-center gap-4 p-4 rounded-xl bg-warning/5 border border-warning/20">
+                    <div key={key} className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 border border-border">
                       <span className="text-2xl">{icon}</span>
                       <div className="flex-1">
                         <p className="font-bold text-foreground text-sm">{rec.course}</p>
                         <p className="text-xs text-muted-foreground">{label} — نتيجتك: {pct}%</p>
                       </div>
-                      <span className="text-xs bg-warning/10 text-warning px-3 py-1 rounded-full font-bold">{rec.hours}</span>
+                      <span className="text-xs bg-muted text-muted-foreground px-3 py-1 rounded-full font-bold">{rec.hours}</span>
                     </div>
                   );
                 })}
@@ -143,9 +143,9 @@ const Results = () => {
 
         {/* Badge Card for passed users */}
         {passed && (
-          <div className="bg-card rounded-2xl shadow-elevated overflow-hidden animate-fade-in-up">
-            <div className="bg-gradient-to-l from-[hsl(var(--brand-navy))] to-[hsl(var(--brand-navy)/0.85)] px-6 py-3">
-              <h2 className="text-primary-foreground text-base font-bold text-center">شارة اجتياز تقييم هامش</h2>
+          <div className="rounded-2xl border border-border overflow-hidden animate-fade-in-up">
+            <div className="bg-foreground px-6 py-3">
+              <h2 className="text-background text-base font-bold text-center">شارة اجتياز تقييم هامش</h2>
             </div>
             <div ref={badgeCardRef} className="p-6 flex flex-col items-center">
               <div className="w-36 h-36 mb-4">
@@ -157,16 +157,16 @@ const Results = () => {
               </div>
               <div className="w-full max-w-sm space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                  <Button onClick={shareLinkedIn} variant="outline" className="gap-2 rounded-xl h-10 text-sm">
+                  <Button onClick={shareLinkedIn} variant="outline" className="gap-2 rounded-lg h-10 text-sm">
                     <Linkedin className="w-4 h-4 text-[#0A66C2]" />
                     LinkedIn
                   </Button>
-                  <Button onClick={shareTwitter} variant="outline" className="gap-2 rounded-xl h-10 text-sm">
+                  <Button onClick={shareTwitter} variant="outline" className="gap-2 rounded-lg h-10 text-sm">
                     <Twitter className="w-4 h-4" />
                     X
                   </Button>
                 </div>
-                <Button onClick={downloadBadge} variant="secondary" className="w-full gap-2 rounded-xl h-10 text-sm">
+                <Button onClick={downloadBadge} variant="secondary" className="w-full gap-2 rounded-lg h-10 text-sm">
                   <Download className="w-4 h-4" />
                   تحميل الشارة
                 </Button>
@@ -176,12 +176,12 @@ const Results = () => {
         )}
 
         {/* CTA */}
-        <div className="bg-card rounded-2xl shadow-card p-6 text-center animate-fade-in-up">
+        <div className="rounded-2xl border border-border p-6 text-center animate-fade-in-up">
           <h2 className="text-lg font-bold text-foreground mb-2">الخطوة التالية</h2>
           <p className="text-muted-foreground text-sm mb-4">احجز جلستك الاستشارية للحصول على التقرير الكامل</p>
           <Button
             onClick={() => setCurrentStep(7)}
-            className="h-12 px-8 text-base font-bold bg-gradient-gold text-accent-foreground rounded-xl gap-2"
+            className="h-12 px-8 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-lg gap-2"
           >
             احجز جلستك الاستشارية
             <ArrowLeft className="w-5 h-5" />

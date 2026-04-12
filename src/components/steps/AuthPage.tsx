@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,14 +13,12 @@ interface AuthPageProps {
 }
 
 const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
-  const { setCurrentStep, signIn, signUp } = useApp();
+  const { setCurrentStep } = useApp();
   const [activeTab, setActiveTab] = useState<AuthTab>(initialTab);
   const [animPhase, setAnimPhase] = useState<'idle' | 'exit' | 'enter'>('idle');
-  const [slideDir, setSlideDir] = useState<'left' | 'right'>('left');
 
   const switchTab = (tab: AuthTab) => {
     if (tab === activeTab || animPhase !== 'idle') return;
-    setSlideDir(tab === 'register' ? 'left' : 'right');
     setAnimPhase('exit');
     setTimeout(() => {
       setActiveTab(tab);
@@ -32,30 +30,30 @@ const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
   return (
     <div className="min-h-screen bg-background" dir="rtl">
       {/* Header */}
-      <div className="bg-card border-b border-border">
-        <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
+      <nav className="border-b border-border/60 bg-background/80 backdrop-blur-md">
+        <div className="max-w-lg mx-auto px-4 h-16 flex items-center justify-between">
           <button onClick={() => setCurrentStep(1)} className="text-muted-foreground hover:text-foreground transition-colors">
             <ArrowRight className="w-5 h-5" />
           </button>
-          <img src={logoColor} alt="هامش" className="h-10" />
+          <img src={logoColor} alt="هامش" className="h-9" />
           <div className="w-5" />
         </div>
-      </div>
+      </nav>
 
       <div className="flex items-center justify-center py-8 md:py-12 px-4">
         <div className="w-full max-w-lg">
           {/* Tab Switcher */}
-          <div className="relative flex bg-muted rounded-2xl p-1.5 mb-8">
+          <div className="relative flex bg-muted rounded-xl p-1 mb-8">
             <div
-              className="absolute top-1.5 bottom-1.5 rounded-xl bg-card shadow-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+              className="absolute top-1 bottom-1 rounded-lg bg-background shadow-sm transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
               style={{
-                width: 'calc(50% - 6px)',
-                right: activeTab === 'login' ? '6px' : 'calc(50% - 0px)',
+                width: 'calc(50% - 4px)',
+                right: activeTab === 'login' ? '4px' : 'calc(50%)',
               }}
             />
             <button
               onClick={() => switchTab('login')}
-              className={`relative z-10 flex-1 py-3 text-center text-sm font-bold rounded-xl transition-colors duration-300 ${
+              className={`relative z-10 flex-1 py-2.5 text-center text-sm font-bold rounded-lg transition-colors duration-300 ${
                 activeTab === 'login' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/70'
               }`}
             >
@@ -63,7 +61,7 @@ const AuthPage = ({ initialTab = 'login' }: AuthPageProps) => {
             </button>
             <button
               onClick={() => switchTab('register')}
-              className={`relative z-10 flex-1 py-3 text-center text-sm font-bold rounded-xl transition-colors duration-300 ${
+              className={`relative z-10 flex-1 py-2.5 text-center text-sm font-bold rounded-lg transition-colors duration-300 ${
                 activeTab === 'register' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/70'
               }`}
             >
@@ -119,7 +117,7 @@ const LoginForm = ({ onSwitchToRegister }: { onSwitchToRegister: () => void }) =
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card p-6 md:p-8 space-y-4 border border-border/50">
+    <form onSubmit={handleSubmit} className="rounded-2xl border border-border p-6 md:p-8 space-y-4">
       <div className="text-center mb-2">
         <h1 className="text-xl font-bold text-foreground mb-1">مرحباً بعودتك</h1>
         <p className="text-muted-foreground text-sm">أدخل بياناتك للمتابعة</p>
@@ -136,12 +134,12 @@ const LoginForm = ({ onSwitchToRegister }: { onSwitchToRegister: () => void }) =
 
       {error && <p className="text-destructive text-sm text-center bg-destructive/10 p-3 rounded-xl">{error}</p>}
 
-      <Button type="submit" disabled={submitting} className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl">
+      <Button type="submit" disabled={submitting} className="w-full h-12 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-lg">
         {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'تسجيل الدخول'}
       </Button>
 
       <div className="text-center">
-        <button type="button" onClick={() => setCurrentStep(11)} className="text-primary text-sm font-medium hover:underline">
+        <button type="button" onClick={() => setCurrentStep(11)} className="text-muted-foreground text-sm font-medium hover:text-foreground transition-colors">
           نسيت كلمة المرور؟
         </button>
       </div>
@@ -185,7 +183,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card p-6 md:p-8 space-y-4 border border-border/50">
+    <form onSubmit={handleSubmit} className="rounded-2xl border border-border p-6 md:p-8 space-y-4">
       <div className="text-center mb-2">
         <h1 className="text-xl font-bold text-foreground mb-1">إنشاء حساب جديد</h1>
         <p className="text-muted-foreground text-sm">سجّل بياناتك للبدء في التقييم</p>
@@ -216,7 +214,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
         {errors.confirmPassword && <p className="text-destructive text-xs mt-1">{errors.confirmPassword}</p>}
       </div>
 
-      <Button type="submit" disabled={submitting} className="w-full h-13 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl mt-2">
+      <Button type="submit" disabled={submitting} className="w-full h-12 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-lg mt-2">
         {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'إنشاء الحساب'}
       </Button>
     </form>
