@@ -1,5 +1,5 @@
 import { useApp } from '@/context/AppContext';
-import DashboardLayout from '@/components/DashboardLayout';
+import StepperLayout from '@/components/StepperLayout';
 import { AXES, AXIS_RECOMMENDATIONS, SECTOR_LABELS, getPerformanceColor } from '@/data/types';
 import { getQuestionsBySetor, correctAnswers } from '@/data/questions';
 import { CheckCircle, XCircle, Share2, FileText, Award, CalendarDays, BookOpen, TrendingUp, AlertTriangle, Lightbulb } from 'lucide-react';
@@ -15,7 +15,7 @@ const Report = () => {
 
   if (!user || !examResult) {
     return (
-      <DashboardLayout activePage="report">
+      <StepperLayout activePage="report">
         <div className="max-w-lg mx-auto text-center py-16 space-y-6">
           <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mx-auto">
             <FileText className="w-10 h-10 text-muted-foreground" />
@@ -23,20 +23,20 @@ const Report = () => {
           <h1 className="text-2xl font-bold text-foreground">لا يوجد تقرير</h1>
           <p className="text-muted-foreground">يرجى إكمال التقييم أولاً.</p>
         </div>
-      </DashboardLayout>
+      </StepperLayout>
     );
   }
 
   if (!sessionCompleted) {
     return (
-      <DashboardLayout activePage="report">
+      <StepperLayout activePage="report">
         <div className="max-w-lg mx-auto text-center py-16 space-y-6">
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
             <CalendarDays className="w-10 h-10 text-primary" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">التقرير قيد الإعداد</h1>
           <p className="text-muted-foreground leading-relaxed">
-            سيتم عرض التقرير التفصيلي بعد إتمام الجلسة الاستشارية مع المختص.
+            سيتم عرض التقرير التفصيلي بعد إتمام الجلسة الاستشارية.
           </p>
           {booking && (
             <div className="bg-card rounded-2xl shadow-card p-5 text-right space-y-3 max-w-sm mx-auto">
@@ -56,7 +56,7 @@ const Report = () => {
             </Button>
           )}
         </div>
-      </DashboardLayout>
+      </StepperLayout>
     );
   }
 
@@ -67,48 +67,17 @@ const Report = () => {
   const correctCount = questions.filter((_, i) => answers[i] === correct[i]).length;
   const wrongCount = questions.length - correctCount;
   const radarChartData = [
-    {
-      shortLabel: 'المالية',
-      fullLabel: 'المحاسبة المالية',
-      icon: '📊',
-      score: axisScores['financial'],
-      fullMark: 9,
-    },
-    {
-      shortLabel: 'التكاليف',
-      fullLabel: 'محاسبة التكاليف',
-      icon: '💰',
-      score: axisScores['cost'],
-      fullMark: 9,
-    },
-    {
-      shortLabel: 'الضرائب',
-      fullLabel: 'الضرائب والزكاة',
-      icon: '🧾',
-      score: axisScores['tax'],
-      fullMark: 9,
-    },
-    {
-      shortLabel: 'التشريعات',
-      fullLabel: 'التشريعات والأنظمة',
-      icon: '⚖️',
-      score: axisScores['regulations'],
-      fullMark: 9,
-    },
-    {
-      shortLabel: 'IFRS',
-      fullLabel: 'المعايير الدولية IFRS',
-      icon: '🌐',
-      score: axisScores['ifrs'],
-      fullMark: 9,
-    },
+    { shortLabel: 'المالية', fullLabel: 'المحاسبة المالية', icon: '📊', score: axisScores['financial'], fullMark: 9 },
+    { shortLabel: 'التكاليف', fullLabel: 'محاسبة التكاليف', icon: '💰', score: axisScores['cost'], fullMark: 9 },
+    { shortLabel: 'الضرائب', fullLabel: 'الضرائب والزكاة', icon: '🧾', score: axisScores['tax'], fullMark: 9 },
+    { shortLabel: 'التشريعات', fullLabel: 'التشريعات والأنظمة', icon: '⚖️', score: axisScores['regulations'], fullMark: 9 },
+    { shortLabel: 'IFRS', fullLabel: 'المعايير الدولية IFRS', icon: '🌐', score: axisScores['ifrs'], fullMark: 9 },
   ];
   const shareText = `أتممت تقييم هامش للمحاسبين\nمستواي: ${performanceLevel}\nالنتيجة: ${totalScore}/45`;
 
   return (
-    <DashboardLayout activePage="report">
+    <StepperLayout activePage="report">
       <div className="max-w-4xl mx-auto space-y-8">
-
         {/* Hero Header */}
         <div className="relative overflow-hidden bg-card rounded-3xl shadow-elevated p-8">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-l from-primary via-accent to-primary" />
@@ -147,9 +116,8 @@ const Report = () => {
           ))}
         </div>
 
-        {/* Charts Section */}
+        {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Radar Chart */}
           <div className="bg-card rounded-2xl shadow-card p-6">
             <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
@@ -157,32 +125,11 @@ const Report = () => {
             </h2>
             <div className="space-y-4">
               <ResponsiveContainer width="100%" height={320}>
-                <RadarChart
-                  data={radarChartData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius="52%"
-                >
+                <RadarChart data={radarChartData} cx="50%" cy="50%" outerRadius="52%">
                   <PolarGrid stroke="hsl(var(--border))" />
-                  <PolarAngleAxis
-                    dataKey="shortLabel"
-                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                    tickLine={false}
-                  />
-                  <PolarRadiusAxis
-                    angle={90}
-                    domain={[0, 9]}
-                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
-                    tickCount={4}
-                  />
-                  <Radar
-                    name="الدرجة"
-                    dataKey="score"
-                    stroke="hsl(var(--primary))"
-                    fill="hsl(var(--primary))"
-                    fillOpacity={0.25}
-                    strokeWidth={2}
-                  />
+                  <PolarAngleAxis dataKey="shortLabel" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickLine={false} />
+                  <PolarRadiusAxis angle={90} domain={[0, 9]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} tickCount={4} />
+                  <Radar name="الدرجة" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.25} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -199,7 +146,6 @@ const Report = () => {
             </div>
           </div>
 
-          {/* Bar Chart */}
           <div className="bg-card rounded-2xl shadow-card p-6">
             <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-primary" />
@@ -217,42 +163,21 @@ const Report = () => {
                 margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                  interval={0}
-                  tickLine={false}
-                  axisLine={{ stroke: 'hsl(var(--border))' }}
-                />
-                <YAxis
-                  domain={[0, 9]}
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
-                  width={30}
-                  tickLine={false}
-                />
+                <XAxis dataKey="name" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} interval={0} tickLine={false} axisLine={{ stroke: 'hsl(var(--border))' }} />
+                <YAxis domain={[0, 9]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} width={30} tickLine={false} />
                 <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: 12,
-                    fontSize: 12,
-                    direction: 'rtl',
-                  }}
+                  contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 12, fontSize: 12, direction: 'rtl' }}
                   formatter={(value: number) => [`${value}/9`, 'الدرجة']}
                 />
                 <Bar dataKey="score" radius={[6, 6, 0, 0]} barSize={40}>
                   {AXES.map(({ key }) => (
-                    <Cell
-                      key={key}
-                      fill={axisPassed[key] ? 'hsl(var(--success))' : 'hsl(var(--destructive))'}
-                    />
+                    <Cell key={key} fill={axisPassed[key] ? 'hsl(var(--success))' : 'hsl(var(--destructive))'} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Donut Chart */}
           <div className="bg-card rounded-2xl shadow-card p-6 lg:col-span-2">
             <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
               <Award className="w-5 h-5 text-primary" />
@@ -262,17 +187,8 @@ const Report = () => {
               <ResponsiveContainer width={200} height={200}>
                 <PieChart>
                   <Pie
-                    data={[
-                      { name: 'صحيحة', value: correctCount },
-                      { name: 'خاطئة', value: wrongCount },
-                    ]}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={55}
-                    outerRadius={85}
-                    paddingAngle={4}
-                    dataKey="value"
-                    strokeWidth={0}
+                    data={[{ name: 'صحيحة', value: correctCount }, { name: 'خاطئة', value: wrongCount }]}
+                    cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="value" strokeWidth={0}
                   >
                     <Cell fill="hsl(var(--success))" />
                     <Cell fill="hsl(var(--destructive))" />
@@ -295,7 +211,7 @@ const Report = () => {
           </div>
         </div>
 
-        {/* User Info Card */}
+        {/* User Info */}
         <div className="bg-card rounded-2xl shadow-card p-6">
           <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-primary" />
@@ -342,10 +258,7 @@ const Report = () => {
                     </div>
                   </div>
                   <div className="w-full h-2 rounded-full bg-muted/50">
-                    <div
-                      className={`h-full rounded-full transition-all ${ap ? 'bg-success' : 'bg-destructive'}`}
-                      style={{ width: `${pct}%` }}
-                    />
+                    <div className={`h-full rounded-full transition-all ${ap ? 'bg-success' : 'bg-destructive'}`} style={{ width: `${pct}%` }} />
                   </div>
                   {!ap && (
                     <p className="text-xs text-muted-foreground mt-2">
@@ -358,7 +271,7 @@ const Report = () => {
           </div>
         </div>
 
-        {/* Questions Review by Axis */}
+        {/* Questions Review */}
         <div className="space-y-6">
           <h2 className="text-base font-bold text-foreground flex items-center gap-2">
             <FileText className="w-5 h-5 text-primary" />
@@ -379,64 +292,36 @@ const Report = () => {
                       <h3 className="font-bold text-foreground text-sm">{label}</h3>
                     </div>
                     <span className="text-xs font-medium text-muted-foreground">
-                      {axisQuestions.filter(({ i }) => answers[i] === correct[i]).length}/{axisQuestions.length} صحيح
+                      {axisScores[key]}/9
                     </span>
                   </div>
                 </div>
-
-                <div className="divide-y divide-border/50">
+                <div className="divide-y divide-border">
                   {axisQuestions.map(({ q, i }) => {
                     const userAnswer = answers[i];
                     const correctAnswer = correct[i];
                     const isCorrect = userAnswer === correctAnswer;
-                    const letters = ['أ', 'ب', 'ج', 'د'];
-
                     return (
-                      <div key={i} className="p-5">
-                        {/* Question Header */}
-                        <div className="flex items-start gap-3 mb-4">
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isCorrect ? 'bg-success/15' : 'bg-destructive/15'}`}>
-                            {isCorrect
-                              ? <CheckCircle className="w-4 h-4 text-success" />
-                              : <XCircle className="w-4 h-4 text-destructive" />
-                            }
-                          </div>
-                          <p className="text-sm font-medium text-foreground leading-relaxed">{i + 1}. {q.text}</p>
+                      <div key={i} className="px-6 py-4">
+                        <div className="flex items-start gap-3 mb-3">
+                          {isCorrect ? (
+                            <CheckCircle className="w-5 h-5 text-success shrink-0 mt-0.5" />
+                          ) : (
+                            <XCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                          )}
+                          <p className="text-sm text-foreground leading-relaxed">{q.text}</p>
                         </div>
-
-                        {/* Options Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mr-10 mb-4">
+                        <div className="mr-8 space-y-1.5">
                           {q.options.map((opt, oi) => {
-                            const isCorrectOpt = oi === correctAnswer;
-                            const isUserWrong = oi === userAnswer && !isCorrect;
+                            let optClass = 'bg-muted/20 text-muted-foreground';
+                            if (oi === correctAnswer) optClass = 'bg-success/10 text-success font-medium';
+                            else if (oi === userAnswer && !isCorrect) optClass = 'bg-destructive/10 text-destructive line-through';
                             return (
-                              <div
-                                key={oi}
-                                className={`px-3 py-2.5 rounded-lg text-sm flex items-center gap-2 ${
-                                  isCorrectOpt
-                                    ? 'bg-success/10 border border-success/30 text-success font-medium'
-                                    : isUserWrong
-                                    ? 'bg-destructive/10 border border-destructive/30 text-destructive line-through'
-                                    : 'bg-muted/20 text-muted-foreground border border-transparent'
-                                }`}
-                              >
-                                <span className={`w-5 h-5 rounded text-xs flex items-center justify-center shrink-0 ${
-                                  isCorrectOpt ? 'bg-success/20 text-success' : isUserWrong ? 'bg-destructive/20 text-destructive' : 'bg-muted/30 text-muted-foreground'
-                                }`}>
-                                  {letters[oi]}
-                                </span>
-                                {opt}
+                              <div key={oi} className={`text-xs px-3 py-2 rounded-lg ${optClass}`}>
+                                {['أ', 'ب', 'ج', 'د'][oi]}. {opt}
                               </div>
                             );
                           })}
-                        </div>
-
-                        {/* Explanation */}
-                        <div className="mr-10 bg-primary/5 border border-primary/15 rounded-xl p-4">
-                          <div className="flex items-start gap-2">
-                            <Lightbulb className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                            <p className="text-xs text-muted-foreground leading-relaxed">{q.explanation}</p>
-                          </div>
                         </div>
                       </div>
                     );
@@ -446,58 +331,8 @@ const Report = () => {
             );
           })}
         </div>
-
-        {/* Dev Plan */}
-        {failedAxes.length > 0 && (
-          <div className="bg-card rounded-2xl shadow-card p-6">
-            <h2 className="text-base font-bold text-foreground mb-5 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-primary" />
-              خطة التطوير المهني
-            </h2>
-            <div className="space-y-3">
-              {failedAxes.map(({ key, label, icon }) => {
-                const rec = AXIS_RECOMMENDATIONS[key];
-                return (
-                  <div key={key} className="flex items-center gap-4 bg-warning/5 border border-warning/20 rounded-xl p-4">
-                    <span className="text-2xl">{icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-foreground text-sm">{label}</p>
-                      <p className="text-muted-foreground text-xs mt-0.5">{rec.course}</p>
-                    </div>
-                    <div className="text-left shrink-0 bg-warning/10 px-3 py-1.5 rounded-lg">
-                      <p className="font-bold text-foreground text-sm">{rec.hours} ساعة</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Share */}
-        <div className="bg-card rounded-2xl shadow-card p-6 text-center">
-          <h2 className="text-base font-bold text-foreground mb-4">شارك إنجازك</h2>
-          <div className="flex gap-3 justify-center">
-            <Button
-              onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin)}&summary=${encodeURIComponent(shareText)}`, '_blank')}
-              variant="outline"
-              className="gap-2 rounded-xl"
-            >
-              <Share2 className="w-4 h-4" />
-              LinkedIn
-            </Button>
-            <Button
-              onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank')}
-              variant="outline"
-              className="gap-2 rounded-xl"
-            >
-              <Share2 className="w-4 h-4" />
-              X
-            </Button>
-          </div>
-        </div>
       </div>
-    </DashboardLayout>
+    </StepperLayout>
   );
 };
 

@@ -1,5 +1,5 @@
 import { useApp } from '@/context/AppContext';
-import DashboardLayout from '@/components/DashboardLayout';
+import StepperLayout from '@/components/StepperLayout';
 import { User, Mail, Phone, Building2, Briefcase, Shield } from 'lucide-react';
 import { SECTOR_LABELS } from '@/data/types';
 
@@ -24,7 +24,7 @@ const Profile = () => {
   ];
 
   return (
-    <DashboardLayout activePage="profile">
+    <StepperLayout activePage="profile">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Progress */}
         <div className="bg-card rounded-2xl shadow-card p-6">
@@ -66,7 +66,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </StepperLayout>
   );
 };
 
