@@ -142,7 +142,7 @@ const ExamEngine = () => {
       </div>
 
       {/* Content: Question + Map side by side */}
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 flex flex-col-reverse md:flex-row gap-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 flex flex-col md:flex-row gap-6">
         {/* Question - left on screen (main) */}
         <div className="flex-1 min-w-0">
           <div className="rounded-2xl border border-border p-6 md:p-8 animate-fade-in-up">
