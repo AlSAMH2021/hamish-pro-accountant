@@ -1,5 +1,5 @@
 import { useApp } from '@/context/AppContext';
-import DashboardLayout from '@/components/DashboardLayout';
+import StepperLayout from '@/components/StepperLayout';
 import { User, Mail, Phone, Building2, Briefcase, Shield } from 'lucide-react';
 import { SECTOR_LABELS } from '@/data/types';
 
