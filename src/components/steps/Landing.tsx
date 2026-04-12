@@ -1,6 +1,6 @@
 
 import { useApp } from '@/context/AppContext';
-import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, UserCheck, Briefcase, CheckCircle2 } from 'lucide-react';
+import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, UserCheck, Briefcase, CheckCircle2, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoWhite from '@/assets/logo-white.png';
 import platformPreview from '@/assets/hero-dashboard.png';
@@ -89,6 +89,7 @@ function FadeUp({ children, delay = 0, className = '' }: { children: React.React
 
 const Landing = () => {
   const { setCurrentStep } = useApp();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
@@ -97,7 +98,9 @@ const Landing = () => {
       <nav className="border-b border-border/60 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <img src={logoWhite} alt="هامش" className="h-9 brightness-0" />
-          <div className="flex items-center gap-3">
+          
+          {/* Desktop buttons */}
+          <div className="hidden sm:flex items-center gap-3">
             <Button
               onClick={() => setCurrentStep(9)}
               variant="ghost"
@@ -112,7 +115,35 @@ const Landing = () => {
               ابدأ التقييم
             </Button>
           </div>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="sm:hidden text-foreground p-2"
+            aria-label="القائمة"
+          >
+            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
+
+        {/* Mobile menu dropdown */}
+        {menuOpen && (
+          <div className="sm:hidden border-t border-border/60 bg-white px-6 py-4 flex flex-col gap-3 animate-in slide-in-from-top-2 duration-200">
+            <Button
+              onClick={() => { setCurrentStep(9); setMenuOpen(false); }}
+              variant="ghost"
+              className="w-full justify-center text-foreground/70 hover:text-foreground font-medium"
+            >
+              تسجيل الدخول
+            </Button>
+            <Button
+              onClick={() => { setCurrentStep(2); setMenuOpen(false); }}
+              className="w-full justify-center bg-foreground text-white hover:bg-foreground/90 rounded-lg font-semibold"
+            >
+              ابدأ التقييم
+            </Button>
+          </div>
+        )}
       </nav>
 
       {/* Hero */}
