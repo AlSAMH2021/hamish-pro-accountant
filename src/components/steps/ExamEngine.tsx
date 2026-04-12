@@ -143,8 +143,37 @@ const ExamEngine = () => {
 
       {/* Content: Question + Map side by side */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 flex flex-col md:flex-row gap-6">
-        {/* Question - left on screen (main) */}
-        <div className="flex-1 min-w-0">
+        {/* Question map - sidebar (appears on left in RTL) */}
+        <div className="md:w-64 shrink-0 order-2 md:order-none">
+          <div className="rounded-2xl border border-border p-5 md:sticky md:top-28">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm font-bold text-foreground">خريطة الأسئلة</p>
+              <Button variant="ghost" onClick={() => setShowConfirm(true)} className="text-xs h-8 text-muted-foreground hover:text-foreground">
+                تسليم
+              </Button>
+            </div>
+            <div className="grid grid-cols-5 gap-2">
+              {Array.from({ length: 45 }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentQ(i)}
+                  className={`w-full aspect-square rounded-lg text-xs font-bold transition-all ${
+                    currentQ === i
+                      ? 'bg-foreground text-background ring-2 ring-foreground/20 scale-110'
+                      : answers[i] !== undefined
+                      ? 'bg-foreground/15 text-foreground'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Question - main content */}
+        <div className="flex-1 min-w-0 order-1 md:order-none">
           <div className="rounded-2xl border border-border p-6 md:p-8 animate-fade-in-up">
             <div className="mb-6">
               <span className="inline-block px-3 py-1 rounded-full bg-muted text-foreground text-xs font-bold mb-4">
@@ -203,35 +232,6 @@ const ExamEngine = () => {
                   تسليم التقييم
                 </Button>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* Question map - right sidebar */}
-        <div className="md:w-64 shrink-0">
-          <div className="rounded-2xl border border-border p-5 md:sticky md:top-28">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-bold text-foreground">خريطة الأسئلة</p>
-              <Button variant="ghost" onClick={() => setShowConfirm(true)} className="text-xs h-8 text-muted-foreground hover:text-foreground">
-                تسليم
-              </Button>
-            </div>
-            <div className="grid grid-cols-5 gap-2">
-              {Array.from({ length: 45 }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentQ(i)}
-                  className={`w-full aspect-square rounded-lg text-xs font-bold transition-all ${
-                    currentQ === i
-                      ? 'bg-foreground text-background ring-2 ring-foreground/20 scale-110'
-                      : answers[i] !== undefined
-                      ? 'bg-foreground/15 text-foreground'
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
             </div>
           </div>
         </div>
