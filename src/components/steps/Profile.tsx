@@ -24,7 +24,7 @@ const Profile = () => {
   ];
 
   return (
-    <DashboardLayout activePage="profile">
+    <StepperLayout activePage="profile">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Progress */}
         <div className="bg-card rounded-2xl shadow-card p-6">
