@@ -92,7 +92,7 @@ const StepperLayout = ({ children, activePage }: StepperLayoutProps) => {
                 <div key={step.id} className="flex items-center flex-1 last:flex-initial">
                   <button
                     onClick={() => {
-                      if (clickable || state === 'completed') {
+                      if (clickable) {
                         setCurrentStep(step.step);
                       }
                     }}
