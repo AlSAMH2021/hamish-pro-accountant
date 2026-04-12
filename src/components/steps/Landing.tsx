@@ -1,6 +1,6 @@
 
 import { useApp } from '@/context/AppContext';
-import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, UserCheck, Briefcase, CheckCircle2 } from 'lucide-react';
+import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, UserCheck, Briefcase, CheckCircle2, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoWhite from '@/assets/logo-white.png';
 import platformPreview from '@/assets/hero-dashboard.png';
