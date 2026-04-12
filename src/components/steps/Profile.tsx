@@ -1,10 +1,11 @@
 import { useApp } from '@/context/AppContext';
 import StepperLayout from '@/components/StepperLayout';
-import { User, Mail, Phone, Building2, Briefcase, Shield, CheckCircle, Clock, CreditCard, BookOpen, CalendarCheck } from 'lucide-react';
+import { User, Mail, Phone, Building2, Briefcase, Shield, CheckCircle, Clock, CreditCard, BookOpen, CalendarCheck, ArrowRight } from 'lucide-react';
 import { SECTOR_LABELS } from '@/data/types';
+import { Button } from '@/components/ui/button';
 
 const Profile = () => {
-  const { user, examResult, booking, sessionCompleted } = useApp();
+  const { user, examResult, booking, sessionCompleted, currentStep, setCurrentStep } = useApp();
   if (!user) return null;
 
   const statusSteps = [
