@@ -44,7 +44,11 @@ const ExamEngine = () => {
     let totalScore = 0;
 
     questions.forEach((q, i) => {
-      if (answers[i] === correct[i]) {
+      const selectedShuffledIndex = answers[i];
+      if (selectedShuffledIndex === undefined) return;
+      // Map back to original index
+      const originalIndex = shuffledMap[i].originalIndices[selectedShuffledIndex];
+      if (originalIndex === correct[i]) {
         axisScores[q.axis]++;
         totalScore++;
       }
