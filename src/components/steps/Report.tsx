@@ -86,7 +86,7 @@ const Report = () => {
                 <Award className="w-8 h-8 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">تقرير الأداء التفصيلي</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground">تقرير الأداء التفصيلي</h1>
                 <p className="text-muted-foreground text-sm mt-1">هامش — تقييم المحاسبين • {SECTOR_LABELS[user.sector]}</p>
               </div>
             </div>
@@ -182,12 +182,12 @@ const Report = () => {
               <Award className="w-5 h-5 text-muted-foreground" />
               نسبة الإجابات
             </h2>
-            <div className="flex items-center justify-center gap-8">
-              <ResponsiveContainer width={200} height={200}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
+              <ResponsiveContainer width={180} height={180}>
                 <PieChart>
                   <Pie
                     data={[{ name: 'صحيحة', value: correctCount }, { name: 'خاطئة', value: wrongCount }]}
-                    cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="value" strokeWidth={0}
+                    cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={4} dataKey="value" strokeWidth={0}
                   >
                     <Cell fill="hsl(var(--success))" />
                     <Cell fill="hsl(var(--destructive))" />
@@ -310,7 +310,7 @@ const Report = () => {
                           )}
                           <p className="text-sm text-foreground leading-relaxed">{q.text}</p>
                         </div>
-                        <div className="mr-8 space-y-1.5">
+                        <div className="mr-4 sm:mr-8 space-y-1.5">
                           {q.options.map((opt, oi) => {
                             let optClass = 'bg-muted/30 text-muted-foreground';
                             if (oi === correctAnswer) optClass = 'bg-success/10 text-success font-medium';

@@ -139,7 +139,7 @@ const ExamEngine = () => {
 
       {/* Header bar */}
       <div className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
-        <div className="max-w-4xl mx-auto px-4 md:px-8 py-4">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 py-3 md:py-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center">

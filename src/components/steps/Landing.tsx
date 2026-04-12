@@ -127,7 +127,7 @@ const Landing = () => {
               </div>
             </FadeUp>
             <FadeUp delay={100}>
-              <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-foreground leading-[1.4] mb-6 tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-foreground leading-[1.4] mb-6 tracking-tight">
                 قيّم مستواك المحاسبي
                 <br />
                 <span className="text-primary">بدقة احترافية</span>
@@ -150,7 +150,7 @@ const Landing = () => {
               </div>
             </FadeUp>
             <FadeUp delay={400}>
-              <div className="flex items-center gap-6 mt-8 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-8 text-sm text-muted-foreground">
                 {['45 سؤال متخصص', '5 محاور تقييم', 'تقرير مفصل'].map((t, i) => (
                   <span key={i} className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-primary" />
@@ -281,7 +281,7 @@ const Landing = () => {
           <FadeUp>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-14">كيف يعمل التقييم؟</h2>
           </FadeUp>
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             {[
               { step: '١', label: 'سجّل بياناتك' },
               { step: '٢', label: 'ادفع رسوم التقييم' },
