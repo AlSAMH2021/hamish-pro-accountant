@@ -40,6 +40,22 @@ const Profile = () => {
   return (
     <StepperLayout activePage="profile">
       <div className="max-w-2xl mx-auto space-y-6">
+        {/* Back Button */}
+        <Button
+          variant="ghost"
+          onClick={() => {
+            if (sessionCompleted) setCurrentStep(8);
+            else if (booking) setCurrentStep(7);
+            else if (examResult) setCurrentStep(6);
+            else if (user.paymentStatus) setCurrentStep(5);
+            else setCurrentStep(3);
+          }}
+          className="gap-2 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowRight className="w-4 h-4" />
+          رجوع
+        </Button>
+
         {/* User Header Card */}
         <div className="rounded-2xl border border-border p-6">
           <div className="flex items-center gap-4 mb-6">
