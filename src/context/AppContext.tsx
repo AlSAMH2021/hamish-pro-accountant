@@ -254,6 +254,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         .update({
           name: metadata.name,
           phone: metadata.phone,
+          sector: metadata.sector || 'tourism',
         })
         .eq('user_id', newSession.user.id);
     }
