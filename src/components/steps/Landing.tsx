@@ -1,9 +1,10 @@
 
 import { useApp } from '@/context/AppContext';
-import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, UserCheck, Briefcase } from 'lucide-react';
+import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, UserCheck, Briefcase, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoWhite from '@/assets/logo-white.png';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import platformPreview from '@/assets/platform-preview.png';
+import { useEffect, useRef, useState } from 'react';
 
 /* ── Intersection Observer hook ── */
 function useReveal(threshold = 0.15) {
@@ -22,61 +23,6 @@ function useReveal(threshold = 0.15) {
   return { ref, visible };
 }
 
-/* ── Animated counter ── */
-function AnimatedCounter({ target, suffix = '', prefix = '' }: { target: number; suffix?: string; prefix?: string }) {
-  const [count, setCount] = useState(0);
-  const { ref, visible } = useReveal(0.3);
-
-  useEffect(() => {
-    if (!visible) return;
-    const duration = 2000;
-    const steps = 60;
-    const increment = target / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [visible, target]);
-
-  return (
-    <span ref={ref} className="tabular-nums">
-      {prefix}{count}{suffix}
-    </span>
-  );
-}
-
-/* ── Reveal text word-by-word ── */
-function RevealText({ text, className = '', delay = 0, goldGradient = false }: { text: string; className?: string; delay?: number; goldGradient?: boolean }) {
-  const { ref, visible } = useReveal(0.2);
-  const words = text.split(' ');
-
-  return (
-    <span ref={ref} className={className}>
-      {words.map((word, i) => (
-        <span
-          key={i}
-          className={`inline-block transition-all duration-700 ${goldGradient ? 'bg-clip-text text-transparent' : ''}`}
-          style={{
-            transitionDelay: `${delay + i * 100}ms`,
-            transform: visible ? 'translateY(0)' : 'translateY(20px)',
-            opacity: visible ? 1 : 0,
-            ...(goldGradient ? { backgroundImage: 'linear-gradient(135deg, hsl(40 70% 50%), hsl(35 80% 45%))' } : {}),
-          }}
-        >
-          {word}&nbsp;
-        </span>
-      ))}
-    </span>
-  );
-}
-
 /* ── Fade-up element ── */
 function FadeUp({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   const { ref, visible } = useReveal(0.15);
@@ -86,7 +32,7 @@ function FadeUp({ children, delay = 0, className = '' }: { children: React.React
       className={`transition-all duration-700 ${className}`}
       style={{
         transitionDelay: `${delay}ms`,
-        transform: visible ? 'translateY(0)' : 'translateY(30px)',
+        transform: visible ? 'translateY(0)' : 'translateY(24px)',
         opacity: visible ? 1 : 0,
       }}
     >
@@ -99,87 +45,118 @@ const Landing = () => {
   const { setCurrentStep } = useApp();
 
   return (
-    <div className="min-h-screen bg-[hsl(220,50%,13%)]" dir="rtl">
-      {/* Hero */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] animate-[pulse_6s_ease-in-out_infinite]" />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-accent/8 blur-[150px] animate-[pulse_8s_ease-in-out_infinite_1s]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-white/[0.03]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-white/[0.05]" />
+    <div className="min-h-screen bg-white" dir="rtl">
+
+      {/* Navbar */}
+      <nav className="border-b border-border/60 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <img src={logoWhite} alt="هامش" className="h-9 brightness-0" />
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={() => setCurrentStep(9)}
+              variant="ghost"
+              className="text-foreground/70 hover:text-foreground font-medium"
+            >
+              تسجيل الدخول
+            </Button>
+            <Button
+              onClick={() => setCurrentStep(2)}
+              className="bg-foreground text-white hover:bg-foreground/90 rounded-lg px-6 font-semibold"
+            >
+              ابدأ التقييم
+            </Button>
+          </div>
         </div>
+      </nav>
 
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <FadeUp>
-            <img src={logoWhite} alt="هامش" className="h-16 md:h-20 mx-auto mb-8" />
-          </FadeUp>
+      {/* Hero */}
+      <section className="py-20 md:py-28 px-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          {/* Right - Text */}
+          <div>
+            <FadeUp>
+              <div className="inline-flex items-center gap-2 bg-muted rounded-full px-4 py-1.5 text-sm text-muted-foreground mb-6">
+                <span className="w-2 h-2 rounded-full bg-primary" />
+                منصة تقييم المحاسبين الأولى
+              </div>
+            </FadeUp>
+            <FadeUp delay={100}>
+              <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-foreground leading-[1.2] mb-6 tracking-tight">
+                قيّم مستواك المحاسبي
+                <br />
+                <span className="text-primary">بدقة احترافية</span>
+              </h1>
+            </FadeUp>
+            <FadeUp delay={200}>
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg">
+                تقييم متخصص حسب قطاعك مع تقرير تفصيلي وجلسة استشارية مع خبراء المحاسبة لتطوير مهاراتك المهنية.
+              </p>
+            </FadeUp>
+            <FadeUp delay={300}>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  onClick={() => setCurrentStep(2)}
+                  className="h-12 px-8 text-base font-semibold bg-foreground text-white hover:bg-foreground/90 rounded-lg gap-2"
+                >
+                  ابدأ تقييم المحاسبين
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+              </div>
+            </FadeUp>
+            <FadeUp delay={400}>
+              <div className="flex items-center gap-6 mt-8 text-sm text-muted-foreground">
+                {['45 سؤال متخصص', '5 محاور تقييم', 'تقرير مفصل'].map((t, i) => (
+                  <span key={i} className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-primary" />
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </FadeUp>
+          </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
-            <RevealText text="قيّم مستواك المحاسبي" delay={200} />
-            <br />
-            <RevealText text="بدقة احترافية" delay={600} goldGradient />
-          </h1>
-
-          <FadeUp delay={900}>
-            <p className="text-lg md:text-xl text-white/60 mb-12 max-w-2xl mx-auto leading-relaxed">
-              تقييم متخصص حسب قطاعك + تقرير تفصيلي + جلسة استشارية مع خبراء المحاسبة
-            </p>
-          </FadeUp>
-
-          <FadeUp delay={1100}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                onClick={() => setCurrentStep(2)}
-                className="h-14 px-10 text-lg font-bold bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl gap-3 shadow-[0_0_30px_hsl(40,70%,50%,0.25)] transition-transform duration-200 hover:scale-105"
-              >
-                <span>ابدأ تقييم المحاسبين</span>
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              <Button
-                onClick={() => setCurrentStep(9)}
-                variant="outline"
-                className="h-14 px-10 text-lg font-bold border-white/20 text-white hover:bg-white/10 rounded-xl bg-transparent transition-transform duration-200 hover:scale-105"
-              >
-                تسجيل الدخول
-              </Button>
+          {/* Left - Platform Preview */}
+          <FadeUp delay={200}>
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden border border-border shadow-xl">
+                <img
+                  src={platformPreview}
+                  alt="منصة هامش - لوحة التقييم"
+                  width={1024}
+                  height={768}
+                  className="w-full h-auto"
+                />
+              </div>
             </div>
-          </FadeUp>
-
-          <FadeUp delay={1300}>
-            <p className="mt-6 text-white/30 text-sm">
-              عدد المقاعد الاستشارية محدود — سجّل الآن
-            </p>
           </FadeUp>
         </div>
       </section>
 
       {/* Stats */}
-      <section className="border-y border-white/[0.06] bg-white/[0.02] backdrop-blur-sm">
-        <div className="max-w-5xl mx-auto py-10 px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="border-y border-border/60 bg-muted/30">
+        <div className="max-w-6xl mx-auto py-10 px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { value: 500, prefix: '+', suffix: '', label: 'محاسب مُقيَّم' },
-            { value: 45, prefix: '', suffix: '', label: 'سؤال متخصص' },
-            { value: 5, prefix: '', suffix: '', label: 'محاور تقييم' },
-            { value: 95, prefix: '', suffix: '%', label: 'نسبة الرضا' },
+            { value: '+500', label: 'محاسب مُقيَّم' },
+            { value: '45', label: 'سؤال متخصص' },
+            { value: '5', label: 'محاور تقييم' },
+            { value: '95%', label: 'نسبة الرضا' },
           ].map((stat, i) => (
-            <FadeUp key={i} delay={i * 150}>
-              <p className="text-3xl font-bold text-accent mb-1">
-                <AnimatedCounter target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-              </p>
-              <p className="text-white/50 text-sm">{stat.label}</p>
+            <FadeUp key={i} delay={i * 100}>
+              <p className="text-2xl md:text-3xl font-bold text-foreground mb-1">{stat.value}</p>
+              <p className="text-muted-foreground text-sm">{stat.label}</p>
             </FadeUp>
           ))}
         </div>
       </section>
 
       {/* Value Props */}
-      <section className="py-24 px-4 bg-[hsl(220,50%,13%)]">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
           <FadeUp>
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4">لماذا تقييم هامش؟</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-3">لماذا تقييم هامش؟</h2>
           </FadeUp>
           <FadeUp delay={100}>
-            <p className="text-white/40 text-center mb-16 max-w-xl mx-auto">نقدم لك أدوات تقييم احترافية تساعدك على معرفة مستواك الحقيقي</p>
+            <p className="text-muted-foreground text-center mb-14 max-w-xl mx-auto">أدوات تقييم احترافية تساعدك على معرفة مستواك الحقيقي</p>
           </FadeUp>
           <div className="grid md:grid-cols-3 gap-6">
             {[
@@ -187,13 +164,13 @@ const Landing = () => {
               { icon: FileText, title: 'تقرير مفصل', desc: 'تقرير احترافي يوضح نقاط القوة والضعف مع خطة تطوير' },
               { icon: GraduationCap, title: 'توصيات تدريبية', desc: 'دورات مخصصة لتطوير المحاور التي تحتاج تحسين' },
             ].map((item, i) => (
-              <FadeUp key={i} delay={i * 200}>
-                <div className="group rounded-2xl p-8 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/[0.1] transition-all duration-300 text-center hover:-translate-y-1">
-                  <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mx-auto mb-6 group-hover:bg-accent/20 group-hover:scale-110 transition-all duration-300">
-                    <item.icon className="w-7 h-7 text-accent" />
+              <FadeUp key={i} delay={i * 150}>
+                <div className="rounded-xl p-7 border border-border bg-card hover:shadow-lg transition-all duration-300 text-center">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-5">
+                    <item.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                  <p className="text-white/50 leading-relaxed text-sm">{item.desc}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed text-sm">{item.desc}</p>
                 </div>
               </FadeUp>
             ))}
@@ -202,13 +179,13 @@ const Landing = () => {
       </section>
 
       {/* Target Audience */}
-      <section className="py-24 px-4 bg-[hsl(220,45%,11%)]">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-20 px-6 bg-muted/30">
+        <div className="max-w-6xl mx-auto">
           <FadeUp>
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4">من يستفيد من التقييم؟</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-3">من يستفيد من التقييم؟</h2>
           </FadeUp>
           <FadeUp delay={100}>
-            <p className="text-white/40 text-center mb-16 max-w-xl mx-auto">التقييم مصمم خصيصاً للفئات التالية</p>
+            <p className="text-muted-foreground text-center mb-14 max-w-xl mx-auto">التقييم مصمم خصيصاً للفئات التالية</p>
           </FadeUp>
           <div className="grid md:grid-cols-3 gap-6">
             {[
@@ -216,13 +193,13 @@ const Landing = () => {
               { icon: UserCheck, title: 'مسؤولي التوظيف', desc: 'أداة موثوقة لتقييم كفاءة المحاسبين المرشحين واتخاذ قرارات توظيف مبنية على بيانات دقيقة' },
               { icon: Briefcase, title: 'مسؤولي الإدارة المالية', desc: 'تقييم فريق المحاسبة لديك وتحديد الاحتياجات التدريبية لرفع كفاءة الأداء المالي' },
             ].map((item, i) => (
-              <FadeUp key={i} delay={i * 200}>
-                <div className="group rounded-2xl p-8 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05] hover:border-accent/20 transition-all duration-300 text-center hover:-translate-y-1">
-                  <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-6 group-hover:bg-accent/20 group-hover:scale-110 transition-all duration-300">
-                    <item.icon className="w-8 h-8 text-accent" />
+              <FadeUp key={i} delay={i * 150}>
+                <div className="rounded-xl p-7 border border-border bg-card hover:shadow-lg transition-all duration-300 text-center">
+                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-5">
+                    <item.icon className="w-7 h-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                  <p className="text-white/50 leading-relaxed text-sm">{item.desc}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed text-sm">{item.desc}</p>
                 </div>
               </FadeUp>
             ))}
@@ -231,10 +208,10 @@ const Landing = () => {
       </section>
 
       {/* Steps */}
-      <section className="py-24 px-4 bg-[hsl(220,45%,11%)]">
+      <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <FadeUp>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-16">كيف يعمل التقييم؟</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-14">كيف يعمل التقييم؟</h2>
           </FadeUp>
           <div className="grid md:grid-cols-4 gap-8">
             {[
@@ -243,11 +220,11 @@ const Landing = () => {
               { step: '٣', label: 'أجب على 45 سؤال' },
               { step: '٤', label: 'احصل على تقريرك' },
             ].map((item, i) => (
-              <FadeUp key={i} delay={i * 200} className="flex flex-col items-center">
-                <div className="w-14 h-14 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center text-accent font-bold text-xl mb-5 transition-all duration-300 hover:scale-110 hover:bg-accent/20 hover:shadow-[0_0_20px_hsl(40,70%,50%,0.2)]">
+              <FadeUp key={i} delay={i * 150} className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-foreground text-white flex items-center justify-center font-bold text-lg mb-4">
                   {item.step}
                 </div>
-                <p className="text-white/80 font-medium">{item.label}</p>
+                <p className="text-foreground font-medium">{item.label}</p>
               </FadeUp>
             ))}
           </div>
@@ -255,15 +232,15 @@ const Landing = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-4 bg-[hsl(220,50%,13%)]">
+      <section className="py-20 px-6 bg-foreground">
         <FadeUp>
           <div className="max-w-2xl mx-auto text-center">
-            <Shield className="w-12 h-12 text-accent mx-auto mb-6" />
+            <Shield className="w-10 h-10 text-white/80 mx-auto mb-5" />
             <h2 className="text-3xl font-bold text-white mb-4">جاهز لمعرفة مستواك؟</h2>
-            <p className="text-white/50 mb-10">ابدأ الآن واحصل على تقييم شامل لمهاراتك المحاسبية</p>
+            <p className="text-white/60 mb-8">ابدأ الآن واحصل على تقييم شامل لمهاراتك المحاسبية</p>
             <Button
               onClick={() => setCurrentStep(2)}
-              className="h-14 px-12 text-lg font-bold bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl shadow-[0_0_30px_hsl(40,70%,50%,0.25)] transition-transform duration-200 hover:scale-105"
+              className="h-12 px-10 text-base font-semibold bg-white text-foreground hover:bg-white/90 rounded-lg"
             >
               ابدأ التقييم الآن
             </Button>
@@ -272,9 +249,9 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/[0.06] py-8 px-4 text-center">
-        <img src={logoWhite} alt="هامش" className="h-10 mx-auto mb-3 opacity-40" />
-        <p className="text-white/30 text-sm">© {new Date().getFullYear()} هامش — جميع الحقوق محفوظة</p>
+      <footer className="border-t border-border py-8 px-6 text-center">
+        <img src={logoWhite} alt="هامش" className="h-8 mx-auto mb-3 opacity-30 brightness-0" />
+        <p className="text-muted-foreground text-sm">© {new Date().getFullYear()} هامش — جميع الحقوق محفوظة</p>
       </footer>
     </div>
   );
