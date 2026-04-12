@@ -209,7 +209,7 @@ const ExamEngine = () => {
             </div>
 
             <div className="space-y-3 mb-8">
-              {q.options.map((opt, i) => (
+              {shuffledMap[currentQ].shuffledOptions.map((opt, i) => (
                 <button
                   key={i}
                   onClick={() => setAnswers({ ...answers, [currentQ]: i })}
