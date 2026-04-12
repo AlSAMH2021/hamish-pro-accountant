@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import { supabase } from '@/integrations/supabase/client';
+import { EXPERTS } from '@/data/types';
 import { Button } from '@/components/ui/button';
 import StepperLayout from '@/components/StepperLayout';
-import { Calendar, Clock, CheckCircle, Video, Loader2 } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, Video, Loader2, User } from 'lucide-react';
 
 interface SlotData {
   date: string;
@@ -12,11 +13,24 @@ interface SlotData {
 }
 
 const Booking = () => {
-  const { setBooking, setCurrentStep, updateUserStatus, booking } = useApp();
+  const { setBooking, updateUserStatus, booking, user } = useApp();
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [selectedExpert, setSelectedExpert] = useState('');
   const [slotsData, setSlotsData] = useState<SlotData[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(true);
+
+  // Filter experts based on user's sector
+  const availableExperts = EXPERTS.filter(
+    (e) => user && e.sectors.includes(user.sector)
+  );
+
+  // Auto-select if only one expert available
+  useEffect(() => {
+    if (availableExperts.length === 1 && !selectedExpert) {
+      setSelectedExpert(availableExperts[0].name);
+    }
+  }, [availableExperts, selectedExpert]);
 
   useEffect(() => {
     const fetchSlots = async () => {
@@ -40,7 +54,7 @@ const Booking = () => {
   );
 
   const handleBook = () => {
-    setBooking({ date: selectedDate, time: selectedTime, bookedAt: new Date().toISOString() });
+    setBooking({ date: selectedDate, time: selectedTime, bookedAt: new Date().toISOString(), expertName: selectedExpert });
     updateUserStatus('booked');
   };
 
@@ -58,6 +72,15 @@ const Booking = () => {
           </div>
 
           <div className="bg-card rounded-2xl shadow-card p-5 space-y-3">
+            {booking.expertName && (
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
+                <User className="w-5 h-5 text-primary shrink-0" />
+                <div>
+                  <p className="text-xs text-muted-foreground">الخبير</p>
+                  <p className="text-foreground font-medium text-sm">{booking.expertName}</p>
+                </div>
+              </div>
+            )}
             <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
               <Calendar className="w-5 h-5 text-primary shrink-0" />
               <div>
@@ -98,72 +121,117 @@ const Booking = () => {
         <div className="bg-card rounded-2xl shadow-card p-5 text-center">
           <Calendar className="w-10 h-10 text-primary mx-auto mb-2" />
           <h2 className="text-lg font-bold text-foreground">احجز جلستك الاستشارية</h2>
-          <p className="text-muted-foreground text-sm">اختر الموعد المناسب لك</p>
+          <p className="text-muted-foreground text-sm">اختر الخبير والموعد المناسب لك</p>
         </div>
 
         {loadingSlots ? (
           <div className="bg-card rounded-2xl shadow-card p-8 flex justify-center">
             <Loader2 className="w-6 h-6 text-primary animate-spin" />
           </div>
-        ) : SLOTS.length === 0 ? (
-          <div className="bg-card rounded-2xl shadow-card p-8 text-center">
-            <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-            <p className="text-muted-foreground text-sm">لا توجد مواعيد متاحة حالياً</p>
-          </div>
         ) : (
           <>
-            {/* Date Selection */}
-            <div className="bg-card rounded-2xl shadow-card p-5">
-              <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-primary" />
-                اختر اليوم
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {SLOTS.map((slot) => (
-                  <button
-                    key={slot.date}
-                    onClick={() => { setSelectedDate(slot.date); setSelectedTime(''); }}
-                    className={`p-3 rounded-xl border-2 text-center transition-all ${
-                      selectedDate === slot.date ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
-                    }`}
-                  >
-                    <p className="font-bold text-foreground text-sm">{slot.day}</p>
-                    <p className="text-xs text-muted-foreground">{slot.date.split('-').slice(1).join('/')}</p>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Time Selection */}
-            {selectedSlot && (
-              <div className="bg-card rounded-2xl shadow-card p-5 animate-fade-in-up">
+            {/* Expert Selection */}
+            {availableExperts.length > 1 && (
+              <div className="bg-card rounded-2xl shadow-card p-5">
                 <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-primary" />
-                  اختر الوقت
+                  <User className="w-4 h-4 text-primary" />
+                  اختر الخبير
                 </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {selectedSlot.times.map((time) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {availableExperts.map((expert) => (
                     <button
-                      key={time}
-                      onClick={() => setSelectedTime(time)}
-                      className={`p-2.5 rounded-xl border-2 text-center font-bold text-sm transition-all ${
-                        selectedTime === time ? 'border-primary bg-primary/5 text-foreground' : 'border-border text-muted-foreground hover:border-primary/30'
+                      key={expert.name}
+                      onClick={() => setSelectedExpert(expert.name)}
+                      className={`p-4 rounded-xl border-2 text-center transition-all ${
+                        selectedExpert === expert.name
+                          ? 'border-primary bg-primary/5'
+                          : 'border-border hover:border-primary/30'
                       }`}
                     >
-                      {time}
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
+                        <User className="w-5 h-5 text-primary" />
+                      </div>
+                      <p className="font-bold text-foreground text-sm">{expert.name}</p>
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            <Button
-              onClick={handleBook}
-              disabled={!selectedDate || !selectedTime}
-              className="w-full h-12 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl disabled:opacity-50"
-            >
-              تأكيد الحجز
-            </Button>
+            {/* Show single expert info */}
+            {availableExperts.length === 1 && (
+              <div className="bg-card rounded-2xl shadow-card p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <User className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">الخبير المختص</p>
+                  <p className="font-bold text-foreground text-sm">{availableExperts[0].name}</p>
+                </div>
+              </div>
+            )}
+
+            {SLOTS.length === 0 ? (
+              <div className="bg-card rounded-2xl shadow-card p-8 text-center">
+                <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">لا توجد مواعيد متاحة حالياً</p>
+              </div>
+            ) : (
+              <>
+                {/* Date Selection */}
+                <div className="bg-card rounded-2xl shadow-card p-5">
+                  <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-primary" />
+                    اختر اليوم
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {SLOTS.map((slot) => (
+                      <button
+                        key={slot.date}
+                        onClick={() => { setSelectedDate(slot.date); setSelectedTime(''); }}
+                        className={`p-3 rounded-xl border-2 text-center transition-all ${
+                          selectedDate === slot.date ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
+                        }`}
+                      >
+                        <p className="font-bold text-foreground text-sm">{slot.day}</p>
+                        <p className="text-xs text-muted-foreground">{slot.date.split('-').slice(1).join('/')}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Time Selection */}
+                {selectedSlot && (
+                  <div className="bg-card rounded-2xl shadow-card p-5 animate-fade-in-up">
+                    <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-primary" />
+                      اختر الوقت
+                    </h3>
+                    <div className="grid grid-cols-3 gap-2">
+                      {selectedSlot.times.map((time) => (
+                        <button
+                          key={time}
+                          onClick={() => setSelectedTime(time)}
+                          className={`p-2.5 rounded-xl border-2 text-center font-bold text-sm transition-all ${
+                            selectedTime === time ? 'border-primary bg-primary/5 text-foreground' : 'border-border text-muted-foreground hover:border-primary/30'
+                          }`}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <Button
+                  onClick={handleBook}
+                  disabled={!selectedDate || !selectedTime || !selectedExpert}
+                  className="w-full h-12 text-base font-bold bg-gradient-primary text-primary-foreground rounded-xl disabled:opacity-50"
+                >
+                  تأكيد الحجز
+                </Button>
+              </>
+            )}
           </>
         )}
       </div>
