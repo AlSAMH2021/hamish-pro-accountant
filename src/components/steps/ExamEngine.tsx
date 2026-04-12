@@ -29,14 +29,14 @@ const ExamEngine = () => {
     });
 
     const axisPassed: Record<Axis, boolean> = {
-      financial: (axisScores.financial / 9) >= 0.5,
-      cost: (axisScores.cost / 9) >= 0.5,
-      tax: (axisScores.tax / 9) >= 0.5,
-      regulations: (axisScores.regulations / 9) >= 0.5,
-      ifrs: (axisScores.ifrs / 9) >= 0.5,
+      financial: axisScores.financial >= 6,
+      cost: axisScores.cost >= 6,
+      tax: axisScores.tax >= 6,
+      regulations: axisScores.regulations >= 6,
+      ifrs: axisScores.ifrs >= 6,
     };
 
-    const passTotal = totalScore > 22; // أكثر من نص الأسئلة (أكثر من 22 من 45)
+    const passTotal = totalScore >= 25; // الحد الأدنى 25 من 45
 
     const result: ExamResult = {
       answers,
