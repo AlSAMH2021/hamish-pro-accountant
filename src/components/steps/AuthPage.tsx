@@ -205,6 +205,22 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
         </div>
       ))}
 
+      {/* Sector Selection */}
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">القطاع</Label>
+        <select
+          value={form.sector}
+          onChange={(e) => setForm({ ...form, sector: e.target.value as Sector })}
+          className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <option value="">اختر القطاع</option>
+          {(Object.entries(SECTOR_LABELS) as [Sector, string][]).map(([value, label]) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
+        </select>
+        {errors.sector && <p className="text-destructive text-xs mt-1">{errors.sector}</p>}
+      </div>
+
       <div>
         <Label className="text-foreground font-medium mb-1.5 block text-sm">كلمة المرور</Label>
         <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="h-11" />
