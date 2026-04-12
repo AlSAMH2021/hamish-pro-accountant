@@ -127,7 +127,7 @@ const Landing = () => {
               </div>
             </FadeUp>
             <FadeUp delay={100}>
-              <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-foreground leading-[1.2] mb-6 tracking-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-foreground leading-[1.4] mb-6 tracking-tight">
                 قيّم مستواك المحاسبي
                 <br />
                 <span className="text-primary">بدقة احترافية</span>
