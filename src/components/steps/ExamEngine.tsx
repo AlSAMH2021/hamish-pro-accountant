@@ -141,93 +141,98 @@ const ExamEngine = () => {
         </div>
       </div>
 
-      {/* Question */}
-      <div className="max-w-3xl mx-auto px-4 md:px-8 py-8">
-        <div className="rounded-2xl border border-border p-6 md:p-8 animate-fade-in-up">
-          <div className="mb-6">
-            <span className="inline-block px-3 py-1 rounded-full bg-muted text-foreground text-xs font-bold mb-4">
-              سؤال {currentQ + 1}
-            </span>
-            <h2 className="text-lg md:text-xl font-bold text-foreground leading-relaxed">{q.text}</h2>
-          </div>
+      {/* Content: Question + Map side by side */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 flex flex-col-reverse md:flex-row gap-6">
+        {/* Question - left on screen (main) */}
+        <div className="flex-1 min-w-0">
+          <div className="rounded-2xl border border-border p-6 md:p-8 animate-fade-in-up">
+            <div className="mb-6">
+              <span className="inline-block px-3 py-1 rounded-full bg-muted text-foreground text-xs font-bold mb-4">
+                سؤال {currentQ + 1}
+              </span>
+              <h2 className="text-lg md:text-xl font-bold text-foreground leading-relaxed">{q.text}</h2>
+            </div>
 
-          <div className="space-y-3 mb-8">
-            {q.options.map((opt, i) => (
-              <button
-                key={i}
-                onClick={() => setAnswers({ ...answers, [currentQ]: i })}
-                className={`w-full text-right p-4 rounded-xl border-2 transition-all ${
-                  answers[currentQ] === i
-                    ? 'border-foreground bg-foreground/5 text-foreground font-medium'
-                    : 'border-border hover:border-foreground/20 text-foreground'
-                }`}
-              >
-                <span className="inline-flex items-center gap-3">
-                  <span className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold shrink-0 ${
-                    answers[currentQ] === i ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground'
-                  }`}>
-                    {['أ', 'ب', 'ج', 'د'][i]}
+            <div className="space-y-3 mb-8">
+              {q.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => setAnswers({ ...answers, [currentQ]: i })}
+                  className={`w-full text-right p-4 rounded-xl border-2 transition-all ${
+                    answers[currentQ] === i
+                      ? 'border-foreground bg-foreground/5 text-foreground font-medium'
+                      : 'border-border hover:border-foreground/20 text-foreground'
+                  }`}
+                >
+                  <span className="inline-flex items-center gap-3">
+                    <span className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold shrink-0 ${
+                      answers[currentQ] === i ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground'
+                    }`}>
+                      {['أ', 'ب', 'ج', 'د'][i]}
+                    </span>
+                    <span className="text-sm">{opt}</span>
                   </span>
-                  <span className="text-sm">{opt}</span>
-                </span>
-              </button>
-            ))}
-          </div>
+                </button>
+              ))}
+            </div>
 
-          <div className="flex items-center justify-between">
-            <Button
-              variant="outline"
-              onClick={() => setCurrentQ(Math.max(0, currentQ - 1))}
-              disabled={currentQ === 0}
-              className="h-12 px-6 gap-2 rounded-lg"
-            >
-              <ChevronRight className="w-4 h-4" />
-              السابق
-            </Button>
-            
-            {currentQ < 44 ? (
+            <div className="flex items-center justify-between">
               <Button
-                onClick={() => setCurrentQ(currentQ + 1)}
-                className="h-12 px-6 bg-foreground text-background hover:bg-foreground/90 gap-2 rounded-lg"
+                variant="outline"
+                onClick={() => setCurrentQ(Math.max(0, currentQ - 1))}
+                disabled={currentQ === 0}
+                className="h-12 px-6 gap-2 rounded-lg"
               >
-                التالي
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4" />
+                السابق
               </Button>
-            ) : (
-              <Button
-                onClick={() => setShowConfirm(true)}
-                className="h-12 px-6 bg-foreground text-background hover:bg-foreground/90 font-bold rounded-lg"
-              >
-                تسليم التقييم
-              </Button>
-            )}
+              
+              {currentQ < 44 ? (
+                <Button
+                  onClick={() => setCurrentQ(currentQ + 1)}
+                  className="h-12 px-6 bg-foreground text-background hover:bg-foreground/90 gap-2 rounded-lg"
+                >
+                  التالي
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => setShowConfirm(true)}
+                  className="h-12 px-6 bg-foreground text-background hover:bg-foreground/90 font-bold rounded-lg"
+                >
+                  تسليم التقييم
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Question map */}
-        <div className="mt-6 rounded-2xl border border-border p-6">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-bold text-foreground">خريطة الأسئلة</p>
-            <Button variant="ghost" onClick={() => setShowConfirm(true)} className="text-xs h-8 text-muted-foreground hover:text-foreground">
-              تسليم التقييم
-            </Button>
-          </div>
-          <div className="grid grid-cols-9 gap-2">
-            {Array.from({ length: 45 }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentQ(i)}
-                className={`w-full aspect-square rounded-lg text-xs font-bold transition-all ${
-                  currentQ === i
-                    ? 'bg-foreground text-background ring-2 ring-foreground/20 scale-110'
-                    : answers[i] !== undefined
-                    ? 'bg-foreground/15 text-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
+        {/* Question map - right sidebar */}
+        <div className="md:w-64 shrink-0">
+          <div className="rounded-2xl border border-border p-5 md:sticky md:top-28">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm font-bold text-foreground">خريطة الأسئلة</p>
+              <Button variant="ghost" onClick={() => setShowConfirm(true)} className="text-xs h-8 text-muted-foreground hover:text-foreground">
+                تسليم
+              </Button>
+            </div>
+            <div className="grid grid-cols-5 gap-2">
+              {Array.from({ length: 45 }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentQ(i)}
+                  className={`w-full aspect-square rounded-lg text-xs font-bold transition-all ${
+                    currentQ === i
+                      ? 'bg-foreground text-background ring-2 ring-foreground/20 scale-110'
+                      : answers[i] !== undefined
+                      ? 'bg-foreground/15 text-foreground'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
