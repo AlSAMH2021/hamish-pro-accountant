@@ -19,14 +19,14 @@ const Briefing = () => {
         {/* Welcome */}
         <div className="bg-card rounded-2xl shadow-card p-6 text-center">
           <h2 className="text-2xl font-bold text-foreground mb-2">مرحبًا {user?.name} 👋</h2>
-          <p className="text-muted-foreground">إليك تفاصيل الاختبار قبل البدء</p>
+          <p className="text-muted-foreground">إليك تفاصيل التقييم قبل البدء</p>
         </div>
 
         {/* Exam Details */}
         <div className="bg-card rounded-2xl shadow-card p-6">
           <h3 className="text-lg font-bold text-foreground mb-5 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-primary" />
-            تفاصيل الاختبار
+            تفاصيل التقييم
           </h3>
           <div className="grid grid-cols-2 gap-4">
             {[

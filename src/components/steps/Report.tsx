@@ -21,7 +21,7 @@ const Report = () => {
             <FileText className="w-10 h-10 text-muted-foreground" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">لا يوجد تقرير</h1>
-          <p className="text-muted-foreground">يرجى إكمال الاختبار أولاً.</p>
+          <p className="text-muted-foreground">يرجى إكمال التقييم أولاً.</p>
         </div>
       </DashboardLayout>
     );
@@ -307,7 +307,7 @@ const Report = () => {
               ['الشركة', user.company],
               ['القطاع', SECTOR_LABELS[user.sector]],
               ['الوظيفة', user.jobTitle],
-              ['تاريخ الاختبار', new Date(examResult.completedAt).toLocaleDateString('ar-SA')],
+              ['تاريخ التقييم', new Date(examResult.completedAt).toLocaleDateString('ar-SA')],
               ['الحالة', passed ? 'ناجح ✅' : 'لم يجتز ❌'],
             ].map(([label, value]) => (
               <div key={label} className="bg-muted/30 rounded-xl p-3">

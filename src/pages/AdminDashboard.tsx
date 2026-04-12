@@ -378,7 +378,7 @@ const AdminDashboard = () => {
                   {[
                     { label: 'إجمالي المستخدمين', value: totalUsers, icon: <Users className="w-5 h-5" />, color: 'text-primary' },
                     { label: 'دفعوا', value: paidUsers, icon: <TrendingUp className="w-5 h-5" />, color: 'text-success' },
-                    { label: 'أكملوا الاختبار', value: totalExams, icon: <BookOpen className="w-5 h-5" />, color: 'text-accent' },
+                    { label: 'أكملوا التقييم', value: totalExams, icon: <BookOpen className="w-5 h-5" />, color: 'text-accent' },
                     { label: 'نسبة النجاح', value: `${passRate}%`, icon: <BarChart3 className="w-5 h-5" />, color: passRate >= 50 ? 'text-success' : 'text-destructive' },
                   ].map((stat, i) => (
                     <div key={i} className="bg-card rounded-2xl shadow-card p-5">
@@ -459,7 +459,7 @@ const AdminDashboard = () => {
                           <th className="text-right p-3 font-medium text-muted-foreground">الشركة</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">القطاع</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الدفع</th>
-                          <th className="text-center p-3 font-medium text-muted-foreground">الاختبار</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">التقييم</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الحالة</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الإيصال</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">إجراءات</th>
@@ -496,7 +496,7 @@ const AdminDashboard = () => {
                                 >
                                   <option value="registered">مسجل</option>
                                   <option value="paid">دفع</option>
-                                  <option value="exam_completed">أكمل الاختبار</option>
+                                  <option value="exam_completed">أكمل التقييم</option>
                                   <option value="booked">حجز جلسة</option>
                                 </select>
                               </td>

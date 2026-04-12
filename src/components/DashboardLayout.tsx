@@ -31,9 +31,9 @@ const DashboardLayout = ({ children, activePage }: DashboardLayoutProps) => {
   };
 
   const navItems: { id: DashboardPage; label: string; icon: React.ReactNode; step: number; disabled?: boolean }[] = [
-    { id: 'briefing', label: 'ملخص الاختبار', icon: <ClipboardList className="w-5 h-5" />, step: 3 },
+    { id: 'briefing', label: 'ملخص التقييم', icon: <ClipboardList className="w-5 h-5" />, step: 3 },
     { id: 'payment', label: 'الدفع', icon: <FileText className="w-5 h-5" />, step: 4, disabled: user?.paymentStatus },
-    { id: 'exam', label: 'الاختبار', icon: <BarChart3 className="w-5 h-5" />, step: 5, disabled: !user?.paymentStatus || !!examResult },
+    { id: 'exam', label: 'التقييم', icon: <BarChart3 className="w-5 h-5" />, step: 5, disabled: !user?.paymentStatus || !!examResult },
     { id: 'results', label: 'النتائج', icon: <BarChart3 className="w-5 h-5" />, step: 6, disabled: !examResult },
     { id: 'booking', label: 'حجز الجلسة', icon: <CalendarDays className="w-5 h-5" />, step: 7, disabled: !examResult },
     { id: 'report', label: 'التقرير', icon: <FileText className="w-5 h-5" />, step: 8, disabled: !examResult },
