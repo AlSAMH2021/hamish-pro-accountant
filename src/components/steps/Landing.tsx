@@ -26,6 +26,7 @@ import clientKazameeza from '@/assets/clients/kazameeza.png';
 import clientAlmanco from '@/assets/clients/almanco.png';
 import clientNudhum from '@/assets/clients/nudhum.png';
 import clientNrrc from '@/assets/clients/nrrc.png';
+import clientWaraq from '@/assets/clients/waraq-khuzama.png';
 
 const clientLogos = [
   { src: clientDco, alt: 'DCO' },
@@ -48,6 +49,7 @@ const clientLogos = [
   { src: clientAlmanco, alt: 'مصنع المانع' },
   { src: clientNudhum, alt: 'نظم' },
   { src: clientNrrc, alt: 'هيئة الرقابة النووية' },
+  { src: clientWaraq, alt: 'ورق خزامى' },
 ];
 
 /* ── Intersection Observer hook ── */
