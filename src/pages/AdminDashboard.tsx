@@ -730,6 +730,7 @@ const AdminDashboard = () => {
                                 <p className="font-medium text-foreground">{profile?.name || 'غير معروف'}</p>
                                 <p className="text-xs text-muted-foreground">{profile?.company}</p>
                               </td>
+                              <td className="p-3 text-center text-foreground">{b.expert_name || '—'}</td>
                               <td className="p-3 text-center text-foreground">{b.date}</td>
                               <td className="p-3 text-center text-foreground">{b.time}</td>
                               <td className="p-3">
