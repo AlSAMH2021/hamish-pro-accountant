@@ -150,7 +150,7 @@ const Landing = () => {
               </div>
             </FadeUp>
             <FadeUp delay={400}>
-              <div className="flex items-center gap-6 mt-8 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-8 text-sm text-muted-foreground">
                 {['45 سؤال متخصص', '5 محاور تقييم', 'تقرير مفصل'].map((t, i) => (
                   <span key={i} className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-primary" />
