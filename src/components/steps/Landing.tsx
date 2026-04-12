@@ -16,6 +16,16 @@ import clientAyb from '@/assets/clients/ayb.png';
 import clientBrsk from '@/assets/clients/brsk.png';
 import clientKdc from '@/assets/clients/kdc.webp';
 import clientDrtooth from '@/assets/clients/drtooth.png';
+import clientRooh from '@/assets/clients/rooh-alqarya.png';
+import clientSyn from '@/assets/clients/syn-architects.png';
+import clientSheeria from '@/assets/clients/sheeria.png';
+import clientPhi from '@/assets/clients/phi.png';
+import clientFranway from '@/assets/clients/franway.png';
+import clientGrove from '@/assets/clients/grove.png';
+import clientKazameeza from '@/assets/clients/kazameeza.png';
+import clientAlmanco from '@/assets/clients/almanco.png';
+import clientNudhum from '@/assets/clients/nudhum.png';
+import clientNrrc from '@/assets/clients/nrrc.png';
 
 const clientLogos = [
   { src: clientDco, alt: 'DCO' },
@@ -28,6 +38,16 @@ const clientLogos = [
   { src: clientBrsk, alt: 'بريسك' },
   { src: clientKdc, alt: 'تمور المملكة' },
   { src: clientDrtooth, alt: 'Dr. Tooth' },
+  { src: clientRooh, alt: 'روح القرية' },
+  { src: clientSyn, alt: 'Syn Architects' },
+  { src: clientSheeria, alt: 'Sheeria Group' },
+  { src: clientPhi, alt: 'Phi Valuation' },
+  { src: clientFranway, alt: 'فران واي' },
+  { src: clientGrove, alt: 'قروف' },
+  { src: clientKazameeza, alt: 'كزا ميزا' },
+  { src: clientAlmanco, alt: 'مصنع المانع' },
+  { src: clientNudhum, alt: 'نظم' },
+  { src: clientNrrc, alt: 'هيئة الرقابة النووية' },
 ];
 
 /* ── Intersection Observer hook ── */
