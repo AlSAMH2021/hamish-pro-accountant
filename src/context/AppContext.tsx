@@ -143,6 +143,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
             time: bookingData.time,
             bookedAt: bookingData.booked_at,
             sessionLink: bookingData.session_link || undefined,
+            expertName: (bookingData as any).expert_name || undefined,
           });
           setSessionCompleted(bookingData.session_completed);
         }
@@ -212,6 +213,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       date: bookingData.date,
       time: bookingData.time,
       booked_at: bookingData.bookedAt,
+      expert_name: bookingData.expertName || null,
     });
     await supabase
       .from('profiles')

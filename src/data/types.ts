@@ -39,7 +39,19 @@ export interface BookingData {
   time: string;
   bookedAt: string;
   sessionLink?: string;
+  expertName?: string;
 }
+
+export interface Expert {
+  name: string;
+  sectors: Sector[];
+}
+
+export const EXPERTS: Expert[] = [
+  { name: 'أ.عبدالله السلامة', sectors: ['healthcare'] },
+  { name: 'أ.جمانة الجمل', sectors: ['tourism', 'restaurants'] },
+  { name: 'أ.سليمان السليم', sectors: ['tourism', 'restaurants'] },
+];
 
 export const AXES: { key: Axis; label: string; icon: string }[] = [
   { key: 'financial', label: 'المحاسبة المالية', icon: '📊' },
