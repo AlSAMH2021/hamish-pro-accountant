@@ -176,7 +176,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     setSubmitting(true);
     setServerError('');
     const { error } = await signUp(form.email, form.password, {
-      name: form.name, phone: form.phone,
+      name: form.name, phone: form.phone, sector: form.sector,
     });
     if (error) {
       setServerError(error);
