@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import logoColor from '@/assets/logo-color.png';
+import { SECTOR_LABELS, Sector } from '@/data/types';
 
 type AuthTab = 'login' | 'register';
 
@@ -151,7 +152,7 @@ const LoginForm = ({ onSwitchToRegister }: { onSwitchToRegister: () => void }) =
 const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
   const { signUp } = useApp();
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', password: '', confirmPassword: '',
+    name: '', email: '', phone: '', password: '', confirmPassword: '', sector: '' as Sector | '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -163,6 +164,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = 'بريد إلكتروني غير صالح';
     if (!form.phone.match(/^05\d{8}$/)) e.phone = 'رقم جوال سعودي غير صالح (05XXXXXXXX)';
     if (form.password.length < 6) e.password = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+    if (!form.sector) e.sector = 'يرجى اختيار القطاع';
     if (form.password !== form.confirmPassword) e.confirmPassword = 'كلمتا المرور غير متطابقتين';
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -174,7 +176,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     setSubmitting(true);
     setServerError('');
     const { error } = await signUp(form.email, form.password, {
-      name: form.name, phone: form.phone,
+      name: form.name, phone: form.phone, sector: form.sector,
     });
     if (error) {
       setServerError(error);
@@ -202,6 +204,22 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
           {errors[key] && <p className="text-destructive text-xs mt-1">{errors[key]}</p>}
         </div>
       ))}
+
+      {/* Sector Selection */}
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">القطاع</Label>
+        <select
+          value={form.sector}
+          onChange={(e) => setForm({ ...form, sector: e.target.value as Sector })}
+          className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <option value="">اختر القطاع</option>
+          {(Object.entries(SECTOR_LABELS) as [Sector, string][]).map(([value, label]) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
+        </select>
+        {errors.sector && <p className="text-destructive text-xs mt-1">{errors.sector}</p>}
+      </div>
 
       <div>
         <Label className="text-foreground font-medium mb-1.5 block text-sm">كلمة المرور</Label>
