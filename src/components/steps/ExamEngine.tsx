@@ -1,9 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { getQuestionsBySetor, correctAnswers } from '@/data/questions';
 import { AXES, Axis, ExamResult, getPerformanceLevel } from '@/data/types';
 import { AlertTriangle, Clock, ChevronRight, ChevronLeft } from 'lucide-react';
+
+// Fisher-Yates shuffle returning shuffled indices
+const shuffleIndices = (length: number): number[] => {
+  const indices = Array.from({ length }, (_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return indices;
+};
 
 const ExamEngine = () => {
   const { user, setExamResult, setCurrentStep, updateUserStatus } = useApp();
@@ -14,6 +24,18 @@ const ExamEngine = () => {
   const [showWarning, setShowWarning] = useState(false);
   const [tabWarnings, setTabWarnings] = useState(0);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  // Shuffle options once on mount - stores the shuffled order per question
+  const shuffledMap = useMemo(() => {
+    return questions.map((q) => {
+      const order = shuffleIndices(q.options.length);
+      return {
+        shuffledOptions: order.map(i => q.options[i]),
+        // maps shuffled index → original index
+        originalIndices: order,
+      };
+    });
+  }, [questions]);
 
   const submitExam = useCallback(() => {
     const sector = user?.sector || 'tourism';
