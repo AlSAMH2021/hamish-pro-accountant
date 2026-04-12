@@ -86,7 +86,7 @@ const Report = () => {
                 <Award className="w-8 h-8 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">تقرير الأداء التفصيلي</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground">تقرير الأداء التفصيلي</h1>
                 <p className="text-muted-foreground text-sm mt-1">هامش — تقييم المحاسبين • {SECTOR_LABELS[user.sector]}</p>
               </div>
             </div>
