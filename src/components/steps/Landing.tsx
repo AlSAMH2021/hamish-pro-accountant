@@ -1,6 +1,6 @@
 
 import { useApp } from '@/context/AppContext';
-import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield } from 'lucide-react';
+import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, UserCheck, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoWhite from '@/assets/logo-white.png';
 import { useEffect, useRef, useState, useCallback } from 'react';
@@ -191,6 +191,35 @@ const Landing = () => {
                 <div className="group rounded-2xl p-8 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/[0.1] transition-all duration-300 text-center hover:-translate-y-1">
                   <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mx-auto mb-6 group-hover:bg-accent/20 group-hover:scale-110 transition-all duration-300">
                     <item.icon className="w-7 h-7 text-accent" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                  <p className="text-white/50 leading-relaxed text-sm">{item.desc}</p>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Target Audience */}
+      <section className="py-24 px-4 bg-[hsl(220,45%,11%)]">
+        <div className="max-w-5xl mx-auto">
+          <FadeUp>
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4">من يستفيد من التقييم؟</h2>
+          </FadeUp>
+          <FadeUp delay={100}>
+            <p className="text-white/40 text-center mb-16 max-w-xl mx-auto">التقييم مصمم خصيصاً للفئات التالية</p>
+          </FadeUp>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { icon: Calculator, title: 'المحاسبين', desc: 'تقييم شامل لمهاراتك المحاسبية عبر 5 محاور متخصصة لمعرفة مستواك الحقيقي وتطويره' },
+              { icon: UserCheck, title: 'مسؤولي التوظيف', desc: 'أداة موثوقة لتقييم كفاءة المحاسبين المرشحين واتخاذ قرارات توظيف مبنية على بيانات دقيقة' },
+              { icon: Briefcase, title: 'مسؤولي الإدارة المالية', desc: 'تقييم فريق المحاسبة لديك وتحديد الاحتياجات التدريبية لرفع كفاءة الأداء المالي' },
+            ].map((item, i) => (
+              <FadeUp key={i} delay={i * 200}>
+                <div className="group rounded-2xl p-8 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05] hover:border-accent/20 transition-all duration-300 text-center hover:-translate-y-1">
+                  <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-6 group-hover:bg-accent/20 group-hover:scale-110 transition-all duration-300">
+                    <item.icon className="w-8 h-8 text-accent" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
                   <p className="text-white/50 leading-relaxed text-sm">{item.desc}</p>
