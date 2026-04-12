@@ -43,6 +43,7 @@ interface BookingRow {
   session_completed: boolean;
   session_link: string | null;
   booked_at: string;
+  expert_name: string | null;
 }
 
 type Tab = 'stats' | 'users' | 'admins' | 'bookings' | 'slots' | 'discounts';
@@ -712,6 +713,7 @@ const AdminDashboard = () => {
                       <thead>
                         <tr className="border-b border-border bg-muted/30">
                           <th className="text-right p-3 font-medium text-muted-foreground">المستخدم</th>
+                          <th className="text-center p-3 font-medium text-muted-foreground">الخبير</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">التاريخ</th>
                           <th className="text-center p-3 font-medium text-muted-foreground">الوقت</th>
                           <th className="text-right p-3 font-medium text-muted-foreground">رابط الجلسة</th>
@@ -728,6 +730,7 @@ const AdminDashboard = () => {
                                 <p className="font-medium text-foreground">{profile?.name || 'غير معروف'}</p>
                                 <p className="text-xs text-muted-foreground">{profile?.company}</p>
                               </td>
+                              <td className="p-3 text-center text-foreground">{b.expert_name || '—'}</td>
                               <td className="p-3 text-center text-foreground">{b.date}</td>
                               <td className="p-3 text-center text-foreground">{b.time}</td>
                               <td className="p-3">
