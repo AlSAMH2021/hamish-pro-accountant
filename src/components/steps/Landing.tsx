@@ -281,7 +281,7 @@ const Landing = () => {
           <FadeUp>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-14">كيف يعمل التقييم؟</h2>
           </FadeUp>
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             {[
               { step: '١', label: 'سجّل بياناتك' },
               { step: '٢', label: 'ادفع رسوم التقييم' },
