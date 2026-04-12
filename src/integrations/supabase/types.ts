@@ -46,6 +46,7 @@ export type Database = {
           booked_at: string
           created_at: string
           date: string
+          expert_name: string | null
           id: string
           session_completed: boolean
           session_link: string | null
@@ -56,6 +57,7 @@ export type Database = {
           booked_at?: string
           created_at?: string
           date: string
+          expert_name?: string | null
           id?: string
           session_completed?: boolean
           session_link?: string | null
@@ -66,6 +68,7 @@ export type Database = {
           booked_at?: string
           created_at?: string
           date?: string
+          expert_name?: string | null
           id?: string
           session_completed?: boolean
           session_link?: string | null
