@@ -6,11 +6,6 @@ import { Label } from '@/components/ui/label';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import logoColor from '@/assets/logo-color.png';
 import { SECTOR_LABELS, Sector } from '@/data/types';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ArrowRight, Loader2 } from 'lucide-react';
-import logoColor from '@/assets/logo-color.png';
 
 type AuthTab = 'login' | 'register';
 
