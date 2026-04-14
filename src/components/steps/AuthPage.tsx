@@ -153,6 +153,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
   const { signUp } = useApp();
   const [form, setForm] = useState({
     name: '', email: '', phone: '', password: '', confirmPassword: '', sector: '' as Sector | '',
+    company: '', jobTitle: '', financialDeptSize: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);

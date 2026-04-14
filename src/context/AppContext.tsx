@@ -256,7 +256,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           name: metadata.name,
           phone: metadata.phone,
           sector: metadata.sector || 'tourism',
-        })
+          company: metadata.company || null,
+          job_title: metadata.jobTitle || null,
+          financial_dept_size: metadata.financialDeptSize || null,
+        } as any)
         .eq('user_id', newSession.user.id);
     }
 
