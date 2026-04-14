@@ -153,6 +153,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
   const { signUp } = useApp();
   const [form, setForm] = useState({
     name: '', email: '', phone: '', password: '', confirmPassword: '', sector: '' as Sector | '',
+    company: '', jobTitle: '', financialDeptSize: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -177,6 +178,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     setServerError('');
     const { error } = await signUp(form.email, form.password, {
       name: form.name, phone: form.phone, sector: form.sector,
+      company: form.company, jobTitle: form.jobTitle, financialDeptSize: form.financialDeptSize,
     });
     if (error) {
       setServerError(error);
@@ -219,6 +221,34 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
           ))}
         </select>
         {errors.sector && <p className="text-destructive text-xs mt-1">{errors.sector}</p>}
+      </div>
+
+      {/* Company */}
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">اسم الشركة</Label>
+        <Input type="text" placeholder="أدخل اسم الشركة" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="h-11" dir="auto" />
+      </div>
+
+      {/* Job Title */}
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">المسمى الوظيفي</Label>
+        <Input type="text" placeholder="أدخل المسمى الوظيفي" value={form.jobTitle} onChange={(e) => setForm({ ...form, jobTitle: e.target.value })} className="h-11" dir="auto" />
+      </div>
+
+      {/* Financial Dept Size */}
+      <div>
+        <Label className="text-foreground font-medium mb-1.5 block text-sm">عدد موظفين الإدارة المالية</Label>
+        <select
+          value={form.financialDeptSize}
+          onChange={(e) => setForm({ ...form, financialDeptSize: e.target.value })}
+          className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <option value="">اختر العدد</option>
+          <option value="1">1</option>
+          <option value="2-3">2-3</option>
+          <option value="3-6">3-6</option>
+          <option value="6+">6 فأكثر</option>
+        </select>
       </div>
 
       <div>
