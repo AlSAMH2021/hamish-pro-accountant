@@ -251,6 +251,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
         </select>
       </div>
 
+      <div>
         <Label className="text-foreground font-medium mb-1.5 block text-sm">كلمة المرور</Label>
         <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="h-11" />
         {errors.password && <p className="text-destructive text-xs mt-1">{errors.password}</p>}
