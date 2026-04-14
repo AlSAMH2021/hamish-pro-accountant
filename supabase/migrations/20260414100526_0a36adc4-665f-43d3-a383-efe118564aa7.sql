@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN financial_dept_size text;
