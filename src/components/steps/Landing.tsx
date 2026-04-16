@@ -4,7 +4,7 @@ import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, User
 import { Button } from '@/components/ui/button';
 import logoWhite from '@/assets/logo-white.png';
 import platformPreview from '@/assets/hero-dashboard.png';
-import { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 import clientDco from '@/assets/clients/dco.png';
 import clientSafran from '@/assets/clients/safran.png';
