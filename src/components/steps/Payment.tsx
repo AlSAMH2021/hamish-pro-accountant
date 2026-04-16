@@ -216,7 +216,7 @@ const Payment = () => {
                 تحديث الحالة
               </Button>
               <Button
-                onClick={() => setCurrentStep(5)}
+                onClick={() => setCurrentStep(3)}
                 variant="ghost"
                 className="h-11 px-6 rounded-lg gap-2 text-muted-foreground"
               >
