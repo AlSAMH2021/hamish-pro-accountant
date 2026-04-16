@@ -321,6 +321,14 @@ const Report = () => {
                               </div>
                             );
                           })}
+                          {q.explanation && (
+                            <div className="mt-3 p-3 rounded-lg bg-muted/50 border border-border">
+                              <div className="flex items-start gap-2">
+                                <Lightbulb className="w-4 h-4 text-warning shrink-0 mt-0.5" />
+                                <p className="text-xs text-muted-foreground leading-relaxed">{q.explanation}</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
