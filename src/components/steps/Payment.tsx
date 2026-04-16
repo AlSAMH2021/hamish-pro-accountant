@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import StepperLayout from '@/components/StepperLayout';
-import { CreditCard, Shield, Building2, Copy, CheckCircle, Clock, Upload, Tag, Loader2 } from 'lucide-react';
+import { CreditCard, Building2, Copy, CheckCircle, Clock, Upload, Tag, Loader2, RefreshCw, ArrowRight } from 'lucide-react';
 
 type PaymentMethod = 'transfer' | 'card' | null;
+
+const isCardComingSoon = true;
 
 const Payment = () => {
   const { setPaymentStatus, setCurrentStep, user } = useApp();
@@ -24,9 +26,45 @@ const Payment = () => {
   const [discountApplied, setDiscountApplied] = useState<{ percent: number; codeId: string } | null>(null);
   const [discountError, setDiscountError] = useState('');
   const [checkingCode, setCheckingCode] = useState(false);
+  const [isPendingReview, setIsPendingReview] = useState(false);
+  const [refreshingStatus, setRefreshingStatus] = useState(false);
 
   const basePrice = 299;
   const finalPrice = discountApplied ? Math.round(basePrice * (1 - discountApplied.percent / 100)) : basePrice;
+
+  const loadPaymentState = async () => {
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) return;
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('status, receipt_url, payment_status')
+      .eq('user_id', authUser.id)
+      .maybeSingle();
+
+    if (!profile) return;
+
+    if (profile.payment_status) {
+      setPaymentStatus(true);
+      setCurrentStep(12);
+      return;
+    }
+
+    if (profile.status === 'pending_payment' && profile.receipt_url) {
+      setIsPendingReview(true);
+      setTransferConfirmed(true);
+    }
+  };
+
+  useEffect(() => {
+    loadPaymentState();
+  }, []);
+
+  const handleRefreshStatus = async () => {
+    setRefreshingStatus(true);
+    await loadPaymentState();
+    setRefreshingStatus(false);
+  };
 
   const handleApplyDiscount = async () => {
     if (!discountCode.trim()) return;
@@ -128,6 +166,7 @@ const Payment = () => {
       });
 
       setTransferConfirmed(true);
+      setIsPendingReview(true);
     } catch (err) {
       console.error('Error confirming transfer:', err);
     } finally {
@@ -148,6 +187,48 @@ const Payment = () => {
     iban: 'SA0380000000608010167519',
     amount: `${finalPrice} ر.س`,
   };
+
+  // Pending review screen
+  if (isPendingReview) {
+    return (
+      <StepperLayout activePage="payment">
+        <div className="max-w-2xl mx-auto space-y-5">
+          <div className="rounded-2xl border border-border p-8 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto">
+              <Clock className="w-8 h-8 text-foreground" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground">طلبك قيد المراجعة</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+              تم إرسال الإيصال بنجاح. سيتم التحقق من التحويل وتفعيل حسابك خلال وقت قصير.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+              <Button
+                onClick={handleRefreshStatus}
+                disabled={refreshingStatus}
+                variant="outline"
+                className="h-11 px-6 rounded-lg gap-2"
+              >
+                {refreshingStatus ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="w-4 h-4" />
+                )}
+                تحديث الحالة
+              </Button>
+              <Button
+                onClick={() => setCurrentStep(5)}
+                variant="ghost"
+                className="h-11 px-6 rounded-lg gap-2 text-muted-foreground"
+              >
+                <ArrowRight className="w-4 h-4" />
+                العودة للإرشادات
+              </Button>
+            </div>
+          </div>
+        </div>
+      </StepperLayout>
+    );
+  }
 
   return (
     <StepperLayout activePage="payment">
@@ -213,16 +294,34 @@ const Payment = () => {
             <p className="text-xs text-muted-foreground mt-1">حوّل وأرفق الإيصال</p>
           </button>
           <button
-            onClick={() => setMethod('card')}
-            className={`p-5 rounded-2xl border-2 transition-all text-center ${
-              method === 'card' ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/20'
+            disabled={isCardComingSoon}
+            onClick={() => !isCardComingSoon && setMethod('card')}
+            className={`relative p-5 rounded-2xl border-2 transition-all text-center ${
+              isCardComingSoon
+                ? 'border-border opacity-60 cursor-not-allowed'
+                : method === 'card'
+                  ? 'border-foreground bg-foreground/5'
+                  : 'border-border hover:border-foreground/20'
             }`}
           >
-            <CreditCard className={`w-8 h-8 mx-auto mb-2 ${method === 'card' ? 'text-foreground' : 'text-muted-foreground'}`} />
+            {isCardComingSoon && (
+              <span className="absolute top-2 left-2 bg-muted text-muted-foreground text-[10px] font-bold px-2 py-0.5 rounded-full">قريبًا</span>
+            )}
+            <CreditCard className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
             <p className="font-bold text-foreground text-sm">بطاقة بنكية</p>
-            <p className="text-xs text-muted-foreground mt-1">مدى / فيزا / ماستركارد</p>
+            <p className="text-xs text-muted-foreground mt-1">مدى / فيزا / ماستركارد / Apple Pay / Google Pay</p>
           </button>
         </div>
+
+        {/* Card coming soon notice */}
+        {isCardComingSoon && (
+          <div className="rounded-2xl border border-border p-4 bg-muted/30">
+            <p className="text-sm font-bold text-foreground mb-1">الدفع بالبطاقة قيد الإطلاق</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              قريبًا سنوفر الدفع عبر Apple Pay و Google Pay وبطاقات مدى/فيزا/ماستركارد. حاليًا يمكنك إتمام الدفع عبر التحويل البنكي وإرفاق الإيصال.
+            </p>
+          </div>
+        )}
 
         {/* Transfer Details */}
         {method === 'transfer' && (
@@ -293,19 +392,11 @@ const Payment = () => {
                 'تأكيد التحويل'
               )}
             </Button>
-
-            {transferConfirmed && (
-              <div className="p-4 rounded-xl bg-muted/50 border border-border text-center space-y-1">
-                <Clock className="w-6 h-6 text-foreground mx-auto" />
-                <p className="font-bold text-foreground text-sm">طلبك قيد المراجعة</p>
-                <p className="text-xs text-muted-foreground">سيتم التحقق وتفعيل حسابك خلال وقت قصير</p>
-              </div>
-            )}
           </div>
         )}
 
-        {/* Card Form */}
-        {method === 'card' && (
+        {/* Card Form - only if not coming soon */}
+        {method === 'card' && !isCardComingSoon && (
           <div className="rounded-2xl border border-border p-5 animate-fade-in-up space-y-4">
             <h3 className="text-base font-bold text-foreground flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-muted-foreground" />
@@ -350,11 +441,6 @@ const Payment = () => {
                 </span>
               )}
             </Button>
-
-            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-              <Shield className="w-3 h-3" />
-              <span>دفع آمن ومشفر</span>
-            </div>
           </div>
         )}
       </div>
