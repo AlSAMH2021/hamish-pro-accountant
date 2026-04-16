@@ -4,7 +4,7 @@ import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, User
 import { Button } from '@/components/ui/button';
 import logoWhite from '@/assets/logo-white.png';
 import platformPreview from '@/assets/hero-dashboard.png';
-import { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 import clientDco from '@/assets/clients/dco.png';
 import clientSafran from '@/assets/clients/safran.png';
@@ -65,19 +65,29 @@ function PixelMarquee({ logos }: { logos: { src: string; alt: string }[] }) {
     const segment = segmentRef.current;
     if (!track || !segment) return;
     const segW = segment.scrollWidth;
+    if (segW === 0) return; // images not loaded yet
     const shift = segW + MARQUEE_GAP;
     const duration = shift / MARQUEE_SPEED;
     track.style.setProperty('--marquee-shift', `${shift}px`);
     track.style.setProperty('--marquee-duration', `${duration}s`);
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     measure();
     const segment = segmentRef.current;
     if (!segment) return;
     const ro = new ResizeObserver(measure);
     ro.observe(segment);
-    return () => ro.disconnect();
+
+    // Re-measure when images finish loading
+    const imgs = segment.querySelectorAll('img');
+    const onLoad = () => measure();
+    imgs.forEach(img => img.addEventListener('load', onLoad));
+
+    return () => {
+      ro.disconnect();
+      imgs.forEach(img => img.removeEventListener('load', onLoad));
+    };
   }, [measure]);
 
   return (
@@ -99,7 +109,6 @@ function PixelMarquee({ logos }: { logos: { src: string; alt: string }[] }) {
               key={i}
               src={logo.src}
               alt={logo.alt}
-              loading="lazy"
               draggable={false}
               className="h-12 md:h-14 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 shrink-0"
             />
@@ -111,7 +120,6 @@ function PixelMarquee({ logos }: { logos: { src: string; alt: string }[] }) {
               key={i}
               src={logo.src}
               alt=""
-              loading="lazy"
               draggable={false}
               className="h-12 md:h-14 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 shrink-0"
             />
