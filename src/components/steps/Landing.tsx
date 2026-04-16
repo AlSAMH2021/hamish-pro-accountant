@@ -248,6 +248,42 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* About Hamesh */}
+      <section className="py-20 px-6 bg-muted/30">
+        <div className="max-w-6xl mx-auto">
+          <FadeUp>
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-3">نبذة عن هامش</h2>
+          </FadeUp>
+          <FadeUp delay={100}>
+            <p className="text-muted-foreground text-center mb-10 max-w-3xl mx-auto leading-relaxed text-base">
+              هامش شركة متخصصة في تقديم خدمات الاستشارات المحاسبية والضريبية والمالية، تُمكّن المنشآت من تعزيز كفاءتها المالية واتخاذ قرارات استراتيجية تدعم النمو وتحدّ من المخاطر.
+            </p>
+          </FadeUp>
+          <FadeUp delay={200}>
+            <p className="text-muted-foreground text-center mb-12 max-w-3xl mx-auto leading-relaxed text-base">
+              نلتزم منذ التأسيس بأعلى معايير الجودة ومنهجيات عملية واضحة، مما جعل هامش شريكًا موثوقًا ومصدرًا مرجعيًا أول للمنشآت الباحثة عن قرارات مالية أدق وتقليل للمخاطر.
+            </p>
+          </FadeUp>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { icon: Calculator, title: 'استشارات متخصصة', desc: 'استشارات محاسبية وضريبية ومالية بتركيز عملي' },
+              { icon: BarChart3, title: 'كفاءة مالية', desc: 'رفع كفاءة الأداء المالي وتحسين جودة القرار' },
+              { icon: Shield, title: 'تقليل المخاطر', desc: 'منهجية واضحة تقلل المخاطر وتدعم النمو' },
+            ].map((item, i) => (
+              <FadeUp key={i} delay={i * 150 + 300}>
+                <div className="rounded-xl p-7 border border-border bg-card hover:shadow-lg transition-all duration-300 text-center">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-5">
+                    <item.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed text-sm">{item.desc}</p>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Value Props */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
