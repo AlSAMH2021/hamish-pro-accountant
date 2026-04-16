@@ -4,7 +4,7 @@ import { BarChart3, FileText, GraduationCap, ArrowLeft, Shield, Calculator, User
 import { Button } from '@/components/ui/button';
 import logoWhite from '@/assets/logo-white.png';
 import platformPreview from '@/assets/hero-dashboard.png';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 
 import clientDco from '@/assets/clients/dco.png';
 import clientSafran from '@/assets/clients/safran.png';
@@ -51,6 +51,76 @@ const clientLogos = [
   { src: clientNrrc, alt: 'هيئة الرقابة النووية' },
   { src: clientWaraq, alt: 'ورق خزامى' },
 ];
+
+/* ── Pixel-perfect Marquee ── */
+const MARQUEE_SPEED = 80; // px per second
+const MARQUEE_GAP = 64; // gap between logos in px
+
+function PixelMarquee({ logos }: { logos: { src: string; alt: string }[] }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const segmentRef = useRef<HTMLDivElement>(null);
+
+  const measure = useCallback(() => {
+    const track = trackRef.current;
+    const segment = segmentRef.current;
+    if (!track || !segment) return;
+    const segW = segment.scrollWidth;
+    const shift = segW + MARQUEE_GAP;
+    const duration = shift / MARQUEE_SPEED;
+    track.style.setProperty('--marquee-shift', `${shift}px`);
+    track.style.setProperty('--marquee-duration', `${duration}s`);
+  }, []);
+
+  useLayoutEffect(() => {
+    measure();
+    const segment = segmentRef.current;
+    if (!segment) return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(segment);
+    return () => ro.disconnect();
+  }, [measure]);
+
+  return (
+    <div
+      className="relative overflow-hidden"
+      style={{
+        maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+      }}
+    >
+      <div
+        ref={trackRef}
+        className="marquee-track-pixel flex items-center w-max"
+        style={{ direction: 'ltr', gap: `${MARQUEE_GAP}px` }}
+      >
+        <div ref={segmentRef} className="flex items-center shrink-0" style={{ gap: `${MARQUEE_GAP}px` }}>
+          {logos.map((logo, i) => (
+            <img
+              key={i}
+              src={logo.src}
+              alt={logo.alt}
+              loading="lazy"
+              draggable={false}
+              className="h-12 md:h-14 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 shrink-0"
+            />
+          ))}
+        </div>
+        <div className="flex items-center shrink-0" style={{ gap: `${MARQUEE_GAP}px` }} aria-hidden>
+          {logos.map((logo, i) => (
+            <img
+              key={i}
+              src={logo.src}
+              alt=""
+              loading="lazy"
+              draggable={false}
+              className="h-12 md:h-14 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 shrink-0"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /* ── Intersection Observer hook ── */
 function useReveal(threshold = 0.15) {
@@ -231,21 +301,7 @@ const Landing = () => {
         <FadeUp>
           <p className="text-center text-muted-foreground text-sm mb-8">عملاؤنا يثقون بنا</p>
         </FadeUp>
-        <div className="relative">
-          <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent z-10" />
-          <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent z-10" />
-          <div className="flex animate-marquee gap-16 items-center w-max">
-            {[...clientLogos, ...clientLogos].map((logo, i) => (
-              <img
-                key={i}
-                src={logo.src}
-                alt={logo.alt}
-                loading="lazy"
-                className="h-12 md:h-14 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
-              />
-            ))}
-          </div>
-        </div>
+        <PixelMarquee logos={clientLogos} />
       </section>
 
       {/* About Hamesh */}
