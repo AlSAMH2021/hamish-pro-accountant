@@ -206,6 +206,9 @@ export type Database = {
           financial_dept_size: string | null
           id: string
           job_title: string | null
+          manager_email: string | null
+          manager_name: string | null
+          manager_phone: string | null
           name: string
           nda_accepted: boolean
           payment_status: boolean
@@ -222,6 +225,9 @@ export type Database = {
           financial_dept_size?: string | null
           id?: string
           job_title?: string | null
+          manager_email?: string | null
+          manager_name?: string | null
+          manager_phone?: string | null
           name: string
           nda_accepted?: boolean
           payment_status?: boolean
@@ -238,6 +244,9 @@ export type Database = {
           financial_dept_size?: string | null
           id?: string
           job_title?: string | null
+          manager_email?: string | null
+          manager_name?: string | null
+          manager_phone?: string | null
           name?: string
           nda_accepted?: boolean
           payment_status?: boolean

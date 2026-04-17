@@ -154,6 +154,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
   const [form, setForm] = useState({
     name: '', email: '', phone: '', password: '', confirmPassword: '', sector: '' as Sector | '',
     company: '', jobTitle: '', financialDeptSize: '',
+    managerName: '', managerPhone: '', managerEmail: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -167,6 +168,9 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     if (form.password.length < 6) e.password = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
     if (!form.sector) e.sector = 'يرجى اختيار القطاع';
     if (form.password !== form.confirmPassword) e.confirmPassword = 'كلمتا المرور غير متطابقتين';
+    // Optional manager fields — validate only if provided
+    if (form.managerEmail && !form.managerEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.managerEmail = 'بريد إلكتروني غير صالح';
+    if (form.managerPhone && !form.managerPhone.match(/^05\d{8}$/)) e.managerPhone = 'رقم جوال سعودي غير صالح (05XXXXXXXX)';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -179,6 +183,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     const { error } = await signUp(form.email, form.password, {
       name: form.name, phone: form.phone, sector: form.sector,
       company: form.company, jobTitle: form.jobTitle, financialDeptSize: form.financialDeptSize,
+      managerName: form.managerName, managerPhone: form.managerPhone, managerEmail: form.managerEmail,
     });
     if (error) {
       setServerError(error);
@@ -249,6 +254,32 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
           <option value="3-6">3-6</option>
           <option value="6+">6 فأكثر</option>
         </select>
+      </div>
+
+      {/* Manager Info (optional) */}
+      <div className="pt-2 border-t border-border/60">
+        <div className="mb-3">
+          <h3 className="text-sm font-bold text-foreground">بيانات المدير المباشر (اختياري)</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            في حال رغبتك بإرسال نتيجتك إلى مديرك أو جهة عملك
+          </p>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <Label className="text-foreground font-medium mb-1.5 block text-sm">اسم المدير</Label>
+            <Input type="text" placeholder="أدخل اسم المدير" value={form.managerName} onChange={(e) => setForm({ ...form, managerName: e.target.value })} className="h-11" dir="auto" />
+          </div>
+          <div>
+            <Label className="text-foreground font-medium mb-1.5 block text-sm">رقم جوال المدير</Label>
+            <Input type="tel" placeholder="05XXXXXXXX" value={form.managerPhone} onChange={(e) => setForm({ ...form, managerPhone: e.target.value })} className="h-11" dir="auto" />
+            {errors.managerPhone && <p className="text-destructive text-xs mt-1">{errors.managerPhone}</p>}
+          </div>
+          <div>
+            <Label className="text-foreground font-medium mb-1.5 block text-sm">بريد المدير الإلكتروني</Label>
+            <Input type="email" placeholder="manager@email.com" value={form.managerEmail} onChange={(e) => setForm({ ...form, managerEmail: e.target.value })} className="h-11" dir="auto" />
+            {errors.managerEmail && <p className="text-destructive text-xs mt-1">{errors.managerEmail}</p>}
+          </div>
+        </div>
       </div>
 
       <div>
