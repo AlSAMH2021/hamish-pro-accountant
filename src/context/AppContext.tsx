@@ -281,7 +281,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const resetPassword = async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://assesment.hameash.com/reset-password',
+      redirectTo: `${window.location.origin}/reset-password`,
     });
     if (error) return { error: error.message };
     return { error: null };
