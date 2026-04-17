@@ -259,6 +259,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           company: metadata.company || null,
           job_title: metadata.jobTitle || null,
           financial_dept_size: metadata.financialDeptSize || null,
+          manager_name: metadata.managerName || null,
+          manager_phone: metadata.managerPhone || null,
+          manager_email: metadata.managerEmail || null,
         } as any)
         .eq('user_id', newSession.user.id);
     }
