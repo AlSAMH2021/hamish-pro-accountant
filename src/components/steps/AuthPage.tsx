@@ -168,6 +168,9 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     if (form.password.length < 6) e.password = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
     if (!form.sector) e.sector = 'يرجى اختيار القطاع';
     if (form.password !== form.confirmPassword) e.confirmPassword = 'كلمتا المرور غير متطابقتين';
+    // Optional manager fields — validate only if provided
+    if (form.managerEmail && !form.managerEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.managerEmail = 'بريد إلكتروني غير صالح';
+    if (form.managerPhone && !form.managerPhone.match(/^05\d{8}$/)) e.managerPhone = 'رقم جوال سعودي غير صالح (05XXXXXXXX)';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
