@@ -256,6 +256,32 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
         </select>
       </div>
 
+      {/* Manager Info (optional) */}
+      <div className="pt-2 border-t border-border/60">
+        <div className="mb-3">
+          <h3 className="text-sm font-bold text-foreground">بيانات المدير المباشر (اختياري)</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            في حال رغبتك بإرسال نتيجتك إلى مديرك أو جهة عملك
+          </p>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <Label className="text-foreground font-medium mb-1.5 block text-sm">اسم المدير</Label>
+            <Input type="text" placeholder="أدخل اسم المدير" value={form.managerName} onChange={(e) => setForm({ ...form, managerName: e.target.value })} className="h-11" dir="auto" />
+          </div>
+          <div>
+            <Label className="text-foreground font-medium mb-1.5 block text-sm">رقم جوال المدير</Label>
+            <Input type="tel" placeholder="05XXXXXXXX" value={form.managerPhone} onChange={(e) => setForm({ ...form, managerPhone: e.target.value })} className="h-11" dir="auto" />
+            {errors.managerPhone && <p className="text-destructive text-xs mt-1">{errors.managerPhone}</p>}
+          </div>
+          <div>
+            <Label className="text-foreground font-medium mb-1.5 block text-sm">بريد المدير الإلكتروني</Label>
+            <Input type="email" placeholder="manager@email.com" value={form.managerEmail} onChange={(e) => setForm({ ...form, managerEmail: e.target.value })} className="h-11" dir="auto" />
+            {errors.managerEmail && <p className="text-destructive text-xs mt-1">{errors.managerEmail}</p>}
+          </div>
+        </div>
+      </div>
+
       <div>
         <Label className="text-foreground font-medium mb-1.5 block text-sm">كلمة المرور</Label>
         <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="h-11" />
